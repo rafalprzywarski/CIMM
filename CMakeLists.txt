@@ -11,5 +11,4 @@ include_directories(${Boost_INCLUDE_DIRS})
 set(GoogleMock_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/libraries/GoogleMock/include")
 
 add_subdirectory("source")
-add_subdirectory("test")
 add_subdirectory("libraries")
