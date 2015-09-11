@@ -4,9 +4,6 @@
 namespace cimm
 {
 
-inline auto parse_expression(const string& s) -> expression
-{
-    return {s};
-}
+auto parse_expression(const string& expr_text) -> expression;
 
 }
