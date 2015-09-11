@@ -5,6 +5,7 @@ include_directories("../core")
 
 add_executable(cimm_test
   cimm/parse_test.cpp
+  cimm/str_test.cpp
   main.cpp
 )
 target_link_libraries(cimm_test cimm_core ${Boost_LIBRARIES} gmock pthread)
