@@ -4,9 +4,9 @@
 namespace cimm
 {
 
-inline std::string evaluate_expression(const expression& expr)
+inline auto evaluate_expression(const expression& expr)
 {
-    return expr.value;
+    return expr;
 }
 
 }

@@ -4,9 +4,7 @@
 namespace cimm
 {
 
-struct expression
-{
-    std::string value;
-};
+using string = std::string;
+using expression = string;
 
 }

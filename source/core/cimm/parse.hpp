@@ -4,7 +4,7 @@
 namespace cimm
 {
 
-inline expression parse_expression(const std::string& s)
+inline auto parse_expression(const string& s) -> expression
 {
     return {s};
 }

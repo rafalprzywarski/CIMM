@@ -1,5 +1,6 @@
 #include <cimm/parse.hpp>
 #include <cimm/eval.hpp>
+#include <cimm/str.hpp>
 #include <iostream>
 
 void eval_line(const std::string& line)
@@ -8,7 +9,7 @@ void eval_line(const std::string& line)
     {
         auto expr = cimm::parse_expression(line);
         auto result = cimm::evaluate_expression(expr);
-        std::cout << "> " << result << std::endl;
+        std::cout << "> " << cimm::str(result) << std::endl;
     }
     catch (std::exception const& e)
     {
