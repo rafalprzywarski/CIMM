@@ -15,6 +15,7 @@ struct expression
 {
     expression_variant value;
 
+    expression() = default;
     expression(const string& s) : value(s) { }
     expression(const integer& i) : value(i) { }
     expression(const list& l) : value(l) { }
@@ -32,6 +33,7 @@ struct list
 
     list() = default;
     list(const std::initializer_list<expression>& l) : value(l) { }
+    list(const std::vector<expression>& v) : value(v) { }
 };
 
 inline auto operator==(const list& left, const list& right)

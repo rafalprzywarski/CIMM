@@ -28,4 +28,11 @@ TEST(parse_test, should_parse_an_empty_list)
     EXPECT_EQ(expression(list{}), parse_expression("( )"));
 }
 
+TEST(parse_test, should_parse_a_list_of_expressions)
+{
+    EXPECT_EQ(expression(list{integer(1)}), parse_expression("(1)"));
+    EXPECT_EQ(expression(list{string("+"), string("abc"), integer(-3)}), parse_expression("(+ abc -3)"));
+    EXPECT_EQ(expression(list{list{list{string("x"), integer(-3)}, integer(1)}, list{integer(7)}}), parse_expression("(((x -3) 1) (7))"));
+}
+
 }
