@@ -1,3 +1,6 @@
 include_directories("../core")
 
-add_library(cimm_core cimm/parse.cpp)
+add_library(cimm_core
+  cimm/parse.cpp
+  cimm/str.cpp
+)

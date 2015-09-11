@@ -21,4 +21,11 @@ TEST(str_test, should_convert_an_empty_list_to_a_pair_of_parens)
     EXPECT_EQ(string("()"), str(expression(list{})));
 }
 
+TEST(str_test, should_convert_a_list_of_expressions_to_strings_separated_by_single_space_inside_parens)
+{
+    EXPECT_EQ(string("(1 2 3)"), str(expression(list{1, 2, 3})));
+    EXPECT_EQ(string("(-5)"), str(expression(list{-5})));
+    EXPECT_EQ(string("(((1) 2) (+ a) xyz)"), str(expression(list{list{list{integer(1)}, integer(2)}, list{string("+"), string("a")}, string("xyz")})));
+}
+
 }

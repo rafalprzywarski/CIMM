@@ -8,18 +8,32 @@ namespace cimm
 
 using string = std::string;
 using integer = int;
-using list = std::vector<integer>;
-using expression_variant = boost::variant<string, integer, list>;
+struct list;
+using expression_variant = boost::variant<string, integer, boost::recursive_wrapper<list>>;
 
 struct expression
 {
     expression_variant value;
 
-    template <typename type>
-    expression(type&& v) : value(std::forward<type>(v)) { }
+    expression(const string& s) : value(s) { }
+    expression(const integer& i) : value(i) { }
+    expression(const list& l) : value(l) { }
+    expression(const expression_variant& v) : value(v) { }
 };
 
 inline auto operator==(const expression& left, const expression& right)
+{
+    return left.value == right.value;
+}
+
+struct list
+{
+    std::vector<expression> value;
+
+    list(const std::initializer_list<expression>& l) : value(l) { }
+};
+
+inline auto operator==(const list& left, const list& right)
 {
     return left.value == right.value;
 }
