@@ -16,4 +16,9 @@ TEST(str_test, should_convert_the_given_integer_to_a_string)
     EXPECT_EQ(string("-78"), str(expression(integer(-78))));
 }
 
+TEST(str_test, should_convert_an_empty_list_to_a_pair_of_parens)
+{
+    EXPECT_EQ(string("()"), str(expression(list{})));
+}
+
 }

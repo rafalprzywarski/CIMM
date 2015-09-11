@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <cimm/parse.hpp>
+#include "expression_ostream.hpp"
 
 namespace cimm
 {
