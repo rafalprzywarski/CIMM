@@ -22,5 +22,10 @@ TEST(parse_test, should_parse_negative_integers)
     EXPECT_EQ(expression(integer(-58)), parse_expression("-58"));
 }
 
+TEST(parse_test, should_parse_an_empty_list)
+{
+    EXPECT_EQ(expression(list{}), parse_expression("()"));
+    EXPECT_EQ(expression(list{}), parse_expression("( )"));
+}
 
 }

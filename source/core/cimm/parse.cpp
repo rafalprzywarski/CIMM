@@ -18,7 +18,8 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, expression_vari
     template <typename type>
     using rule = qi::rule<iterator, type(), ascii::space_type>;
 
-    rule<expression_variant> grammar{qi::int_ | *qi::char_};
+    rule<list> list_rule{qi::lit('(') >> qi::attr(list{}) >> qi::lit(')')};
+    rule<expression_variant> grammar{qi::int_ | list_rule | *qi::char_};
 };
 
 }

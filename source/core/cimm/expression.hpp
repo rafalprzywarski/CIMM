@@ -30,6 +30,7 @@ struct list
 {
     std::vector<expression> value;
 
+    list() = default;
     list(const std::initializer_list<expression>& l) : value(l) { }
 };
 
