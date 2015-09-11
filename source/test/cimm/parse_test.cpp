@@ -16,4 +16,10 @@ TEST(parse_test, should_parse_a_sequence_of_digits_as_an_integer)
     EXPECT_EQ(expression(integer(32134)), parse_expression("32134"));
 }
 
+TEST(parse_test, should_parse_negative_integers)
+{
+    EXPECT_EQ(expression(integer(-58)), parse_expression("-58"));
+}
+
+
 }
