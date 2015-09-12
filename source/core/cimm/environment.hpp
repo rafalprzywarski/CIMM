@@ -16,9 +16,6 @@ struct environment
 
 auto define_native_function(environment& env, string name, native_function fn) -> void;
 
-inline environment create_environment()
-{
-    return {};
-}
+environment create_environment();
 
 }
