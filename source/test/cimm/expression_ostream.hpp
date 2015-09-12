@@ -5,7 +5,7 @@
 namespace cimm
 {
 
-auto operator<<(std::ostream& os, const expression& e) -> std::ostream&
+inline auto operator<<(std::ostream& os, const expression& e) -> std::ostream&
 {
     return os << str(e);
 }

@@ -5,7 +5,7 @@ namespace cimm
 
 struct environment { };
 
-environment create_environment()
+inline environment create_environment()
 {
     return {};
 }

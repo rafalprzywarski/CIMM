@@ -5,9 +5,6 @@
 namespace cimm
 {
 
-inline auto evaluate_expression(environment& env, const expression& expr)
-{
-    return expr;
-}
+expression evaluate_expression(environment& env, const expression& expr);
 
 }
