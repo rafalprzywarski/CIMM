@@ -1,4 +1,5 @@
 #include "eval.hpp"
+#include "error.hpp"
 
 namespace cimm
 {
@@ -23,8 +24,10 @@ expression subtract_integers(const list& l)
 expression evaluate(environment&, const list& l)
 {
     if (l.value.at(0) == string("+"))
-      return add_integers(l);
-    return subtract_integers(l);
+        return add_integers(l);
+    else if (l.value.at(0) == string("-"))
+        return subtract_integers(l);
+    throw undefined_function_error(boost::get<string>(l.value.at(0).value));
 }
 
 template <typename expression_type>
