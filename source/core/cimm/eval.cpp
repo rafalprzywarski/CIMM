@@ -15,9 +15,16 @@ expression add_integers(const list& l)
     return sum;
 }
 
+expression subtract_integers(const list& l)
+{
+    return boost::get<integer>(l.value.at(1).value) - boost::get<integer>(l.value.at(2).value);
+}
+
 expression evaluate(environment&, const list& l)
 {
-    return add_integers(l);
+    if (l.value.at(0) == string("+"))
+      return add_integers(l);
+    return subtract_integers(l);
 }
 
 template <typename expression_type>
