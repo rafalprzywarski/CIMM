@@ -38,4 +38,17 @@ TEST_F(eval_test, should_fail_when_given_undefined_function)
     }
 }
 
+TEST_F(eval_test, should_execute_functions_from_the_environment)
+{
+    environment env;
+    auto func1 = [](environment&, const list& l) -> expression { return integer(l.value.size()); };
+    auto func2 = [](environment&, const list& l) -> expression { return integer(l.value.size() * 7); };
+
+    define_native_function(env, string("func-1"), func1);
+    define_native_function(env, string("func-2"), func2);
+
+    ASSERT_EQ(integer(3), evaluate_expression(env, list{string("func-1"), list{}, list{}}));
+    ASSERT_EQ(integer(3 * 7), evaluate_expression(env, list{string("func-2"), list{}, list{}}));
+}
+
 }

@@ -1,9 +1,20 @@
 #pragma once
+#include "expression.hpp"
+#include <unordered_map>
 
 namespace cimm
 {
 
-struct environment { };
+struct environment;
+
+using native_function = expression(*)(environment&, list const&);
+
+struct environment
+{
+    std::unordered_map<string, native_function> functions;
+};
+
+auto define_native_function(environment& env, string name, native_function fn) -> void;
 
 inline environment create_environment()
 {
