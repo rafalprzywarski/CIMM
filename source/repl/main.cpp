@@ -3,12 +3,12 @@
 #include <cimm/str.hpp>
 #include <iostream>
 
-void eval_line(const std::string& line)
+void eval_line(cimm::environment& env, const std::string& line)
 {
     try
     {
         auto expr = cimm::parse_expression(line);
-        auto result = cimm::evaluate_expression(expr);
+        auto result = cimm::evaluate_expression(env, expr);
         std::cout << "> " << cimm::str(result) << std::endl;
     }
     catch (std::exception const& e)
@@ -19,6 +19,7 @@ void eval_line(const std::string& line)
 
 int main()
 {
+    auto environment = cimm::create_environment();
     std::string line;
 
     while (1)
@@ -26,6 +27,6 @@ int main()
         std::cout << "$ " << std::flush;
         if (!std::getline(std::cin, line))
             break;
-        eval_line(line);
+        eval_line(environment, line);
     }
 }
