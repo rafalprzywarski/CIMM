@@ -5,9 +5,9 @@
 namespace cimm
 {
 
-TEST(parse_test, should_parse_a_sequence_of_characters_as_a_string)
+TEST(parse_test, should_parse_a_sequence_of_characters_as_an_identifier)
 {
-    ASSERT_EQ(expression(string("abc123")), parse_expression("abc123"));
+    ASSERT_EQ(expression(identifier("abc123")), parse_expression("abc123"));
 }
 
 TEST(parse_test, should_parse_a_sequence_of_digits_as_an_integer)
@@ -31,8 +31,8 @@ TEST(parse_test, should_parse_an_empty_list)
 TEST(parse_test, should_parse_a_list_of_expressions)
 {
     EXPECT_EQ(expression(list{integer(1)}), parse_expression("(1)"));
-    EXPECT_EQ(expression(list{string("+"), string("abc"), integer(-3)}), parse_expression("(+ abc -3)"));
-    EXPECT_EQ(expression(list{list{list{string("x"), integer(-3)}, integer(1)}, list{integer(7)}}), parse_expression("(((x -3) 1) (7))"));
+    EXPECT_EQ(expression(list{identifier("+"), identifier("abc"), integer(-3)}), parse_expression("(+ abc -3)"));
+    EXPECT_EQ(expression(list{list{list{identifier("x"), integer(-3)}, integer(1)}, list{integer(7)}}), parse_expression("(((x -3) 1) (7))"));
 }
 
 }

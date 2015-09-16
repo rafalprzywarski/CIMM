@@ -3,7 +3,7 @@
 namespace cimm
 {
 
-auto define_native_function(environment& env, string name, native_function fn) -> void
+auto define_native_function(environment& env, identifier name, native_function fn) -> void
 {
     env.functions.emplace(std::move(name), std::move(fn));
 }
@@ -31,8 +31,8 @@ environment create_environment()
 {
     environment env;
 
-    define_native_function(env, string("+"), add_integers);
-    define_native_function(env, string("-"), subtract_integers);
+    define_native_function(env, identifier("+"), add_integers);
+    define_native_function(env, identifier("-"), subtract_integers);
 
     return env;
 }

@@ -9,10 +9,10 @@ namespace
 
 expression evaluate(environment& env, const list& l)
 {
-    auto name = boost::get<string>(l.value.at(0).value);
+    auto name = boost::get<identifier>(l.value.at(0).value);
     auto f = env.functions.find(name);
     if (f == env.functions.end())
-        throw undefined_function_error(boost::get<string>(l.value.at(0).value));
+        throw undefined_function_error(boost::get<identifier>(l.value.at(0).value));
     return f->second(env, l);
 }
 

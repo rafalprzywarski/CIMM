@@ -8,15 +8,16 @@ namespace cimm
 
 using string = std::string;
 using integer = int;
+using identifier = string;
 struct list;
-using expression_variant = boost::variant<string, integer, boost::recursive_wrapper<list>>;
+using expression_variant = boost::variant<identifier, integer, boost::recursive_wrapper<list>>;
 
 struct expression
 {
     expression_variant value;
 
     expression() = default;
-    expression(const string& s) : value(s) { }
+    expression(const identifier& i) : value(i) { }
     expression(const integer& i) : value(i) { }
     expression(const list& l) : value(l) { }
     expression(const expression_variant& v) : value(v) { }

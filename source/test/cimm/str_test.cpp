@@ -4,9 +4,9 @@
 namespace cimm
 {
 
-TEST(str_test, should_just_return_the_given_string)
+TEST(str_test, should_just_return_the_given_identifier_name)
 {
-    ASSERT_EQ(string("abc123"), str(expression(string("abc123"))));
+    ASSERT_EQ(string("abc123"), str(expression(identifier("abc123"))));
 }
 
 TEST(str_test, should_convert_the_given_integer_to_a_string)
@@ -25,7 +25,7 @@ TEST(str_test, should_convert_a_list_of_expressions_to_strings_separated_by_sing
 {
     EXPECT_EQ(string("(1 2 3)"), str(expression(list{1, 2, 3})));
     EXPECT_EQ(string("(-5)"), str(expression(list{-5})));
-    EXPECT_EQ(string("(((1) 2) (+ a) xyz)"), str(expression(list{list{list{integer(1)}, integer(2)}, list{string("+"), string("a")}, string("xyz")})));
+    EXPECT_EQ(string("(((1) 2) (+ a) xyz)"), str(expression(list{list{list{integer(1)}, integer(2)}, list{identifier("+"), identifier("a")}, identifier("xyz")})));
 }
 
 }
