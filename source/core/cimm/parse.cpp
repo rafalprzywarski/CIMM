@@ -1,30 +1,6 @@
 #include "parse.hpp"
 #include <boost/spirit/home/qi.hpp>
-/*
-namespace boost
-{
-namespace spirit
-{
-namespace traits
-{
 
-template <>
-struct transform_attribute<cimm::string, cimm::identifier, qi::domain, void>
-{
-    typedef cimm::identifier type;
-    static type pre(const cimm::string& val) { return type(); }
-    static void post(cimm::identifier& val, type attr)
-    {
-        val = cimm::identifier{attr};
-    }
-
-    static void fail(cimm::identifier&) { }
-};
-
-}
-}
-}
-*/
 namespace cimm
 {
 
@@ -46,7 +22,7 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, expression(), a
     using rule = qi::rule<iterator, type(), ascii::space_type>;
 
     rule<string> string_rule{qi::no_skip[+(qi::char_ - ')' - ' ')]};
-    rule<identifier> identifier_rule{qi::lexeme[+(qi::char_ - ')' - ' ')]};
+    rule<identifier> identifier_rule{string_rule};
     rule<expression_variant> expression_variant_rule;
     rule<expression> expression_rule{qi::as<expression>()[expression_variant_rule]};
     rule<std::vector<expression>> vector_rule{qi::lit('(') >> *expression_rule >> qi::lit(')')};

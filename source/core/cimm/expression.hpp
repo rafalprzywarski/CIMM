@@ -8,7 +8,20 @@ namespace cimm
 
 using string = std::string;
 using integer = int;
-using identifier = string;
+
+struct identifier
+{
+    string value;
+
+    identifier() = default;
+    identifier(string value) : value(value) { }
+};
+
+inline auto operator==(const identifier& left, const identifier& right)
+{
+    return left.value == right.value;
+}
+
 struct list;
 using expression_variant = boost::variant<identifier, integer, boost::recursive_wrapper<list>>;
 
