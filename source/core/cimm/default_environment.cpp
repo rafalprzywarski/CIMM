@@ -31,6 +31,18 @@ auto is_equal(environment&, const list& l) -> expression
     return true;
 }
 
+auto not_f(environment&, const list& l) -> expression
+{
+    if (l.value.empty())
+        return true;
+    auto e = first(l).value;
+    if (boost::get<nil_type>(&e))
+        return true;
+    if (auto b = boost::get<boolean>(&e))
+        return not *b;
+    return false;
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -40,6 +52,7 @@ auto create_default_environment() -> environment
     define_native_function(env, identifier("+"), add_integers);
     define_native_function(env, identifier("-"), subtract_integers);
     define_native_function(env, identifier("="), is_equal);
+    define_native_function(env, identifier("not"), not_f);
 
     return env;
 }

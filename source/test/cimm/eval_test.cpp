@@ -88,6 +88,17 @@ TEST_F(eval_test, should_check_equality_of_integers)
     EXPECT_EQ(boolean(true), evaluate(list{identifier("="), integer(3), integer(3)}));
 }
 
+TEST_F(eval_test, should_negate_expressions)
+{
+    EXPECT_EQ(boolean(false), evaluate(list{identifier("not"), boolean(true)}));
+    EXPECT_EQ(boolean(true), evaluate(list{identifier("not"), boolean(false)}));
+    EXPECT_EQ(boolean(true), evaluate(list{identifier("not"), nil}));
+    EXPECT_EQ(boolean(false), evaluate(list{identifier("not"), integer(2)}));
+    EXPECT_EQ(boolean(false), evaluate(list{identifier("not"), integer(0)}));
+    EXPECT_EQ(boolean(false), evaluate(list{identifier("not"), string("abc")}));
+    EXPECT_EQ(boolean(true), evaluate(list{identifier("not")}));
+}
+
 TEST_F(eval_test, DISABLED_should_check_equality_of_lists)
 {
     EXPECT_EQ(boolean(true), evaluate(list{identifier("="), list{integer(1), boolean(true)}, list{integer(1), boolean(true)}}));
