@@ -35,7 +35,7 @@ struct keyword
 
 inline auto operator==(const keyword& left, const keyword& right)
 {
-    return false;
+    return left.value == right.value;
 }
 
 struct list;

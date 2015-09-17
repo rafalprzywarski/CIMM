@@ -50,4 +50,10 @@ TEST(parse_test, should_parse_quoted_strings)
     EXPECT_EQ(expression(list{string("a"), string("b")}), parse_expression("(\"a\" \"b\")"));
 }
 
+TEST(parse_test, should_parse_a_sequence_of_characters_beginning_with_a_colon_as_a_keyword)
+{
+    EXPECT_EQ(expression(keyword("abc123")), parse_expression(":abc123"));
+    EXPECT_EQ(expression(list{keyword("abc123"), keyword("s")}), parse_expression("(:abc123 :s)"));
+}
+
 }

@@ -15,7 +15,7 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, expression(), a
 {
     expression_grammar() : expression_grammar::base_type(expression_rule, "expression-grammar")
     {
-        expression_variant_rule = qi::int_ | boolean_rule | list_rule | string_rule | identifier_rule;
+        expression_variant_rule = qi::int_ | boolean_rule | list_rule | string_rule | keyword_rule | identifier_rule;
     }
 
     template <typename type>
@@ -23,6 +23,8 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, expression(), a
 
     rule<string> string_rule{qi::lit('\"') >> qi::no_skip[*(qi::char_ - '\"')] >> qi::lit('\"')};
     rule<string> char_seq_rule{qi::no_skip[+(qi::char_ - ')' - ' ')]};
+    rule<string> keyword_char_seq_rule{qi::no_skip[qi::lit(':') >> +(qi::char_ - ')' - ' ')]};
+    rule<keyword> keyword_rule{keyword_char_seq_rule};
     rule<identifier> identifier_rule{char_seq_rule};
     rule<expression_variant> expression_variant_rule;
     rule<expression> expression_rule{qi::as<expression>()[expression_variant_rule]};
