@@ -31,6 +31,11 @@ auto is_equal(environment&, const list& l) -> expression
     return true;
 }
 
+auto is_unequal(environment& env, const list& l) -> expression
+{
+    return not boost::get<boolean>(is_equal(env, l).value);
+}
+
 auto not_f(environment&, const list& l) -> expression
 {
     if (l.value.empty())
@@ -52,6 +57,7 @@ auto create_default_environment() -> environment
     define_native_function(env, identifier("+"), add_integers);
     define_native_function(env, identifier("-"), subtract_integers);
     define_native_function(env, identifier("="), is_equal);
+    define_native_function(env, identifier("not="), is_unequal);
     define_native_function(env, identifier("not"), not_f);
 
     return env;
