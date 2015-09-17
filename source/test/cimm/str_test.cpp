@@ -28,4 +28,10 @@ TEST(str_test, should_convert_a_list_of_expressions_to_strings_separated_by_sing
     EXPECT_EQ(string("(((1) 2) (+ a) xyz)"), str(expression(list{list{list{integer(1)}, integer(2)}, list{identifier("+"), identifier("a")}, identifier("xyz")})));
 }
 
+TEST(str_test, should_convert_boolean_values)
+{
+    EXPECT_EQ("true", str(expression(boolean(true))));
+    EXPECT_EQ("false", str(expression(boolean(false))));
+}
+
 }
