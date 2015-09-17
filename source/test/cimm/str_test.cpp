@@ -44,4 +44,9 @@ TEST(str_test, should_convert_nil_to_a_string)
     ASSERT_EQ(string("nil"), str(expression(nil)));
 }
 
+TEST(str_test, should_convert_keywords)
+{
+    ASSERT_EQ(string(":abcd"), str(expression(keyword("abcd"))));
+}
+
 }

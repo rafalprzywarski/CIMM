@@ -25,8 +25,21 @@ inline auto operator==(const identifier& left, const identifier& right)
     return left.value == right.value;
 }
 
+struct keyword
+{
+    string value;
+
+    keyword() = default;
+    explicit keyword(string value) : value(std::move(value)) { }
+};
+
+inline auto operator==(const keyword& left, const keyword& right)
+{
+    return false;
+}
+
 struct list;
-using expression_variant = boost::variant<nil_type, identifier, string, integer, boolean, boost::recursive_wrapper<list>>;
+using expression_variant = boost::variant<nil_type, identifier, keyword, string, integer, boolean, boost::recursive_wrapper<list>>;
 
 struct expression
 {
@@ -35,6 +48,7 @@ struct expression
     expression() = default;
     expression(const nil_type& n) : value(n) { }
     expression(const identifier& i) : value(i) { }
+    expression(const keyword& k) : value(k) { }
     expression(const string& s) : value(s) { }
     expression(const integer& i) : value(i) { }
     expression(const boolean& b) : value(b) { }
