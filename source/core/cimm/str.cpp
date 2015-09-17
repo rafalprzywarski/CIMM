@@ -9,6 +9,7 @@ auto str(const expression& e) -> string
     struct to_string : visitor<string>
     {
         string operator()(const identifier& i) const { return i.value; }
+        string operator()(const string& s) const { return s; }
         string operator()(const integer& v) const { return std::to_string(v); }
         string operator()(const boolean& b) const { return b ? "true" : "false"; }
         string operator()(const list& l) const

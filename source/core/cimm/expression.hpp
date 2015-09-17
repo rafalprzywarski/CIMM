@@ -15,7 +15,7 @@ struct identifier
     string value;
 
     identifier() = default;
-    identifier(string value) : value(value) { }
+    explicit identifier(string value) : value(value) { }
 };
 
 inline auto operator==(const identifier& left, const identifier& right)
@@ -24,7 +24,7 @@ inline auto operator==(const identifier& left, const identifier& right)
 }
 
 struct list;
-using expression_variant = boost::variant<identifier, integer, boolean, boost::recursive_wrapper<list>>;
+using expression_variant = boost::variant<identifier, string, integer, boolean, boost::recursive_wrapper<list>>;
 
 struct expression
 {
@@ -32,6 +32,7 @@ struct expression
 
     expression() = default;
     expression(const identifier& i) : value(i) { }
+    expression(const string& s) : value(s) { }
     expression(const integer& i) : value(i) { }
     expression(const boolean& b) : value(b) { }
     expression(const list& l) : value(l) { }

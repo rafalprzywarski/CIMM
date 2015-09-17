@@ -34,4 +34,9 @@ TEST(str_test, should_convert_boolean_values)
     EXPECT_EQ("false", str(expression(boolean(false))));
 }
 
+TEST(str_test, should_just_return_the_given_string)
+{
+    ASSERT_EQ(string("abc123"), str(expression(string("abc123"))));
+}
+
 }
