@@ -57,9 +57,24 @@ struct list
     list(const std::vector<expression>& v) : value(v) { }
 };
 
+inline auto first(const list& l)
+{
+    return l.value.front();
+}
+
 inline auto rest(const list& l)
 {
     return list({std::next(std::begin(l.value)), std::end(l.value)});
+}
+
+template <typename F>
+inline auto map(list l, F&& f)
+{
+    std::vector<expression> r;
+    r.reserve(l.value.size());
+    for (auto& e : l.value)
+      r.push_back(f(e));
+    return r;
 }
 
 inline auto operator==(const list& left, const list& right)
