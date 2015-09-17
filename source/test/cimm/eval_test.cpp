@@ -9,20 +9,25 @@ namespace cimm
 struct eval_test : testing::Test
 {
     environment env = create_environment();
+
+    auto evaluate(const expression& expr)
+    {
+        return evaluate_expression(env, expr);
+    }
 };
 
 TEST_F(eval_test, should_add_integers)
 {
-    EXPECT_EQ(integer(7), evaluate_expression(env, list{identifier("+"), integer(2), integer(5)}));
-    EXPECT_EQ(integer(3), evaluate_expression(env, list{identifier("+"), integer(4), integer(-1)}));
-    EXPECT_EQ(integer(6), evaluate_expression(env, list{identifier("+"), integer(1), integer(2), integer(3)}));
-    EXPECT_EQ(integer(3), evaluate_expression(env, list{identifier("+"), integer(3)}));
+    EXPECT_EQ(integer(7), evaluate(list{identifier("+"), integer(2), integer(5)}));
+    EXPECT_EQ(integer(3), evaluate(list{identifier("+"), integer(4), integer(-1)}));
+    EXPECT_EQ(integer(6), evaluate(list{identifier("+"), integer(1), integer(2), integer(3)}));
+    EXPECT_EQ(integer(3), evaluate(list{identifier("+"), integer(3)}));
 }
 
 TEST_F(eval_test, should_subtract_integers)
 {
-    EXPECT_EQ(integer(-3), evaluate_expression(env, list{identifier("-"), integer(2), integer(5)}));
-    EXPECT_EQ(integer(5), evaluate_expression(env, list{identifier("-"), integer(4), integer(-1)}));
+    EXPECT_EQ(integer(-3), evaluate(list{identifier("-"), integer(2), integer(5)}));
+    EXPECT_EQ(integer(5), evaluate(list{identifier("-"), integer(4), integer(-1)}));
 }
 
 TEST_F(eval_test, should_fail_when_given_undefined_function)
@@ -53,27 +58,27 @@ TEST_F(eval_test, should_execute_functions_from_the_environment)
 
 TEST_F(eval_test, should_check_equality_of_boolean_values)
 {
-    EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("=")}));
-    EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("="), boolean(true)}));
-    EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("="), boolean(false)}));
-    EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("="), boolean(false), boolean(false)}));
-    EXPECT_EQ(boolean(false), evaluate_expression(env, list{identifier("="), boolean(true), boolean(false)}));
-    EXPECT_EQ(boolean(false), evaluate_expression(env, list{identifier("="), boolean(true), boolean(false), boolean(false)}));
-    EXPECT_EQ(boolean(false), evaluate_expression(env, list{identifier("="), boolean(false), boolean(true), boolean(false)}));
-    EXPECT_EQ(boolean(false), evaluate_expression(env, list{identifier("="), boolean(false), boolean(false), boolean(true)}));
-    EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("="), boolean(true), boolean(true), boolean(true)}));
+    EXPECT_EQ(boolean(true), evaluate(list{identifier("=")}));
+    EXPECT_EQ(boolean(true), evaluate(list{identifier("="), boolean(true)}));
+    EXPECT_EQ(boolean(true), evaluate(list{identifier("="), boolean(false)}));
+    EXPECT_EQ(boolean(true), evaluate(list{identifier("="), boolean(false), boolean(false)}));
+    EXPECT_EQ(boolean(false), evaluate(list{identifier("="), boolean(true), boolean(false)}));
+    EXPECT_EQ(boolean(false), evaluate(list{identifier("="), boolean(true), boolean(false), boolean(false)}));
+    EXPECT_EQ(boolean(false), evaluate(list{identifier("="), boolean(false), boolean(true), boolean(false)}));
+    EXPECT_EQ(boolean(false), evaluate(list{identifier("="), boolean(false), boolean(false), boolean(true)}));
+    EXPECT_EQ(boolean(true), evaluate(list{identifier("="), boolean(true), boolean(true), boolean(true)}));
 }
 
 TEST_F(eval_test, should_check_equality_of_integers)
 {
-    EXPECT_EQ(boolean(false), evaluate_expression(env, list{identifier("="), integer(1), integer(2)}));
-    EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("="), integer(3), integer(3)}));
+    EXPECT_EQ(boolean(false), evaluate(list{identifier("="), integer(1), integer(2)}));
+    EXPECT_EQ(boolean(true), evaluate(list{identifier("="), integer(3), integer(3)}));
 }
 
 TEST_F(eval_test, should_check_equality_of_lists)
 {
-    EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("="), list{integer(1), boolean(true)}, list{integer(1), boolean(true)}}));
-    EXPECT_EQ(boolean(false), evaluate_expression(env, list{identifier("="), list{integer(2), boolean(true)}, list{integer(1), boolean(false)}}));
+    EXPECT_EQ(boolean(true), evaluate(list{identifier("="), list{integer(1), boolean(true)}, list{integer(1), boolean(true)}}));
+    EXPECT_EQ(boolean(false), evaluate(list{identifier("="), list{integer(2), boolean(true)}, list{integer(1), boolean(false)}}));
 }
 
 }
