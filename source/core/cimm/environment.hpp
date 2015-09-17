@@ -14,6 +14,6 @@ struct environment
     std::unordered_map<string, native_function> functions;
 };
 
-auto define_native_function(environment& env, identifier name, native_function fn) -> void;
+auto define_native_function(environment& env, symbol name, native_function fn) -> void;
 
 }

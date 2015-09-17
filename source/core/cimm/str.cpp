@@ -9,7 +9,7 @@ auto str(const expression& e) -> string
     struct to_string : visitor<string>
     {
         string operator()(const nil_type& ) const { return "nil"; }
-        string operator()(const identifier& i) const { return i.value; }
+        string operator()(const symbol& s) const { return s.value; }
         string operator()(const keyword& k) const { return ':' + k.value; }
         string operator()(const string& s) const { return s; }
         string operator()(const integer& v) const { return std::to_string(v); }

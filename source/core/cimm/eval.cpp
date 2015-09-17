@@ -9,7 +9,7 @@ namespace
 
 auto evaluate(environment& env, const list& l) -> expression
 {
-    auto name = boost::get<identifier>(l.value.at(0).value).value;
+    auto name = boost::get<symbol>(l.value.at(0).value).value;
     auto f = env.functions.find(name);
     if (f == env.functions.end())
         throw undefined_function_error(name);

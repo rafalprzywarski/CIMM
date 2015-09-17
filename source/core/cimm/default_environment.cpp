@@ -54,11 +54,11 @@ auto create_default_environment() -> environment
 {
     environment env;
 
-    define_native_function(env, identifier("+"), add_integers);
-    define_native_function(env, identifier("-"), subtract_integers);
-    define_native_function(env, identifier("="), is_equal);
-    define_native_function(env, identifier("not="), is_unequal);
-    define_native_function(env, identifier("not"), not_f);
+    define_native_function(env, symbol("+"), add_integers);
+    define_native_function(env, symbol("-"), subtract_integers);
+    define_native_function(env, symbol("="), is_equal);
+    define_native_function(env, symbol("not="), is_unequal);
+    define_native_function(env, symbol("not"), not_f);
 
     return env;
 }

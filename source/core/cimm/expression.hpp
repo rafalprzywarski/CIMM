@@ -12,15 +12,15 @@ using boolean = bool;
 struct nil_type {};
 static constexpr nil_type nil{};
 
-struct identifier
+struct symbol
 {
     string value;
 
-    identifier() = default;
-    explicit identifier(string value) : value(value) { }
+    symbol() = default;
+    explicit symbol(string value) : value(value) { }
 };
 
-inline auto operator==(const identifier& left, const identifier& right)
+inline auto operator==(const symbol& left, const symbol& right)
 {
     return left.value == right.value;
 }
@@ -39,7 +39,7 @@ inline auto operator==(const keyword& left, const keyword& right)
 }
 
 struct list;
-using expression_variant = boost::variant<nil_type, identifier, keyword, string, integer, boolean, boost::recursive_wrapper<list>>;
+using expression_variant = boost::variant<nil_type, symbol, keyword, string, integer, boolean, boost::recursive_wrapper<list>>;
 
 struct expression
 {
@@ -47,7 +47,7 @@ struct expression
 
     expression() = default;
     expression(const nil_type& n) : value(n) { }
-    expression(const identifier& i) : value(i) { }
+    expression(const symbol& s) : value(s) { }
     expression(const keyword& k) : value(k) { }
     expression(const string& s) : value(s) { }
     expression(const integer& i) : value(i) { }
