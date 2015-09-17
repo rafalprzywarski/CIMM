@@ -70,4 +70,10 @@ TEST_F(eval_test, should_check_equality_of_integers)
     EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("="), integer(3), integer(3)}));
 }
 
+TEST_F(eval_test, should_check_equality_of_lists)
+{
+    EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("="), list{integer(1), boolean(true)}, list{integer(1), boolean(true)}}));
+    EXPECT_EQ(boolean(false), evaluate_expression(env, list{identifier("="), list{integer(2), boolean(true)}, list{integer(1), boolean(false)}}));
+}
+
 }
