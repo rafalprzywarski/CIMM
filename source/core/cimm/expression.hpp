@@ -43,6 +43,11 @@ inline auto operator==(const expression& left, const expression& right)
     return left.value == right.value;
 }
 
+inline auto operator!=(const expression& left, const expression& right)
+{
+    return !(left == right);
+}
+
 struct list
 {
     std::vector<expression> value;

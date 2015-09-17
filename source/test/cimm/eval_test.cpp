@@ -51,4 +51,17 @@ TEST_F(eval_test, should_execute_functions_from_the_environment)
     ASSERT_EQ(integer(3 * 7), evaluate_expression(env, list{identifier("func-2"), list{}, list{}}));
 }
 
+TEST_F(eval_test, should_check_equality_of_boolean_values)
+{
+    EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("=")}));
+    EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("="), boolean(true)}));
+    EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("="), boolean(false)}));
+    EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("="), boolean(false), boolean(false)}));
+    EXPECT_EQ(boolean(false), evaluate_expression(env, list{identifier("="), boolean(true), boolean(false)}));
+    EXPECT_EQ(boolean(false), evaluate_expression(env, list{identifier("="), boolean(true), boolean(false), boolean(false)}));
+    EXPECT_EQ(boolean(false), evaluate_expression(env, list{identifier("="), boolean(false), boolean(true), boolean(false)}));
+    EXPECT_EQ(boolean(false), evaluate_expression(env, list{identifier("="), boolean(false), boolean(false), boolean(true)}));
+    EXPECT_EQ(boolean(true), evaluate_expression(env, list{identifier("="), boolean(true), boolean(true), boolean(true)}));
+}
+
 }
