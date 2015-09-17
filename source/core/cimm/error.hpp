@@ -1,4 +1,6 @@
 #pragma once
+#include "expression.hpp"
+#include "str.hpp"
 
 namespace cimm
 {
@@ -10,8 +12,8 @@ struct evaluation_error : std::runtime_error
 
 struct undefined_function_error : evaluation_error
 {
-    undefined_function_error(const string& name)
-        : evaluation_error("undefined function \'" + name + "\'") { }
+    undefined_function_error(const symbol& name)
+        : evaluation_error("undefined function \'" + str(name) + "\'") { }
 };
 
 }

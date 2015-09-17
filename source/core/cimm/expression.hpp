@@ -12,8 +12,6 @@ using boolean = bool;
 struct nil_type {};
 static constexpr nil_type nil{};
 
-static const string quote{"quote"};
-
 struct symbol
 {
     string value;
@@ -21,6 +19,8 @@ struct symbol
     symbol() = default;
     explicit symbol(string value) : value(value) { }
 };
+
+static const symbol quote{"quote"};
 
 inline auto operator==(const symbol& left, const symbol& right)
 {

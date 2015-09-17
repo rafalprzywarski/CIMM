@@ -104,10 +104,10 @@ TEST_F(eval_test, should_quote)
     EXPECT_EQ(expression(list{integer(1), integer(2), integer(3)}), evaluate(list{symbol("quote"), list{integer(1), integer(2), integer(3)}}));
 }
 
-TEST_F(eval_test, DISABLED_should_check_equality_of_lists)
+TEST_F(eval_test, should_check_equality_of_lists)
 {
-    EXPECT_EQ(boolean(true), evaluate(list{symbol("="), list{integer(1), boolean(true)}, list{integer(1), boolean(true)}}));
-    EXPECT_EQ(boolean(false), evaluate(list{symbol("="), list{integer(2), boolean(true)}, list{integer(1), boolean(false)}}));
+    EXPECT_EQ(boolean(true), evaluate(list{symbol("="), list{quote, list{integer(1), boolean(true)}}, list{quote, list{integer(1), boolean(true)}}}));
+    EXPECT_EQ(boolean(false), evaluate(list{symbol("="), list{quote, list{integer(2), boolean(true)}}, list{quote, list{integer(1), boolean(false)}}}));
 }
 
 TEST_F(eval_test, should_check_inequality_of_expressions)
