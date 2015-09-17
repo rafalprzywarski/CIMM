@@ -42,4 +42,12 @@ TEST(parse_test, should_parse_boolean_values)
     EXPECT_EQ(expression(list{boolean(true), boolean(false)}), parse_expression("(true false)"));
 }
 
+TEST(parse_test, should_parse_quoted_strings)
+{
+    EXPECT_EQ(expression(string("")), parse_expression("\"\""));
+    EXPECT_EQ(expression(string("  ")), parse_expression("\"  \""));
+    EXPECT_EQ(expression(string("abc123")), parse_expression("\"abc123\""));
+    EXPECT_EQ(expression(list{string("a"), string("b")}), parse_expression("(\"a\" \"b\")"));
+}
+
 }
