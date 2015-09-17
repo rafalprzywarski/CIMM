@@ -99,6 +99,11 @@ TEST_F(eval_test, should_negate_expressions)
     EXPECT_EQ(boolean(true), evaluate(list{symbol("not")}));
 }
 
+TEST_F(eval_test, should_quote)
+{
+    EXPECT_EQ(expression(list{integer(1), integer(2), integer(3)}), evaluate(list{symbol("quote"), list{integer(1), integer(2), integer(3)}}));
+}
+
 TEST_F(eval_test, DISABLED_should_check_equality_of_lists)
 {
     EXPECT_EQ(boolean(true), evaluate(list{symbol("="), list{integer(1), boolean(true)}, list{integer(1), boolean(true)}}));

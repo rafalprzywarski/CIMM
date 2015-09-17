@@ -12,6 +12,8 @@ using boolean = bool;
 struct nil_type {};
 static constexpr nil_type nil{};
 
+static const string quote{"quote"};
+
 struct symbol
 {
     string value;
