@@ -9,6 +9,8 @@ namespace cimm
 using string = std::string;
 using integer = int;
 using boolean = bool;
+struct nil_type {};
+static constexpr nil_type nil{};
 
 struct identifier
 {
@@ -24,13 +26,14 @@ inline auto operator==(const identifier& left, const identifier& right)
 }
 
 struct list;
-using expression_variant = boost::variant<identifier, string, integer, boolean, boost::recursive_wrapper<list>>;
+using expression_variant = boost::variant<nil_type, identifier, string, integer, boolean, boost::recursive_wrapper<list>>;
 
 struct expression
 {
     expression_variant value;
 
     expression() = default;
+    expression(const nil_type& n) : value(n) { }
     expression(const identifier& i) : value(i) { }
     expression(const string& s) : value(s) { }
     expression(const integer& i) : value(i) { }

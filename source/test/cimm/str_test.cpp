@@ -39,4 +39,9 @@ TEST(str_test, should_just_return_the_given_string)
     ASSERT_EQ(string("abc123"), str(expression(string("abc123"))));
 }
 
+TEST(str_test, should_convert_nil_to_a_string)
+{
+    ASSERT_EQ(string("nil"), str(expression(nil)));
+}
+
 }
