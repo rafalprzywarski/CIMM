@@ -13,7 +13,7 @@ auto evaluate(environment& env, const list& l) -> expression
     auto f = env.functions.find(name);
     if (f == env.functions.end())
         throw undefined_function_error(name);
-    return f->second(env, l);
+    return f->second(env, rest(l));
 }
 
 template <typename expression_type>

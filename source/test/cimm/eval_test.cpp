@@ -47,13 +47,13 @@ TEST_F(eval_test, should_execute_functions_from_the_environment)
 {
     environment env;
     auto func1 = [](environment&, const list& l) -> expression { return integer(l.value.size()); };
-    auto func2 = [](environment&, const list& l) -> expression { return integer(l.value.size() * 7); };
+    auto func2 = [](environment&, const list& l) -> expression { return l; };
 
     define_native_function(env, identifier("func-1"), func1);
     define_native_function(env, identifier("func-2"), func2);
 
-    ASSERT_EQ(integer(3), evaluate_expression(env, list{identifier("func-1"), list{}, list{}}));
-    ASSERT_EQ(integer(3 * 7), evaluate_expression(env, list{identifier("func-2"), list{}, list{}}));
+    EXPECT_EQ(integer(2), evaluate_expression(env, list{identifier("func-1"), list{}, list{}}));
+    EXPECT_EQ(expression(list{boolean(true), list{}}), evaluate_expression(env, list{identifier("func-2"), boolean(true), list{}}));
 }
 
 TEST_F(eval_test, should_check_equality_of_boolean_values)

@@ -14,21 +14,19 @@ namespace
 expression add_integers(environment&, const list& l)
 {
     integer sum{0};
-    auto e = std::begin(l.value);
-    while (++e != std::end(l.value))
+    for (auto e = std::begin(l.value); e != std::end(l.value); ++e)
         sum += boost::get<integer>(e->value);
     return sum;
 }
 
 expression subtract_integers(environment&, const list& l)
 {
-    return boost::get<integer>(l.value.at(1).value) - boost::get<integer>(l.value.at(2).value);
+    return boost::get<integer>(l.value.at(0).value) - boost::get<integer>(l.value.at(1).value);
 }
 
 expression is_equal(environment&, const list& l)
 {
     auto e = std::begin(l.value);
-    ++e;
     if (e == std::end(l.value))
       return true;
     auto first = *e;

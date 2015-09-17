@@ -57,6 +57,11 @@ struct list
     list(const std::vector<expression>& v) : value(v) { }
 };
 
+inline auto rest(const list& l)
+{
+    return list({std::next(std::begin(l.value)), std::end(l.value)});
+}
+
 inline auto operator==(const list& left, const list& right)
 {
     return left.value == right.value;
