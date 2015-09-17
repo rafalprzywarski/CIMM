@@ -7,7 +7,7 @@ namespace cimm
 namespace
 {
 
-expression evaluate(environment& env, const list& l)
+auto evaluate(environment& env, const list& l) -> expression
 {
     auto name = boost::get<identifier>(l.value.at(0).value).value;
     auto f = env.functions.find(name);
@@ -17,14 +17,14 @@ expression evaluate(environment& env, const list& l)
 }
 
 template <typename expression_type>
-expression evaluate(environment&, const expression_type& e)
+auto evaluate(environment&, const expression_type& e) -> expression
 {
     return e;
 }
 
 }
 
-expression evaluate_expression(environment& env, const expression& expr)
+auto evaluate_expression(environment& env, const expression& expr) -> expression
 {
     return apply([&env] (auto& e) { return evaluate(env, e); }, expr);
 }

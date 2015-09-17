@@ -5,6 +5,6 @@
 namespace cimm
 {
 
-expression evaluate_expression(environment& env, const expression& expr);
+auto evaluate_expression(environment& env, const expression& expr) -> expression;
 
 }
