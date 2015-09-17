@@ -1,6 +1,7 @@
 #include <cimm/parse.hpp>
 #include <cimm/eval.hpp>
 #include <cimm/str.hpp>
+#include <cimm/default_environment.hpp>
 #include <iostream>
 
 void eval_line(cimm::environment& env, const std::string& line)
@@ -19,7 +20,7 @@ void eval_line(cimm::environment& env, const std::string& line)
 
 int main()
 {
-    auto environment = cimm::create_environment();
+    auto environment = cimm::create_default_environment();
     std::string line;
 
     while (1)
