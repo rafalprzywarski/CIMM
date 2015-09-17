@@ -35,4 +35,11 @@ TEST(parse_test, should_parse_a_list_of_expressions)
     EXPECT_EQ(expression(list{list{list{identifier("x"), integer(-3)}, integer(1)}, list{integer(7)}}), parse_expression("(((x -3) 1) (7))"));
 }
 
+TEST(parse_test, should_parse_boolean_values)
+{
+    EXPECT_EQ(expression(boolean(true)), parse_expression("true"));
+    EXPECT_EQ(expression(boolean(false)), parse_expression("false"));
+    EXPECT_EQ(expression(list{boolean(true), boolean(false)}), parse_expression("(true false)"));
+}
+
 }
