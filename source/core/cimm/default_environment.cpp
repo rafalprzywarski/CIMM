@@ -60,7 +60,7 @@ struct make_keyword : visitor<expression>
 
 auto keyword_f(environment&, const list& l) -> expression
 {
-  return apply(make_keyword(), first(l));
+  return is_empty(l) ? nil : apply(make_keyword(), first(l));
 }
 
 }

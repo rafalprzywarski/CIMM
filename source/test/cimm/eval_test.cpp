@@ -130,4 +130,9 @@ TEST_F(eval_test, should_make_keywords_from_the_first_parameter_only)
     EXPECT_EQ(expression(keyword("a")), evaluate(list{symbol("keyword"), string("a"), string("b")}));
 }
 
+TEST_F(eval_test, keyword_should_return_nil_for_no_parameters)
+{
+    EXPECT_EQ(expression(nil), evaluate(list{symbol("keyword")}));
+}
+
 }

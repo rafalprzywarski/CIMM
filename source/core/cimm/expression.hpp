@@ -102,6 +102,11 @@ inline auto map(list l, F&& f)
     return r;
 }
 
+inline auto is_empty(const list& l)
+{
+    return l.value.empty();
+}
+
 inline auto operator==(const list& left, const list& right)
 {
     return left.value == right.value;
