@@ -56,4 +56,13 @@ TEST(parse_test, should_parse_a_sequence_of_characters_beginning_with_a_colon_as
     EXPECT_EQ(expression(list{keyword("abc123"), keyword("s")}), parse_expression("(:abc123 :s)"));
 }
 
+TEST(parse_test, should_parse_an_apostrophe_as_quote)
+{
+    EXPECT_EQ(expression(list{symbol("quote"), integer(7)}), parse_expression("'7"));
+    EXPECT_EQ(expression(list{symbol("quote"), integer(7)}), parse_expression("' 7"));
+    EXPECT_EQ(expression(list{symbol("quote"), symbol("abc123")}), parse_expression("'abc123"));
+    EXPECT_EQ(expression(list{symbol("quote"), list{integer(1)}}), parse_expression("'(1)"));
+    EXPECT_EQ(expression(list{symbol("quote"), list{integer(1)}}), parse_expression("' (1)"));
+}
+
 }
