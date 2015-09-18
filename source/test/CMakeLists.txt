@@ -8,6 +8,7 @@ add_executable(cimm_test
   cimm/keyword_test.cpp
   cimm/parse_test.cpp
   cimm/str_test.cpp
+  cimm/symbol_test.cpp
   main.cpp
 )
 target_link_libraries(cimm_test cimm_core ${Boost_LIBRARIES} gmock pthread)

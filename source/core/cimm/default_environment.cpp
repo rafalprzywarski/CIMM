@@ -63,6 +63,21 @@ auto keyword_f(environment&, const list& l) -> expression
   return is_empty(l) ? nil : apply(make_keyword(), first(l));
 }
 
+struct make_symbol : visitor<expression>
+{
+    expression operator()(const string& s) const { return symbol(s); }
+    expression operator()(const symbol& s) const { return s; }
+    expression operator()(const keyword& k) const { return symbol(k.value); }
+
+    template <typename T>
+    expression operator()(const T& ) const { return nil; }
+};
+
+auto symbol_f(environment&, const list& l) -> expression
+{
+    return is_empty(l) ? nil : apply(make_symbol(), first(l));
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -75,6 +90,7 @@ auto create_default_environment() -> environment
     define_native_function(env, symbol("not="), is_unequal);
     define_native_function(env, symbol("not"), not_f);
     define_native_function(env, symbol("keyword"), keyword_f);
+    define_native_function(env, symbol("symbol"), symbol_f);
 
     return env;
 }
