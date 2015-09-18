@@ -78,6 +78,11 @@ auto symbol_f(environment&, const list& l) -> expression
     return is_empty(l) ? nil : apply(make_symbol(), first(l));
 }
 
+auto list_f(environment&, const list& l) -> expression
+{
+    return l;
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -91,6 +96,7 @@ auto create_default_environment() -> environment
     define_native_function(env, symbol("not"), not_f);
     define_native_function(env, symbol("keyword"), keyword_f);
     define_native_function(env, symbol("symbol"), symbol_f);
+    define_native_function(env, symbol("list"), list_f);
 
     return env;
 }
