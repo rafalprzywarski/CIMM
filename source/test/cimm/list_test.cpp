@@ -12,4 +12,14 @@ TEST_F(list_test, should_create_a_list)
     EXPECT_EQ(expression(list{keyword("a"), string("b")}), evaluate(list{symbol("list"), keyword("a"), string("b")}));
 }
 
+TEST_F(list_test, first_should_provide_the_first_element)
+{
+    EXPECT_EQ(expression(keyword("a")), evaluate(list{symbol("first"), list{quote, list{keyword("a"), string("b")}}}));
+}
+
+TEST_F(list_test, first_should_return_nil_for_an_empty_list)
+{
+    EXPECT_EQ(expression(nil), evaluate(list{symbol("first"), list{quote, list{}}}));
+}
+
 }

@@ -83,6 +83,12 @@ auto list_f(environment&, const list& l) -> expression
     return l;
 }
 
+auto first_f(environment&, const list& l) -> expression
+{
+    list a = boost::get<list>(first(l).value);
+    return is_empty(a) ? nil : first(a);
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -97,6 +103,7 @@ auto create_default_environment() -> environment
     define_native_function(env, symbol("keyword"), keyword_f);
     define_native_function(env, symbol("symbol"), symbol_f);
     define_native_function(env, symbol("list"), list_f);
+    define_native_function(env, symbol("first"), first_f);
 
     return env;
 }
