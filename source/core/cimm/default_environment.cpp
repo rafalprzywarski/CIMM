@@ -85,6 +85,8 @@ auto list_f(environment&, const list& l) -> expression
 
 auto first_f(environment&, const list& l) -> expression
 {
+    if (is_empty(l))
+      return nil;
     list a = boost::get<list>(first(l).value);
     return is_empty(a) ? nil : first(a);
 }

@@ -22,4 +22,9 @@ TEST_F(list_test, first_should_return_nil_for_an_empty_list)
     EXPECT_EQ(expression(nil), evaluate(list{symbol("first"), list{quote, list{}}}));
 }
 
+TEST_F(list_test, first_should_return_nil_for_no_arguments)
+{
+    EXPECT_EQ(expression(nil), evaluate(list{symbol("first")}));
+}
+
 }
