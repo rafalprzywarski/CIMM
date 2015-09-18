@@ -12,6 +12,11 @@ using boolean = bool;
 struct nil_type {};
 static constexpr nil_type nil{};
 
+inline auto operator==(const nil_type& left, const nil_type& right)
+{
+    return true;
+}
+
 struct symbol
 {
     string value;

@@ -48,6 +48,21 @@ auto not_f(environment&, const list& l) -> expression
     return false;
 }
 
+struct make_keyword : visitor<expression>
+{
+    expression operator()(const string& s) const { return keyword(s); }
+    expression operator()(const symbol& s) const { return keyword(s.value); }
+    expression operator()(const keyword& k) const { return k; }
+
+    template <typename T>
+    expression operator()(const T& ) const { return nil; }
+};
+
+auto keyword_f(environment&, const list& l) -> expression
+{
+  return apply(make_keyword(), first(l));
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -59,6 +74,7 @@ auto create_default_environment() -> environment
     define_native_function(env, symbol("="), is_equal);
     define_native_function(env, symbol("not="), is_unequal);
     define_native_function(env, symbol("not"), not_f);
+    define_native_function(env, symbol("keyword"), keyword_f);
 
     return env;
 }
