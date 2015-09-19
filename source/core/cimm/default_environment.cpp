@@ -36,16 +36,18 @@ auto is_unequal(environment& env, const list& l) -> expression
     return not boost::get<boolean>(is_equal(env, l).value);
 }
 
-auto not_f(environment&, const list& l) -> expression
+struct visit_not : visitor<boolean>
 {
-    if (l.value.empty())
-        return true;
-    auto e = first(l);
-    if (e == nil)
-        return true;
-    if (auto b = boost::get<boolean>(&e.value))
-        return not *b;
-    return false;
+    boolean operator()(const boolean& b) const { return not b; }
+    boolean operator()(const nil_type& ) const { return true; }
+
+    template <typename T>
+    boolean operator()(const T& ) const { return false; }
+};
+
+auto not_f(environment&, const list& args) -> expression
+{
+    return is_empty(args) || apply(visit_not(), first(args));
 }
 
 struct make_keyword : visitor<expression>
