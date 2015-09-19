@@ -101,6 +101,11 @@ auto rest_f(environment&, const list& args) -> expression
     return rest(boost::get<list>(f.value));
 }
 
+auto count_f(environment&, const list& args) -> expression
+{
+    return nil;
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -117,6 +122,7 @@ auto create_default_environment() -> environment
     define_native_function(env, symbol("list"), list_f);
     define_native_function(env, symbol("first"), first_f);
     define_native_function(env, symbol("rest"), rest_f);
+    define_native_function(env, symbol("count"), count_f);
 
     return env;
 }

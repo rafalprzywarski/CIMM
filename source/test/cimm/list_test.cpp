@@ -49,4 +49,9 @@ TEST_F(list_test, first_should_return_an_empty_list_for_nil)
     EXPECT_EQ(expression(list{}), evaluate(list{symbol("rest"), nil}));
 }
 
+TEST_F(list_test, count_should_return_0_for_nil)
+{
+    EXPECT_EQ(expression(nil), evaluate(list{symbol("count"), nil}));
+}
+
 }
