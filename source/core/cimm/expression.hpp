@@ -60,9 +60,7 @@ private:
 };
 
 class list;
-
-class vector {};
-inline auto operator==(const vector&, const vector&) { return false; }
+class vector;
 
 using expression_variant = boost::variant<
     nil_type,
@@ -72,7 +70,7 @@ using expression_variant = boost::variant<
     integer,
     boolean,
     boost::recursive_wrapper<list>,
-    vector
+    boost::recursive_wrapper<vector>
 >;
 
 class expression
@@ -189,6 +187,27 @@ inline auto cons(expression e, const list& l)
     v.push_back(std::move(e));
     v.insert(end(v), begin(l), end(l));
     return list(v);
+}
+
+class vector : private list
+{
+public:
+    using list::list;
+
+    friend auto begin(const vector& v)
+    {
+        return begin(static_cast<const list&>(v));
+    }
+
+    friend auto end(const vector& v)
+    {
+        return end(static_cast<const list&>(v));
+    }
+};
+
+inline auto operator==(const vector&, const vector& )
+{
+    return false;
 }
 
 }

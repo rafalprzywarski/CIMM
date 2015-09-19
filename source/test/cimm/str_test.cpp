@@ -54,4 +54,11 @@ TEST(str_test, should_convert_an_empty_list_to_a_pair_of_brackets)
     EXPECT_EQ(string("[]"), str(expression(vector{})));
 }
 
+TEST(str_test, should_convert_a_vector_of_expressions_to_strings_separated_by_single_space_inside_brackets)
+{
+    EXPECT_EQ(string("[1 2 3]"), str(expression(vector{1, 2, 3})));
+    EXPECT_EQ(string("[-5]"), str(expression(vector{-5})));
+    EXPECT_EQ(string("[[(1) 2] (+ a) xyz]"), str(expression(vector{vector{list{integer(1)}, integer(2)}, list{symbol("+"), symbol("a")}, symbol("xyz")})));
+}
+
 }
