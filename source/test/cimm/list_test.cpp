@@ -72,4 +72,9 @@ TEST_F(list_test, cons_should_add_an_element_in_front_of_the_list)
     EXPECT_EQ(expression(list{integer(5), integer(7)}), evaluate(list{symbol("cons"), integer(5), list{quote, list{integer(7)}}}));
 }
 
+TEST_F(list_test, cons_should_return_a_list_with_one_nil_for_no_arguments)
+{
+    EXPECT_EQ(expression(list{nil}), evaluate(list{symbol("cons")}));
+}
+
 }

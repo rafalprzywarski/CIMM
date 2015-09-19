@@ -113,6 +113,8 @@ auto count_f(environment&, const list& args) -> expression
 
 auto cons_f(environment&, const list& args) -> expression
 {
+    if (is_empty(args))
+        return list{nil};
     return cons(first(args), boost::get<list>(first(rest(args)).value));
 }
 
