@@ -103,7 +103,12 @@ auto rest_f(environment&, const list& args) -> expression
 
 auto count_f(environment&, const list& args) -> expression
 {
-    return nil;
+    if (is_empty(args))
+        return integer(0);
+    auto f = first(args);
+    if (f == nil)
+        return integer(0);
+    return count(boost::get<list>(f.value));
 }
 
 }

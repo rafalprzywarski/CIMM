@@ -97,6 +97,11 @@ inline auto rest(const list& l)
     return is_empty(l) ? list{} : list({std::next(std::begin(l.value)), std::end(l.value)});
 }
 
+inline auto count(const list& l) -> integer
+{
+    return l.value.size();
+}
+
 template <typename F>
 inline auto map(list l, F&& f)
 {

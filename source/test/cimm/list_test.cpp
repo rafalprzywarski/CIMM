@@ -51,12 +51,19 @@ TEST_F(list_test, first_should_return_an_empty_list_for_nil)
 
 TEST_F(list_test, count_should_return_0_for_nil)
 {
-    EXPECT_EQ(expression(nil), evaluate(list{symbol("count"), nil}));
+    EXPECT_EQ(expression(integer(0)), evaluate(list{symbol("count"), nil}));
 }
 
 TEST_F(list_test, count_should_return_0_for_no_arguments)
 {
-    EXPECT_EQ(expression(nil), evaluate(list{symbol("count"), nil}));
+    EXPECT_EQ(expression(integer(0)), evaluate(list{symbol("count"), nil}));
+}
+
+TEST_F(list_test, count_should_return_the_number_of_elements_in_a_list)
+{
+    EXPECT_EQ(expression(integer(0)), evaluate(list{symbol("count"), list{quote, list{}}}));
+    EXPECT_EQ(expression(integer(1)), evaluate(list{symbol("count"), list{quote, list{integer(4)}}}));
+    EXPECT_EQ(expression(integer(2)), evaluate(list{symbol("count"), list{quote, list{integer(4), integer(3)}}}));
 }
 
 }
