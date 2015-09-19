@@ -203,11 +203,11 @@ public:
     {
         return end(static_cast<const list&>(v));
     }
-};
 
-inline auto operator==(const vector&, const vector& )
-{
-    return false;
-}
+    friend auto operator==(const vector& left, const vector& right)
+    {
+        return static_cast<const list&>(left) == static_cast<const list&>(right);
+    }
+};
 
 }

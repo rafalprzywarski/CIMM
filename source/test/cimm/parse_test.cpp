@@ -65,4 +65,17 @@ TEST(parse_test, should_parse_an_apostrophe_as_quote)
     EXPECT_EQ(expression(list{symbol("quote"), list{integer(1)}}), parse_expression("' (1)"));
 }
 
+TEST(parse_test, should_parse_an_empty_vector)
+{
+    EXPECT_EQ(expression(vector{}), parse_expression("[]"));
+    EXPECT_EQ(expression(vector{}), parse_expression("[ ]"));
+}
+
+TEST(parse_test, should_parse_a_vector_of_expressions)
+{
+    EXPECT_EQ(expression(vector{integer(1)}), parse_expression("[1]"));
+    EXPECT_EQ(expression(vector{symbol("+"), symbol("abc"), integer(-3)}), parse_expression("[+ abc -3]"));
+    EXPECT_EQ(expression(vector{vector{list{symbol("x"), integer(-3)}, integer(1)}, list{integer(7)}}), parse_expression("[[(x -3) 1] (7)]"));
+}
+
 }

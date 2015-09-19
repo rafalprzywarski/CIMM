@@ -24,23 +24,25 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, expression(), a
     expression_grammar() : expression_grammar::base_type(expression_rule, "expression-grammar")
     {
         quote_rule = qi::lit('\'') > expression_rule[_val = bind(quote_expr, _1)];
-        expression_variant_rule = qi::int_ | boolean_rule | list_rule | string_rule | keyword_rule | symbol_rule;
+        expression_variant_rule = qi::int_ | boolean_rule | list_rule | vector_rule | string_rule | keyword_rule | symbol_rule;
     }
 
     template <typename type>
     using rule = qi::rule<iterator, type(), ascii::space_type>;
 
     rule<string> string_rule{qi::lit('\"') >> qi::no_skip[*(qi::char_ - '\"')] >> qi::lit('\"')};
-    rule<string> char_seq_rule{qi::no_skip[+(qi::char_ - ')' - ' ')]};
+    rule<string> char_seq_rule{qi::no_skip[+(qi::char_ - ')' - ']' - ' ')]};
     rule<string> keyword_char_seq_rule{qi::no_skip[qi::lit(':') >> +(qi::char_ - ')' - ' ')]};
     rule<keyword> keyword_rule{keyword_char_seq_rule};
     rule<symbol> symbol_rule{char_seq_rule};
     rule<expression_variant> expression_variant_rule;
     rule<list> quote_rule;
     rule<expression> expression_rule{qi::as<expression>()[quote_rule | expression_variant_rule]};
-    rule<std::vector<expression>> vector_rule{qi::lit('(') >> *expression_rule >> qi::lit(')')};
+    rule<std::vector<expression>> list_vector_rule{qi::lit('(') >> *expression_rule >> qi::lit(')')};
+    rule<std::vector<expression>> vector_vector_rule{qi::lit('[') >> *expression_rule >> qi::lit(']')};
     rule<boolean> boolean_rule{(qi::lit("true") >> qi::attr(true)) | (qi::lit("false") >> qi::attr(false))};
-    rule<list> list_rule{vector_rule};
+    rule<list> list_rule{list_vector_rule};
+    rule<vector> vector_rule{vector_vector_rule};
 };
 
 }
