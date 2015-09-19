@@ -33,7 +33,7 @@ TEST_F(eval_test, should_fail_when_given_undefined_function)
 TEST_F(eval_test, should_execute_functions_from_the_environment)
 {
     environment env;
-    auto func1 = [](environment&, const list& l) -> expression { return integer(l.value.size()); };
+    auto func1 = [](environment&, const list& l) -> expression { return count(l); };
     auto func2 = [](environment&, const list& l) -> expression { return l; };
 
     define_native_function(env, symbol("func-1"), func1);
