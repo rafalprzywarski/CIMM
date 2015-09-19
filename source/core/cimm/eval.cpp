@@ -9,7 +9,7 @@ namespace
 
 auto evaluate(environment& env, const list& l) -> expression
 {
-    auto name = boost::get<symbol>(l.value.at(0).value);
+    auto name = as_symbol(first(l));
     if (name == quote)
         return first(rest(l));
     auto f = env.functions.find(name.value);

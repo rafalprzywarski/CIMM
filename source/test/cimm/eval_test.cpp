@@ -47,7 +47,7 @@ TEST_F(eval_test, should_evaluate_function_arguments)
 {
     environment env;
     define_native_function(env, symbol("id"), [](environment&, const list& l) -> expression { return first(l); });
-    define_native_function(env, symbol("double"), [](environment&, const list& l) -> expression { return boost::get<integer>(first(l).value) * integer(2); });
+    define_native_function(env, symbol("double"), [](environment&, const list& l) -> expression { return as_integer(first(l)) * integer(2); });
     define_native_function(env, symbol("first"), [](environment&, const list& l) -> expression { return first(l); });
     define_native_function(env, symbol("second"), [](environment&, const list& l) -> expression { return first(rest(l)); });
 

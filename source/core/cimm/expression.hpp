@@ -135,4 +135,19 @@ inline auto apply(Visitor&& v, expression const& e)
     return boost::apply_visitor(v, e.value);
 }
 
+inline auto as_list(const expression& e) -> list const&
+{
+    return boost::get<list>(e.value);
+}
+
+inline auto as_symbol(const expression& e) -> symbol const&
+{
+    return boost::get<symbol>(e.value);
+}
+
+inline auto as_integer(const expression& e) -> integer
+{
+    return boost::get<integer>(e.value);
+}
+
 }

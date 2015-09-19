@@ -10,13 +10,13 @@ auto add_integers(environment&, const list& l) -> expression
 {
     integer sum{0};
     for (auto e = std::begin(l.value); e != std::end(l.value); ++e)
-        sum += boost::get<integer>(e->value);
+        sum += as_integer(e->value);
     return sum;
 }
 
 auto subtract_integers(environment&, const list& l) -> expression
 {
-    return boost::get<integer>(l.value.at(0).value) - boost::get<integer>(l.value.at(1).value);
+    return as_integer(l.value.at(0)) - as_integer(l.value.at(1));
 }
 
 auto is_equal(environment&, const list& l) -> expression
@@ -40,10 +40,10 @@ auto not_f(environment&, const list& l) -> expression
 {
     if (l.value.empty())
         return true;
-    auto e = first(l).value;
-    if (boost::get<nil_type>(&e))
+    auto e = first(l);
+    if (e == nil)
         return true;
-    if (auto b = boost::get<boolean>(&e))
+    if (auto b = boost::get<boolean>(&e.value))
         return not *b;
     return false;
 }
@@ -87,7 +87,7 @@ auto first_f(environment&, const list& l) -> expression
 {
     if (is_empty(l))
       return nil;
-    list a = boost::get<list>(first(l).value);
+    list a = as_list(first(l));
     return is_empty(a) ? nil : first(a);
 }
 
@@ -98,7 +98,7 @@ auto rest_f(environment&, const list& args) -> expression
     auto f = first(args);
     if (f == nil)
         return list{};
-    return rest(boost::get<list>(f.value));
+    return rest(as_list(f));
 }
 
 auto count_f(environment&, const list& args) -> expression
@@ -108,7 +108,7 @@ auto count_f(environment&, const list& args) -> expression
     auto f = first(args);
     if (f == nil)
         return integer(0);
-    return count(boost::get<list>(f.value));
+    return count(as_list(f));
 }
 
 auto cons_f(environment&, const list& args) -> expression
@@ -119,7 +119,7 @@ auto cons_f(environment&, const list& args) -> expression
     auto r = rest(args);
     if (is_empty(r))
         return list{elem};
-    return cons(elem, boost::get<list>(first(r).value));
+    return cons(elem, as_list(first(r)));
 }
 
 }
