@@ -50,9 +50,9 @@ public:
         return left.value == right.value;
     }
 
-    friend auto str(const keyword& k) -> string const&
+    friend auto str(const keyword& k) -> string
     {
-        return k.value;
+        return ':' + k.value;
     }
 
 private:
