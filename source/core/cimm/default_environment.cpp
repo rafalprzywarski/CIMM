@@ -95,8 +95,10 @@ auto rest_f(environment&, const list& args) -> expression
 {
     if (is_empty(args))
         return list{};
-    auto a = boost::get<list>(first(args).value);
-    return is_empty(a) ? list{} : rest(a);
+    auto f = first(args);
+    if (f == nil)
+        return list{};
+    return rest(boost::get<list>(f.value));
 }
 
 }

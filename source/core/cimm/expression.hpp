@@ -82,6 +82,11 @@ struct list
     list(const std::vector<expression>& v) : value(v) { }
 };
 
+inline auto is_empty(const list& l)
+{
+    return l.value.empty();
+}
+
 inline auto first(const list& l)
 {
     return l.value.front();
@@ -89,7 +94,7 @@ inline auto first(const list& l)
 
 inline auto rest(const list& l)
 {
-    return list({std::next(std::begin(l.value)), std::end(l.value)});
+    return is_empty(l) ? list{} : list({std::next(std::begin(l.value)), std::end(l.value)});
 }
 
 template <typename F>
@@ -100,11 +105,6 @@ inline auto map(list l, F&& f)
     for (auto& e : l.value)
       r.push_back(f(e));
     return r;
-}
-
-inline auto is_empty(const list& l)
-{
-    return l.value.empty();
 }
 
 inline auto operator==(const list& left, const list& right)
