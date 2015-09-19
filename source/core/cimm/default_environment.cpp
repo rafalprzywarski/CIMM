@@ -9,31 +9,36 @@ namespace
 auto add_integers(environment&, const list& l) -> expression
 {
     integer sum{0};
-    for (auto e = std::begin(l.value); e != std::end(l.value); ++e)
+    for (auto e = begin(l); e != end(l); ++e)
         sum += as_integer(e->value);
     return sum;
 }
 
 auto subtract_integers(environment&, const list& l) -> expression
 {
-    return as_integer(l.value.at(0)) - as_integer(l.value.at(1));
+    return as_integer(first(l)) - as_integer(first(rest(l)));
 }
 
-auto is_equal(environment&, const list& l) -> expression
+auto is_equal(const list& l) -> boolean
 {
-    auto e = std::begin(l.value);
-    if (e == std::end(l.value))
+    auto e = begin(l);
+    if (e == end(l))
       return true;
     auto first = *e;
-    while (++e != std::end(l.value))
+    while (++e != end(l))
         if (first != *e)
             return false;
     return true;
 }
 
+auto is_equal(environment&, const list& l) -> expression
+{
+    return is_equal(l);
+}
+
 auto is_unequal(environment& env, const list& l) -> expression
 {
-    return not boost::get<boolean>(is_equal(env, l).value);
+    return not is_equal(l);
 }
 
 struct visit_not : visitor<boolean>

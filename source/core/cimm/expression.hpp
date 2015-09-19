@@ -82,6 +82,16 @@ struct list
     list(const std::vector<expression>& v) : value(v) { }
 };
 
+inline auto begin(const list& l)
+{
+    return begin(l.value);
+}
+
+inline auto end(const list& l)
+{
+    return end(l.value);
+}
+
 inline auto is_empty(const list& l)
 {
     return l.value.empty();
