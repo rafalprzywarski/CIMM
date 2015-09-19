@@ -18,9 +18,9 @@ auto str(const expression& e) -> string
         {
             std::ostringstream os;
             os << '(';
-            for (auto e = std::begin(l.value); e != std::end(l.value); ++e)
+            for (auto e = begin(l); e != end(l); ++e)
             {
-                if (e != std::begin(l.value))
+                if (e != begin(l))
                   os << ' ';
                 os << str(*e);
             }
