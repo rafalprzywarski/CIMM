@@ -172,7 +172,7 @@ inline auto cons(expression e, const list& l)
 {
     std::vector<expression> v;
     v.reserve(count(l) + 1);
-    v.push_back(e);
+    v.push_back(std::move(e));
     v.insert(end(v), begin(l), end(l));
     return list(v);
 }

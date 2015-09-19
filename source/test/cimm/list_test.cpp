@@ -82,4 +82,10 @@ TEST_F(list_test, cons_should_return_a_list_with_given_element_when_a_list_is_no
     EXPECT_EQ(expression(list{integer(5)}), evaluate(list{symbol("cons"), integer(5)}));
 }
 
+TEST_F(list_test, conj_should_add_an_element_in_front_of_the_list)
+{
+    EXPECT_EQ(expression(list{integer(5)}), evaluate(list{symbol("conj"), list{quote, list{}}, integer(5)}));
+    EXPECT_EQ(expression(list{integer(5), integer(7)}), evaluate(list{symbol("conj"), list{quote, list{integer(7)}}, integer(5)}));
+}
+
 }
