@@ -27,6 +27,7 @@ auto str(const expression& e) -> string
             os << ')';
             return os.str();
         }
+        string operator()(const vector& ) const { return string("[]"); }
     };
 
     return apply(to_string(), e);

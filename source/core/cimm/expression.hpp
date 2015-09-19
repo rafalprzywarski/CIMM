@@ -60,7 +60,20 @@ private:
 };
 
 class list;
-using expression_variant = boost::variant<nil_type, symbol, keyword, string, integer, boolean, boost::recursive_wrapper<list>>;
+
+class vector {};
+inline auto operator==(const vector&, const vector&) { return false; }
+
+using expression_variant = boost::variant<
+    nil_type,
+    symbol,
+    keyword,
+    string,
+    integer,
+    boolean,
+    boost::recursive_wrapper<list>,
+    vector
+>;
 
 class expression
 {
@@ -73,6 +86,7 @@ public:
     expression(const integer& i) : value(i) { }
     expression(const boolean& b) : value(b) { }
     expression(const list& l) : value(l) { }
+    expression(const vector& v) : value(v) { }
     expression(const expression_variant& v) : value(v) { }
 
     template <typename result_type>

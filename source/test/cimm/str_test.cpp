@@ -49,4 +49,9 @@ TEST(str_test, should_convert_keywords)
     ASSERT_EQ(string(":abcd"), str(expression(keyword("abcd"))));
 }
 
+TEST(str_test, should_convert_an_empty_list_to_a_pair_of_brackets)
+{
+    EXPECT_EQ(string("[]"), str(expression(vector{})));
+}
+
 }
