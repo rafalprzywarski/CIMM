@@ -91,6 +91,11 @@ auto first_f(environment&, const list& l) -> expression
     return is_empty(a) ? nil : first(a);
 }
 
+auto rest_f(environment&, const list& args) -> expression
+{
+    return list{};
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -106,6 +111,7 @@ auto create_default_environment() -> environment
     define_native_function(env, symbol("symbol"), symbol_f);
     define_native_function(env, symbol("list"), list_f);
     define_native_function(env, symbol("first"), first_f);
+    define_native_function(env, symbol("rest"), rest_f);
 
     return env;
 }

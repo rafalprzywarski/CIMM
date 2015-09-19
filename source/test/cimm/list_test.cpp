@@ -27,4 +27,10 @@ TEST_F(list_test, first_should_return_nil_for_no_arguments)
     EXPECT_EQ(expression(nil), evaluate(list{symbol("first")}));
 }
 
+TEST_F(list_test, rest_should_return_an_empty_list_for_no_arguments)
+{
+    EXPECT_EQ(expression(list{}), evaluate(list{symbol("rest")}));
+}
+
+
 }
