@@ -77,4 +77,9 @@ TEST_F(list_test, cons_should_return_a_list_with_one_nil_for_no_arguments)
     EXPECT_EQ(expression(list{nil}), evaluate(list{symbol("cons")}));
 }
 
+TEST_F(list_test, cons_should_return_a_list_with_given_element_when_a_list_is_not_given)
+{
+    EXPECT_EQ(expression(list{integer(5)}), evaluate(list{symbol("cons"), integer(5)}));
+}
+
 }
