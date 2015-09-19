@@ -16,4 +16,10 @@ struct undefined_function_error : evaluation_error
         : evaluation_error("undefined function \'" + str(name) + "\'") { }
 };
 
+struct cannot_create_symbol : evaluation_error
+{
+    cannot_create_symbol(const expression& e)
+        : evaluation_error("cannot create a symbol from " + str(e)) { }
+};
+
 }

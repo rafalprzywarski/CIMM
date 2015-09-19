@@ -1,4 +1,5 @@
 #include "default_environment.hpp"
+#include "error.hpp"
 
 namespace cimm
 {
@@ -76,12 +77,14 @@ struct make_symbol : expression::visitor<expression>
     expression operator()(const symbol& s) const { return s; }
 
     template <typename T>
-    expression operator()(const T& ) const { return nil; }
+    expression operator()(const T& e) const { throw cannot_create_symbol(e); }
 };
 
 auto symbol_f(environment&, const list& l) -> expression
 {
-    return is_empty(l) ? nil : apply(make_symbol(), first(l));
+    if (is_empty(l))
+        throw cannot_create_symbol(nil);
+    return apply(make_symbol(), first(l));
 }
 
 auto list_f(environment&, const list& l) -> expression

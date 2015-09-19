@@ -17,9 +17,17 @@ TEST_F(symbol_test, should_return_a_given_symbol)
 
 TEST_F(symbol_test, should_fail_to_create_symbols_from_other_types)
 {
-    EXPECT_EQ(nil, evaluate(list{symbol("symbol"), keyword("a")}));
-    EXPECT_EQ(nil, evaluate(list{symbol("symbol"), nil}));
-    EXPECT_EQ(nil, evaluate(list{symbol("symbol"), integer(5)}));
+    try
+    {
+        evaluate(list{symbol("symbol"), keyword("abc")});
+        FAIL() << "expected an error";
+    }
+    catch (cannot_create_symbol const& e)
+    {
+        ASSERT_STREQ("cannot create a symbol from :abc", e.what());
+    }
+    ASSERT_THROW(evaluate(list{symbol("symbol"), nil}), cannot_create_symbol);
+    ASSERT_THROW(evaluate(list{symbol("symbol"), integer(5)}), cannot_create_symbol);
 }
 
 TEST_F(symbol_test, should_make_symbols_from_the_first_parameter_only)
@@ -27,9 +35,17 @@ TEST_F(symbol_test, should_make_symbols_from_the_first_parameter_only)
     EXPECT_EQ(expression(symbol("a")), evaluate(list{symbol("symbol"), string("a"), string("b")}));
 }
 
-TEST_F(symbol_test, should_return_nil_for_no_parameters)
+TEST_F(symbol_test, should_fail_for_no_parameters)
 {
-    EXPECT_EQ(expression(nil), evaluate(list{symbol("symbol")}));
+    try
+    {
+        evaluate(list{symbol("symbol")});
+        FAIL() << "expected an error";
+    }
+    catch (cannot_create_symbol const& e)
+    {
+        ASSERT_STREQ("cannot create a symbol from nil", e.what());
+    }
 }
 
 }
