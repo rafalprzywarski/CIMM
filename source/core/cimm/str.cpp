@@ -6,7 +6,7 @@ namespace cimm
 
 auto str(const expression& e) -> string
 {
-    struct to_string : visitor<string>
+    struct to_string : expression::visitor<string>
     {
         string operator()(const nil_type& ) const { return "nil"; }
         string operator()(const symbol& s) const { return s.value; }

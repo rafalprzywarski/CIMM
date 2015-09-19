@@ -10,7 +10,7 @@ auto add_integers(environment&, const list& l) -> expression
 {
     integer sum{0};
     for (auto e = begin(l); e != end(l); ++e)
-        sum += as_integer(e->value);
+        sum += as_integer(*e);
     return sum;
 }
 
@@ -41,7 +41,7 @@ auto is_unequal(environment& env, const list& l) -> expression
     return not is_equal(l);
 }
 
-struct visit_not : visitor<boolean>
+struct visit_not : expression::visitor<boolean>
 {
     boolean operator()(const boolean& b) const { return not b; }
     boolean operator()(const nil_type& ) const { return true; }
@@ -55,7 +55,7 @@ auto not_f(environment&, const list& args) -> expression
     return is_empty(args) || apply(visit_not(), first(args));
 }
 
-struct make_keyword : visitor<expression>
+struct make_keyword : expression::visitor<expression>
 {
     expression operator()(const string& s) const { return keyword(s); }
     expression operator()(const symbol& s) const { return keyword(s.value); }
@@ -70,7 +70,7 @@ auto keyword_f(environment&, const list& l) -> expression
   return is_empty(l) ? nil : apply(make_keyword(), first(l));
 }
 
-struct make_symbol : visitor<expression>
+struct make_symbol : expression::visitor<expression>
 {
     expression operator()(const string& s) const { return symbol(s); }
     expression operator()(const symbol& s) const { return s; }

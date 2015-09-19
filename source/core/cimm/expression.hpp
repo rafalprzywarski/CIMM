@@ -48,10 +48,9 @@ inline auto operator==(const keyword& left, const keyword& right)
 class list;
 using expression_variant = boost::variant<nil_type, symbol, keyword, string, integer, boolean, boost::recursive_wrapper<list>>;
 
-struct expression
+class expression
 {
-    expression_variant value;
-
+public:
     expression() = default;
     expression(const nil_type& n) : value(n) { }
     expression(const symbol& s) : value(s) { }
@@ -61,12 +60,39 @@ struct expression
     expression(const boolean& b) : value(b) { }
     expression(const list& l) : value(l) { }
     expression(const expression_variant& v) : value(v) { }
-};
 
-inline auto operator==(const expression& left, const expression& right)
-{
-    return left.value == right.value;
-}
+    template <typename result_type>
+    struct visitor : boost::static_visitor<result_type> { };
+
+    template <typename Visitor>
+    friend auto apply(Visitor&& v, expression const& e)
+    {
+        return boost::apply_visitor(v, e.value);
+    }
+
+private:
+    expression_variant value;
+
+    friend auto operator==(const expression& left, const expression& right)
+    {
+        return left.value == right.value;
+    }
+
+    friend auto as_list(const expression& e) -> list const&
+    {
+        return boost::get<list>(e.value);
+    }
+
+    friend auto as_symbol(const expression& e) -> symbol const&
+    {
+        return boost::get<symbol>(e.value);
+    }
+
+    friend auto as_integer(const expression& e) -> integer
+    {
+        return boost::get<integer>(e.value);
+    }
+};
 
 inline auto operator!=(const expression& left, const expression& right)
 {
@@ -135,30 +161,6 @@ inline auto cons(expression e, const list& l)
     v.push_back(e);
     v.insert(end(v), begin(l), end(l));
     return list(v);
-}
-
-template <typename result_type>
-struct visitor : boost::static_visitor<result_type> { };
-
-template <typename Visitor>
-inline auto apply(Visitor&& v, expression const& e)
-{
-    return boost::apply_visitor(v, e.value);
-}
-
-inline auto as_list(const expression& e) -> list const&
-{
-    return boost::get<list>(e.value);
-}
-
-inline auto as_symbol(const expression& e) -> symbol const&
-{
-    return boost::get<symbol>(e.value);
-}
-
-inline auto as_integer(const expression& e) -> integer
-{
-    return boost::get<integer>(e.value);
 }
 
 }
