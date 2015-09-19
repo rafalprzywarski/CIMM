@@ -45,7 +45,7 @@ inline auto operator==(const keyword& left, const keyword& right)
     return left.value == right.value;
 }
 
-struct list;
+class list;
 using expression_variant = boost::variant<nil_type, symbol, keyword, string, integer, boolean, boost::recursive_wrapper<list>>;
 
 struct expression
@@ -73,43 +73,59 @@ inline auto operator!=(const expression& left, const expression& right)
     return !(left == right);
 }
 
-struct list
+class list
 {
-    std::vector<expression> value;
-
+public:
     list() = default;
     list(const std::initializer_list<expression>& l) : value(l) { }
     list(const std::vector<expression>& v) : value(v) { }
+private:
+    std::vector<expression> value;
+
+    friend auto begin(const list& l)
+    {
+        return begin(l.value);
+    }
+
+    friend auto end(const list& l)
+    {
+        return end(l.value);
+    }
+
+    friend auto count(const list& l) -> integer
+    {
+        return l.value.size();
+    }
+
+    template <typename F>
+    friend auto map(list const& l, F&& f)
+    {
+        std::vector<expression> r;
+        r.reserve(count(l));
+        for (auto& e : l.value)
+          r.push_back(f(e));
+        return r;
+    }
+
+    friend auto operator==(const list& left, const list& right)
+    {
+        return left.value == right.value;
+    }
 };
-
-inline auto begin(const list& l)
-{
-    return begin(l.value);
-}
-
-inline auto end(const list& l)
-{
-    return end(l.value);
-}
 
 inline auto is_empty(const list& l)
 {
-    return l.value.empty();
+    return begin(l) == end(l);
 }
 
 inline auto first(const list& l)
 {
-    return l.value.front();
+    return *begin(l);
 }
 
 inline auto rest(const list& l)
 {
-    return is_empty(l) ? list{} : list({std::next(std::begin(l.value)), std::end(l.value)});
-}
-
-inline auto count(const list& l) -> integer
-{
-    return l.value.size();
+    return is_empty(l) ? list{} : list({std::next(begin(l)), end(l)});
 }
 
 inline auto cons(expression e, const list& l)
@@ -117,23 +133,8 @@ inline auto cons(expression e, const list& l)
     std::vector<expression> v;
     v.reserve(count(l) + 1);
     v.push_back(e);
-    v.insert(end(v), std::begin(l.value), std::end(l.value));
+    v.insert(end(v), begin(l), end(l));
     return list(v);
-}
-
-template <typename F>
-inline auto map(list l, F&& f)
-{
-    std::vector<expression> r;
-    r.reserve(l.value.size());
-    for (auto& e : l.value)
-      r.push_back(f(e));
-    return r;
-}
-
-inline auto operator==(const list& left, const list& right)
-{
-    return left.value == right.value;
 }
 
 template <typename result_type>
