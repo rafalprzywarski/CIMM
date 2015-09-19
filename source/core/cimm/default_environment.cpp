@@ -111,6 +111,11 @@ auto count_f(environment&, const list& args) -> expression
     return count(boost::get<list>(f.value));
 }
 
+auto cons_f(environment&, const list& args) -> expression
+{
+    return cons(first(args), boost::get<list>(first(rest(args)).value));
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -128,6 +133,7 @@ auto create_default_environment() -> environment
     define_native_function(env, symbol("first"), first_f);
     define_native_function(env, symbol("rest"), rest_f);
     define_native_function(env, symbol("count"), count_f);
+    define_native_function(env, symbol("cons"), cons_f);
 
     return env;
 }

@@ -66,4 +66,10 @@ TEST_F(list_test, count_should_return_the_number_of_elements_in_a_list)
     EXPECT_EQ(expression(integer(2)), evaluate(list{symbol("count"), list{quote, list{integer(4), integer(3)}}}));
 }
 
+TEST_F(list_test, cons_should_add_an_element_in_front_of_the_list)
+{
+    EXPECT_EQ(expression(list{integer(5)}), evaluate(list{symbol("cons"), integer(5), list{quote, list{}}}));
+    EXPECT_EQ(expression(list{integer(5), integer(7)}), evaluate(list{symbol("cons"), integer(5), list{quote, list{integer(7)}}}));
+}
+
 }

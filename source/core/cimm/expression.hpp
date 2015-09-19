@@ -102,6 +102,15 @@ inline auto count(const list& l) -> integer
     return l.value.size();
 }
 
+inline auto cons(expression e, const list& l)
+{
+    std::vector<expression> v;
+    v.reserve(count(l) + 1);
+    v.push_back(e);
+    v.insert(end(v), std::begin(l.value), std::end(l.value));
+    return list(v);
+}
+
 template <typename F>
 inline auto map(list l, F&& f)
 {
