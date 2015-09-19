@@ -39,5 +39,9 @@ TEST_F(list_test, rest_should_return_the_list_of_elements_after_the_first_elemen
     EXPECT_EQ(expression(list{integer(3), integer(7)}), evaluate(list{symbol("rest"), list{quote, list{integer(1), integer(3), integer(7)}}}));
 }
 
+TEST_F(list_test, first_should_return_an_empty_list_for_an_empty_list)
+{
+    EXPECT_EQ(expression(list{}), evaluate(list{symbol("rest")}));
+}
 
 }
