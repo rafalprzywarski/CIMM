@@ -12,7 +12,7 @@ auto evaluate(environment& env, const list& l) -> expression
     auto name = as_symbol(first(l));
     if (name == quote)
         return first(rest(l));
-    auto f = env.functions.find(name.value);
+    auto f = env.functions.find(str(name));
     if (f == env.functions.end())
         throw undefined_function_error(name);
     return f->second(env, map(rest(l), [&env](auto const& a) { return evaluate_expression(env, a); }));

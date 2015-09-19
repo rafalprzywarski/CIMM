@@ -58,7 +58,7 @@ auto not_f(environment&, const list& args) -> expression
 struct make_keyword : expression::visitor<expression>
 {
     expression operator()(const string& s) const { return keyword(s); }
-    expression operator()(const symbol& s) const { return keyword(s.value); }
+    expression operator()(const symbol& s) const { return keyword(str(s)); }
     expression operator()(const keyword& k) const { return k; }
 
     template <typename T>

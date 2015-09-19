@@ -17,20 +17,27 @@ inline auto operator==(const nil_type& left, const nil_type& right)
     return true;
 }
 
-struct symbol
+class symbol
 {
-    string value;
-
+public:
     symbol() = default;
     explicit symbol(string value) : value(value) { }
+
+    friend auto operator==(const symbol& left, const symbol& right)
+    {
+        return left.value == right.value;
+    }
+
+    friend auto str(const symbol& s) -> string const&
+    {
+        return s.value;
+    }
+
+private:
+    string value;
 };
 
 static const symbol quote{"quote"};
-
-inline auto operator==(const symbol& left, const symbol& right)
-{
-    return left.value == right.value;
-}
 
 struct keyword
 {
