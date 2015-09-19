@@ -74,7 +74,7 @@ struct make_symbol : expression::visitor<expression>
 {
     expression operator()(const string& s) const { return symbol(s); }
     expression operator()(const symbol& s) const { return s; }
-    expression operator()(const keyword& k) const { return symbol(k.value); }
+    expression operator()(const keyword& k) const { return symbol(str(k)); }
 
     template <typename T>
     expression operator()(const T& ) const { return nil; }

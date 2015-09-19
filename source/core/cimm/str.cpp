@@ -10,7 +10,7 @@ auto str(const expression& e) -> string
     {
         string operator()(const nil_type& ) const { return "nil"; }
         string operator()(const symbol& s) const { return str(s); }
-        string operator()(const keyword& k) const { return ':' + k.value; }
+        string operator()(const keyword& k) const { return ':' + str(k); }
         string operator()(const string& s) const { return s; }
         string operator()(const integer& v) const { return std::to_string(v); }
         string operator()(const boolean& b) const { return b ? "true" : "false"; }

@@ -39,18 +39,25 @@ private:
 
 static const symbol quote{"quote"};
 
-struct keyword
+class keyword
 {
-    string value;
-
+public:
     keyword() = default;
     explicit keyword(string value) : value(std::move(value)) { }
-};
 
-inline auto operator==(const keyword& left, const keyword& right)
-{
-    return left.value == right.value;
-}
+    friend auto operator==(const keyword& left, const keyword& right)
+    {
+        return left.value == right.value;
+    }
+
+    friend auto str(const keyword& k) -> string const&
+    {
+        return k.value;
+    }
+
+private:
+    string value;
+};
 
 class list;
 using expression_variant = boost::variant<nil_type, symbol, keyword, string, integer, boolean, boost::recursive_wrapper<list>>;
