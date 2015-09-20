@@ -27,4 +27,17 @@ TEST_F(def_test, should_fail_when_a_symbol_is_already_defined)
     }
 }
 
+TEST_F(def_test, should_fail_when_trying_to_evaluate_an_undefined_symbol)
+{
+    try
+    {
+        evaluate(symbol("badbad"));
+        FAIL() << "expected an exception";
+    }
+    catch (undefined_symbol_error const& e)
+    {
+        ASSERT_STREQ("undefined symbol 'badbad'", e.what());
+    }
+}
+
 }

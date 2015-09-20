@@ -28,4 +28,10 @@ struct symbol_already_defined : evaluation_error
         : evaluation_error("symbol \'" + str(s) + "\' already defined") { }
 };
 
+struct undefined_symbol_error : evaluation_error
+{
+    undefined_symbol_error(const symbol& name)
+        : evaluation_error("undefined symbol \'" + str(name) + "\'") { }
+};
+
 }

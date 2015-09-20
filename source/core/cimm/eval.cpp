@@ -31,7 +31,10 @@ auto evaluate(environment& env, const list& l) -> expression
 
 auto evaluate(environment& env, const symbol& s) -> expression
 {
-    return env.definitions[str(s)];
+    auto found = env.definitions.find(str(s));
+    if (found == env.definitions.end())
+        throw undefined_symbol_error(s);
+    return found->second;
 }
 
 template <typename expression_type>
