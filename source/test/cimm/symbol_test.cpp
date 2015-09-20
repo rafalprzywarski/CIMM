@@ -10,11 +10,6 @@ TEST_F(symbol_test, should_make_symbols_from_strings)
     EXPECT_EQ(expression(symbol("a")), evaluate(list{symbol("symbol"), string("a")}));
 }
 
-TEST_F(symbol_test, should_return_a_given_symbol)
-{
-    EXPECT_EQ(expression(symbol("a")), evaluate(list{symbol("symbol"), symbol("a")}));
-}
-
 TEST_F(symbol_test, should_fail_to_create_symbols_from_other_types)
 {
     try
