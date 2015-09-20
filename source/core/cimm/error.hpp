@@ -22,4 +22,10 @@ struct cannot_create_symbol : evaluation_error
         : evaluation_error("cannot create a symbol from " + str(e)) { }
 };
 
+struct symbol_already_defined : evaluation_error
+{
+    symbol_already_defined(const symbol& s)
+        : evaluation_error("symbol \'" + str(s) + "\' already defined") { }
+};
+
 }

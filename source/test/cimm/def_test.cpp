@@ -13,4 +13,18 @@ TEST_F(def_test, should_define_constants)
     EXPECT_EQ(string("Sonia"), evaluate(symbol("name")));
 }
 
+TEST_F(def_test, should_fail_when_a_symbol_is_already_defined)
+{
+    evaluate(list{special::def, symbol("const1"), nil});
+    try
+    {
+        evaluate(list{special::def, symbol("const1"), nil});
+        FAIL() << "expected an exception";
+    }
+    catch (symbol_already_defined const& e)
+    {
+        ASSERT_STREQ("symbol 'const1' already defined", e.what());
+    }
+}
+
 }

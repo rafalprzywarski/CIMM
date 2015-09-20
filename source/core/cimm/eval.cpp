@@ -7,9 +7,12 @@ namespace cimm
 namespace
 {
 
-auto def(environment& env, const list& l) -> expression
+auto def(environment& env, const list& args) -> expression
 {
-    env.definitions[str(first(rest(l)))] = first(rest(rest(l)));
+    auto s = first(args);
+    if (env.definitions.count(str(s)) != 0)
+        throw symbol_already_defined(as_symbol(s));
+    env.definitions[str(s)] = first(rest(args));
     return nil;
 }
 
@@ -19,7 +22,7 @@ auto evaluate(environment& env, const list& l) -> expression
     if (name == special::quote)
         return first(rest(l));
     if (name == special::def)
-        return def(env, l);
+        return def(env, rest(l));
     auto f = env.functions.find(str(name));
     if (f == env.functions.end())
         throw undefined_function_error(name);
