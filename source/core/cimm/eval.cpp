@@ -12,7 +12,7 @@ auto def(environment& env, const list& args) -> expression
     auto s = first(args);
     if (env.definitions.count(str(s)) != 0)
         throw symbol_already_defined(as_symbol(s));
-    env.definitions[str(s)] = first(rest(args));
+    env.definitions[str(s)] = evaluate_expression(env, first(rest(args)));
     return nil;
 }
 

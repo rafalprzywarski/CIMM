@@ -40,4 +40,10 @@ TEST_F(def_test, should_fail_when_trying_to_evaluate_an_undefined_symbol)
     }
 }
 
+TEST_F(def_test, should_evaluate_the_given_expression)
+{
+    EXPECT_EQ(nil, evaluate(list{special::def, symbol("a_list"), list{special::quote, list{integer(7), integer(2)}}}));
+    EXPECT_EQ((list{integer(7), integer(2)}), evaluate(symbol("a_list")));
+}
+
 }
