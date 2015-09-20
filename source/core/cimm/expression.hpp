@@ -41,6 +41,7 @@ namespace special
 {
 
 static const symbol quote{"quote"};
+static const symbol def{"def"};
 
 }
 

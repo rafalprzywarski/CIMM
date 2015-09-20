@@ -12,6 +12,7 @@ using native_function = expression(*)(environment&, list const&);
 struct environment
 {
     std::unordered_map<string, native_function> functions;
+    std::unordered_map<string, expression> definitions;
 };
 
 auto define_native_function(environment& env, symbol name, native_function fn) -> void;

@@ -4,6 +4,7 @@ include_directories(${GoogleMock_INCLUDE_DIRS})
 include_directories("../core")
 
 add_executable(cimm_test
+  cimm/def_test.cpp
   cimm/eval_test.cpp
   cimm/list_test.cpp
   cimm/keyword_test.cpp
