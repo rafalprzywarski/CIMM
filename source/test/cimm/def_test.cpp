@@ -46,4 +46,14 @@ TEST_F(def_test, should_evaluate_the_given_expression)
     EXPECT_EQ((list{integer(7), integer(2)}), evaluate(symbol("a_list")));
 }
 
+TEST_F(def_test, should_not_define_a_symbol_if_the_evaluation_fails)
+{
+    try
+    {
+        evaluate(list{special::def, symbol("x"), symbol("u")});
+    }
+    catch (evaluation_error& ) { }
+    ASSERT_NO_THROW(evaluate(list{special::def, symbol("x"), nil}));
+}
+
 }
