@@ -8,7 +8,6 @@ struct keyword_test : eval_test { };
 TEST_F(keyword_test, should_make_keywords_from_stringlike_expressions)
 {
     EXPECT_EQ(expression(keyword("a")), evaluate(list{symbol("keyword"), string("a")}));
-    EXPECT_EQ(expression(keyword("a")), evaluate(list{symbol("keyword"), symbol("a")}));
     EXPECT_EQ(expression(keyword("a")), evaluate(list{symbol("keyword"), keyword("a")}));
     EXPECT_EQ(nil, evaluate(list{symbol("keyword"), nil}));
     EXPECT_EQ(nil, evaluate(list{symbol("keyword"), integer(5)}));
