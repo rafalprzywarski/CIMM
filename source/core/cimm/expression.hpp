@@ -156,7 +156,7 @@ private:
         r.reserve(count(l));
         for (auto& e : l.value)
           r.push_back(f(e));
-        return r;
+        return list(r);
     }
 
     friend auto operator==(const list& left, const list& right)
