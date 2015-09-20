@@ -59,7 +59,6 @@ auto not_f(environment&, const list& args) -> expression
 struct make_keyword : expression::visitor<expression>
 {
     expression operator()(const string& s) const { return keyword(s); }
-    expression operator()(const symbol& s) const { return keyword(str(s)); }
     expression operator()(const keyword& k) const { return k; }
 
     template <typename T>
@@ -74,7 +73,6 @@ auto keyword_f(environment&, const list& l) -> expression
 struct make_symbol : expression::visitor<expression>
 {
     expression operator()(const string& s) const { return symbol(s); }
-    expression operator()(const symbol& s) const { return s; }
 
     template <typename T>
     expression operator()(const T& e) const { throw cannot_create_symbol(e); }
