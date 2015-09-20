@@ -25,7 +25,7 @@ auto evaluate(environment& env, const list& l) -> expression
         return def(env, rest(l));
     auto f = env.functions.find(str(name));
     if (f == env.functions.end())
-        throw undefined_function_error(name);
+        throw undefined_symbol_error(name);
     return f->second(env, map(rest(l), [&env](auto const& a) { return evaluate_expression(env, a); }));
 }
 

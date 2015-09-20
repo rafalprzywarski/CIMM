@@ -24,9 +24,9 @@ TEST_F(eval_test, should_fail_when_given_undefined_function)
         evaluate_expression(env, list{symbol("bad")});
         FAIL() << "expected an evaluation error";
     }
-    catch (undefined_function_error const& e)
+    catch (undefined_symbol_error const& e)
     {
-        ASSERT_STREQ("undefined function \'bad\'", e.what());
+        ASSERT_STREQ("undefined symbol \'bad\'", e.what());
     }
 }
 
