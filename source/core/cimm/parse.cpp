@@ -15,7 +15,7 @@ using qi::labels::_1;
 
 auto quote_expr(const expression& e) -> list
 {
-    return list{quote, e};
+    return list{special::quote, e};
 }
 
 template <typename iterator>

@@ -37,7 +37,12 @@ private:
     string value;
 };
 
+namespace special
+{
+
 static const symbol quote{"quote"};
+
+}
 
 class keyword
 {

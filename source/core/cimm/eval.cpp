@@ -10,7 +10,7 @@ namespace
 auto evaluate(environment& env, const list& l) -> expression
 {
     auto name = as_symbol(first(l));
-    if (name == quote)
+    if (name == special::quote)
         return first(rest(l));
     auto f = env.functions.find(str(name));
     if (f == env.functions.end())
