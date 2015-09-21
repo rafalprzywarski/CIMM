@@ -67,6 +67,10 @@ private:
 
 class list;
 class vector;
+class expression;
+struct environment;
+
+using native_function = expression(*)(environment&, list const&);
 
 using expression_variant = boost::variant<
     nil_type,
@@ -76,7 +80,8 @@ using expression_variant = boost::variant<
     integer,
     boolean,
     boost::recursive_wrapper<list>,
-    boost::recursive_wrapper<vector>
+    boost::recursive_wrapper<vector>,
+    native_function
 >;
 
 class expression
@@ -91,6 +96,7 @@ public:
     expression(const boolean& b) : value(b) { }
     expression(const list& l) : value(l) { }
     expression(const vector& v) : value(v) { }
+    expression(native_function f) : value(f) { }
     expression(const expression_variant& v) : value(v) { }
 
     template <typename result_type>
@@ -123,6 +129,11 @@ private:
     friend auto as_integer(const expression& e) -> integer
     {
         return boost::get<integer>(e.value);
+    }
+
+    friend auto as_function(const expression& e) -> native_function
+    {
+        return boost::get<native_function>(e.value);
     }
 };
 

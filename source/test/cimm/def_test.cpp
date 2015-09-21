@@ -56,4 +56,10 @@ TEST_F(def_test, should_not_define_a_symbol_if_the_evaluation_fails)
     ASSERT_NO_THROW(evaluate(list{special::def, symbol("x"), nil}));
 }
 
+TEST_F(def_test, should_alias_functions)
+{
+    evaluate(list{special::def, symbol("add"), symbol("+")});
+    ASSERT_EQ(integer(5), evaluate(list{symbol("add"), integer(2), integer(3)}));
+}
+
 }
