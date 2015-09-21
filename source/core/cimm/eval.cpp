@@ -18,15 +18,13 @@ auto def(environment& env, const list& args) -> expression
 
 auto evaluate(environment& env, const list& l) -> expression
 {
-    auto name = as_symbol(first(l));
+    auto name = first(l);
     if (name == special::quote)
         return first(rest(l));
     if (name == special::def)
         return def(env, rest(l));
-    auto f = env.definitions.find(str(name));
-    if (f == env.definitions.end())
-        throw undefined_symbol_error(name);
-    return as_function(f->second)(env, map(rest(l), [&env](auto const& a) { return evaluate_expression(env, a); }));
+    auto evaluated = map(l, [&env](auto const& a) { return evaluate_expression(env, a); });
+    return as_function(first(evaluated))(env, rest(evaluated));
 }
 
 auto evaluate(environment& env, const symbol& s) -> expression
