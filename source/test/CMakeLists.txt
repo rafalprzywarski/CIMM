@@ -6,6 +6,7 @@ include_directories("../core")
 add_executable(cimm_test
   cimm/def_test.cpp
   cimm/eval_test.cpp
+  cimm/fn_test.cpp
   cimm/list_test.cpp
   cimm/keyword_test.cpp
   cimm/parse_test.cpp

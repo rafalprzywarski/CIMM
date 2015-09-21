@@ -42,6 +42,7 @@ namespace special
 
 static const symbol quote{"quote"};
 static const symbol def{"def"};
+static const symbol fn{"fn"};
 
 }
 

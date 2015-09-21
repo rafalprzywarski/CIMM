@@ -16,6 +16,11 @@ auto def(environment& env, const list& args) -> expression
     return nil;
 }
 
+auto fn(environment& env, const list& args) -> expression
+{
+    return evaluate_expression(env, first(rest(args)));
+}
+
 auto evaluate(environment& env, const list& l) -> expression
 {
     auto name = first(l);
@@ -23,6 +28,8 @@ auto evaluate(environment& env, const list& l) -> expression
         return first(rest(l));
     if (name == special::def)
         return def(env, rest(l));
+    if (name == special::fn)
+        return fn(env, rest(l));
     auto evaluated = map(l, [&env](auto const& a) { return evaluate_expression(env, a); });
     return as_function(first(evaluated))(env, rest(evaluated));
 }
