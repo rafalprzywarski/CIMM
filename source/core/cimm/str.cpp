@@ -36,6 +36,7 @@ auto str(const expression& e) -> string
         string operator()(const boolean& b) const { return b ? "true" : "false"; }
         string operator()(const list& l) const { return join('(', l, ')'); }
         string operator()(const vector& v) const { return join('[', v, ']'); }
+        string operator()(const native_function& f) const { return "function"; }
     };
 
     return apply(to_string(), e);

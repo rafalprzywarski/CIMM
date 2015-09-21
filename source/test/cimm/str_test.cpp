@@ -61,4 +61,10 @@ TEST(str_test, should_convert_a_vector_of_expressions_to_strings_separated_by_si
     EXPECT_EQ(string("[[(1) 2] (+ a) xyz]"), str(expression(vector{vector{list{integer(1)}, integer(2)}, list{symbol("+"), symbol("a")}, symbol("xyz")})));
 }
 
+TEST(str_test, should_convert_native_function_as_text_function)
+{
+    native_function f = [](environment&, const list&) -> expression { return nil; };
+    EXPECT_EQ(string("function"), str(expression(f)));
+}
+
 }
