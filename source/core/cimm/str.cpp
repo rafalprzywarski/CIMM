@@ -37,7 +37,7 @@ auto str(const expression& e) -> string
         string operator()(const list& l) const { return join('(', l, ')'); }
         string operator()(const vector& v) const { return join('[', v, ']'); }
         string operator()(const native_function& ) const { return "function"; }
-        string operator()(const function& ) const { return {}; }
+        string operator()(const function& f) const { return "fn : " + str(f.params) + " -> " + str(f.body); }
     };
 
     return apply(to_string(), e);

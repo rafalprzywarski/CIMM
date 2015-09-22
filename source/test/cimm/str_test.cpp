@@ -67,4 +67,10 @@ TEST(str_test, should_convert_native_function_as_text_function)
     EXPECT_EQ(string("function"), str(expression(f)));
 }
 
+TEST(str_test, should_convert_functions)
+{
+    function f{vector{symbol("x"), symbol("y")}, list{symbol("+"), symbol("x"), symbol("y")}};
+    EXPECT_EQ("fn : [x y] -> (+ x y)", str(f));
+}
+
 }
