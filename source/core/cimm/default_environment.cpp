@@ -7,7 +7,7 @@ namespace cimm
 namespace
 {
 
-auto add_integers(environment&, const list& l) -> expression
+auto add_integers(const list& l) -> expression
 {
     integer sum{0};
     for (auto e = begin(l); e != end(l); ++e)
@@ -15,7 +15,7 @@ auto add_integers(environment&, const list& l) -> expression
     return sum;
 }
 
-auto subtract_integers(environment&, const list& l) -> expression
+auto subtract_integers(const list& l) -> expression
 {
     return as_integer(first(l)) - as_integer(first(rest(l)));
 }
@@ -32,12 +32,12 @@ auto is_equal(const list& l) -> boolean
     return true;
 }
 
-auto is_equal(environment&, const list& l) -> expression
+auto is_equal_f(const list& l) -> expression
 {
     return is_equal(l);
 }
 
-auto is_unequal(environment& env, const list& l) -> expression
+auto is_unequal_f(const list& l) -> expression
 {
     return not is_equal(l);
 }
@@ -51,7 +51,7 @@ struct visit_not : expression::visitor<boolean>
     boolean operator()(const T& ) const { return false; }
 };
 
-auto not_f(environment&, const list& args) -> expression
+auto not_f(const list& args) -> expression
 {
     return is_empty(args) || apply(visit_not(), first(args));
 }
@@ -65,7 +65,7 @@ struct make_keyword : expression::visitor<expression>
     expression operator()(const T& ) const { return nil; }
 };
 
-auto keyword_f(environment&, const list& l) -> expression
+auto keyword_f(const list& l) -> expression
 {
   return is_empty(l) ? nil : apply(make_keyword(), first(l));
 }
@@ -78,19 +78,19 @@ struct make_symbol : expression::visitor<expression>
     expression operator()(const T& e) const { throw cannot_create_symbol(e); }
 };
 
-auto symbol_f(environment&, const list& l) -> expression
+auto symbol_f(const list& l) -> expression
 {
     if (is_empty(l))
         throw cannot_create_symbol(nil);
     return apply(make_symbol(), first(l));
 }
 
-auto list_f(environment&, const list& l) -> expression
+auto list_f(const list& l) -> expression
 {
     return l;
 }
 
-auto first_f(environment&, const list& l) -> expression
+auto first_f(const list& l) -> expression
 {
     if (is_empty(l))
       return nil;
@@ -98,7 +98,7 @@ auto first_f(environment&, const list& l) -> expression
     return is_empty(a) ? nil : first(a);
 }
 
-auto rest_f(environment&, const list& args) -> expression
+auto rest_f(const list& args) -> expression
 {
     if (is_empty(args))
         return list{};
@@ -108,7 +108,7 @@ auto rest_f(environment&, const list& args) -> expression
     return rest(as_list(f));
 }
 
-auto count_f(environment&, const list& args) -> expression
+auto count_f(const list& args) -> expression
 {
     if (is_empty(args))
         return integer(0);
@@ -118,7 +118,7 @@ auto count_f(environment&, const list& args) -> expression
     return count(as_list(f));
 }
 
-auto cons_f(environment&, const list& args) -> expression
+auto cons_f(const list& args) -> expression
 {
     if (is_empty(args))
         return list{nil};
@@ -129,7 +129,7 @@ auto cons_f(environment&, const list& args) -> expression
     return cons(elem, as_list(first(r)));
 }
 
-auto conj_f(environment& env, const list& args) -> expression
+auto conj_f(const list& args) -> expression
 {
     return cons(first(rest(args)), as_list(first(args)));
 }
@@ -142,8 +142,8 @@ auto create_default_environment() -> environment
 
     define_native_function(env, symbol("+"), add_integers);
     define_native_function(env, symbol("-"), subtract_integers);
-    define_native_function(env, symbol("="), is_equal);
-    define_native_function(env, symbol("not="), is_unequal);
+    define_native_function(env, symbol("="), is_equal_f);
+    define_native_function(env, symbol("not="), is_unequal_f);
     define_native_function(env, symbol("not"), not_f);
     define_native_function(env, symbol("keyword"), keyword_f);
     define_native_function(env, symbol("symbol"), symbol_f);

@@ -21,9 +21,9 @@ auto fn(environment& env, const list& args) -> expression
     return function{as_vector(first(args)), first(rest(args))};
 }
 
-auto execute(environment& env, native_function f, const list& args) -> expression
+auto execute(environment&, native_function f, const list& args) -> expression
 {
-    return f(env, args);
+    return f(args);
 }
 
 auto execute(environment& env, const function& f, const list& args) -> expression
@@ -35,7 +35,7 @@ auto execute(environment& env, const function& f, const list& args) -> expressio
 }
 
 template <typename expression_type>
-auto execute(environment& env, const expression_type& first, const list& args) -> expression
+auto execute(environment&, const expression_type&, const list&) -> expression
 {
     return nil;
 }

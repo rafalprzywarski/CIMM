@@ -72,7 +72,7 @@ struct function;
 class expression;
 struct environment;
 
-using native_function = expression(*)(environment&, list const&);
+using native_function = expression(*)(list const&);
 
 using expression_variant = boost::variant<
     nil_type,

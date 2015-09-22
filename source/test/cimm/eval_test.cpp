@@ -33,8 +33,8 @@ TEST_F(eval_test, should_fail_when_given_undefined_function)
 TEST_F(eval_test, should_execute_functions_from_the_environment)
 {
     environment env;
-    auto func1 = [](environment&, const list& l) -> expression { return count(l); };
-    auto func2 = [](environment&, const list& l) -> expression { return l; };
+    auto func1 = [](const list& l) -> expression { return count(l); };
+    auto func2 = [](const list& l) -> expression { return l; };
 
     define_native_function(env, symbol("func-1"), func1);
     define_native_function(env, symbol("func-2"), func2);
@@ -46,10 +46,10 @@ TEST_F(eval_test, should_execute_functions_from_the_environment)
 TEST_F(eval_test, should_evaluate_function_arguments)
 {
     environment env;
-    define_native_function(env, symbol("id"), [](environment&, const list& l) -> expression { return first(l); });
-    define_native_function(env, symbol("double"), [](environment&, const list& l) -> expression { return as_integer(first(l)) * integer(2); });
-    define_native_function(env, symbol("first"), [](environment&, const list& l) -> expression { return first(l); });
-    define_native_function(env, symbol("second"), [](environment&, const list& l) -> expression { return first(rest(l)); });
+    define_native_function(env, symbol("id"), [](const list& l) -> expression { return first(l); });
+    define_native_function(env, symbol("double"), [](const list& l) -> expression { return as_integer(first(l)) * integer(2); });
+    define_native_function(env, symbol("first"), [](const list& l) -> expression { return first(l); });
+    define_native_function(env, symbol("second"), [](const list& l) -> expression { return first(rest(l)); });
 
     EXPECT_EQ(integer(7), evaluate_expression(env, list{symbol("first"), list{symbol("id"), integer(7)}, list{symbol("double"), integer(10)}}));
     EXPECT_EQ(integer(20), evaluate_expression(env, list{symbol("second"), list{symbol("id"), integer(7)}, list{symbol("double"), integer(10)}}));
