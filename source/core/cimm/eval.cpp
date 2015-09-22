@@ -40,11 +40,26 @@ auto replace_symbols(const list& l, const vector& symbols, const list& values) -
     return replace_symbol(replace_symbols(l, rest(symbols), rest(values)), as_symbol(first(symbols)), first(values));
 }
 
+auto replace_symbols(const symbol& s, const vector& symbols, const list& values) -> expression
+{
+    if (is_empty(symbols))
+        return s;
+    if (s == first(symbols))
+        return first(values);
+    return replace_symbols(s, rest(symbols), rest(values));
+}
+
+template <typename expression_type>
+auto replace_symbols(const expression_type& e, const vector&, const list&) -> expression_type
+{
+    return e;
+}
+
 auto execute(environment& env, const function& f, const list& args) -> expression
 {
     if (is_empty(f.params))
         return evaluate_expression(env, f.body);
-    return evaluate_expression(env, replace_symbols(as_list(f.body), f.params, args));
+    return evaluate_expression(env, apply([&](auto& e) -> expression { return replace_symbols(e, f.params, args); }, f.body));
 }
 
 template <typename expression_type>
