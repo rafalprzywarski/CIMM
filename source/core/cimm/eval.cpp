@@ -18,7 +18,26 @@ auto def(environment& env, const list& args) -> expression
 
 auto fn(environment& env, const list& args) -> expression
 {
-    return evaluate_expression(env, first(rest(args)));
+    return function{as_vector(first(args)), first(rest(args))};
+}
+
+auto execute(environment& env, native_function f, const list& args) -> expression
+{
+    return f(env, args);
+}
+
+auto execute(environment& env, const function& f, const list& args) -> expression
+{
+    if (is_empty(f.params))
+        return evaluate_expression(env, f.body);
+    auto body = as_list(f.body);
+    return evaluate_expression(env, cons(first(body), cons(first(args), rest(rest(body)))));
+}
+
+template <typename expression_type>
+auto execute(environment& env, const expression_type& first, const list& args) -> expression
+{
+    return nil;
 }
 
 auto evaluate(environment& env, const list& l) -> expression
@@ -31,7 +50,7 @@ auto evaluate(environment& env, const list& l) -> expression
     if (name == special::fn)
         return fn(env, rest(l));
     auto evaluated = map(l, [&env](auto const& a) { return evaluate_expression(env, a); });
-    return as_function(first(evaluated))(env, rest(evaluated));
+    return apply([&](const auto& first) { return execute(env, first, rest(evaluated)); }, first(evaluated));
 }
 
 auto evaluate(environment& env, const symbol& s) -> expression

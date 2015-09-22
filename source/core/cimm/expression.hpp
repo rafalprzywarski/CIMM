@@ -68,6 +68,7 @@ private:
 
 class list;
 class vector;
+struct function;
 class expression;
 struct environment;
 
@@ -82,7 +83,8 @@ using expression_variant = boost::variant<
     boolean,
     boost::recursive_wrapper<list>,
     boost::recursive_wrapper<vector>,
-    native_function
+    native_function,
+    boost::recursive_wrapper<function>
 >;
 
 class expression
@@ -98,6 +100,7 @@ public:
     expression(const list& l) : value(l) { }
     expression(const vector& v) : value(v) { }
     expression(native_function f) : value(f) { }
+    expression(const function& f) : value(f) { }
     expression(const expression_variant& v) : value(v) { }
 
     template <typename result_type>
@@ -120,6 +123,11 @@ private:
     friend auto as_list(const expression& e) -> list const&
     {
         return boost::get<list>(e.value);
+    }
+
+    friend auto as_vector(const expression& e) -> vector const&
+    {
+        return boost::get<vector>(e.value);
     }
 
     friend auto as_symbol(const expression& e) -> symbol const&
@@ -227,5 +235,26 @@ public:
         return static_cast<const list&>(left) == static_cast<const list&>(right);
     }
 };
+
+inline auto is_empty(const vector& v)
+{
+    return begin(v) == end(v);
+}
+
+inline auto first(const vector& v)
+{
+    return *begin(v);
+}
+
+struct function
+{
+    vector params;
+    expression body;
+};
+
+inline auto operator==(const function&, const function&)
+{
+    return false;
+}
 
 }
