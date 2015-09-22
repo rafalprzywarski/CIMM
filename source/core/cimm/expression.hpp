@@ -246,6 +246,11 @@ inline auto first(const vector& v)
     return *begin(v);
 }
 
+inline auto rest(const vector& l)
+{
+    return is_empty(l) ? vector{} : vector({std::next(begin(l)), end(l)});
+}
+
 struct function
 {
     vector params;

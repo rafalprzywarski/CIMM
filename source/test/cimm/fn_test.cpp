@@ -27,4 +27,10 @@ TEST_F(fn_test, should_evaluate_functions_with_one_argument)
     EXPECT_EQ(integer(7), evaluate_parsed("((fn [f] (f 3 4)) +)"));
 }
 
+TEST_F(fn_test, should_evaluate_functions_with_multiple_arguments)
+{
+    EXPECT_EQ(integer(3), evaluate_parsed("((fn [x y] (+ x y)) -3 6)"));
+    EXPECT_EQ(integer(18), evaluate_parsed("((fn [x y z] (+ x y z)) 3 6 9)"));
+}
+
 }

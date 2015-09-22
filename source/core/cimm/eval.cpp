@@ -28,14 +28,23 @@ auto execute(environment&, native_function f, const list& args) -> expression
 
 auto replace_symbol(const list& l, const symbol& s, const expression& val) -> list
 {
-    return is_empty(l) ? l : cons(first(l) == s ? val : first(l), replace_symbol(rest(l), s, val));
+    if (is_empty(l))
+        return l;
+    return cons(first(l) == s ? val : first(l), replace_symbol(rest(l), s, val));
+}
+
+auto replace_symbols(const list& l, const vector& symbols, const list& values) -> list
+{
+    if (is_empty(symbols))
+        return l;
+    return replace_symbol(replace_symbols(l, rest(symbols), rest(values)), as_symbol(first(symbols)), first(values));
 }
 
 auto execute(environment& env, const function& f, const list& args) -> expression
 {
     if (is_empty(f.params))
         return evaluate_expression(env, f.body);
-    return evaluate_expression(env, replace_symbol(as_list(f.body), as_symbol(first(f.params)), first(args)));
+    return evaluate_expression(env, replace_symbols(as_list(f.body), f.params, args));
 }
 
 template <typename expression_type>
