@@ -26,18 +26,10 @@ auto execute(environment&, native_function f, const list& args) -> expression
     return f(args);
 }
 
-auto replace_symbol(const list& l, const symbol& s, const expression& val) -> list
+template <typename expression_type>
+auto replace_symbols(const expression_type& e, const vector&, const list&) -> expression_type
 {
-    if (is_empty(l))
-        return l;
-    return cons(first(l) == s ? val : first(l), replace_symbol(rest(l), s, val));
-}
-
-auto replace_symbols(const list& l, const vector& symbols, const list& values) -> list
-{
-    if (is_empty(symbols))
-        return l;
-    return replace_symbol(replace_symbols(l, rest(symbols), rest(values)), as_symbol(first(symbols)), first(values));
+    return e;
 }
 
 auto replace_symbols(const symbol& s, const vector& symbols, const list& values) -> expression
@@ -49,10 +41,13 @@ auto replace_symbols(const symbol& s, const vector& symbols, const list& values)
     return replace_symbols(s, rest(symbols), rest(values));
 }
 
-template <typename expression_type>
-auto replace_symbols(const expression_type& e, const vector&, const list&) -> expression_type
+auto replace_symbols(const list& l, const vector& symbols, const list& values) -> list
 {
-    return e;
+    if (is_empty(symbols) || is_empty(l))
+        return l;
+    return cons(
+        apply([&](auto& e) -> expression { return replace_symbols(e, symbols, values); }, first(l)),
+        replace_symbols(rest(l), symbols, values));
 }
 
 auto execute(environment& env, const function& f, const list& args) -> expression

@@ -43,7 +43,7 @@ TEST_F(fn_test, should_evaluate_functions_with_symbols_as_body)
     EXPECT_EQ(integer(3), evaluate_parsed("((fn [x y z] z) 1 2 3)"));
 }
 
-TEST_F(fn_test, DISABLED_replace_all_parameters_in_one_step)
+TEST_F(fn_test, replace_all_parameters_in_one_step)
 {
     evaluate_parsed("(def add (fn [x y] (+ x y)))");
     EXPECT_ANY_THROW(evaluate_parsed("(add 2 'x)"));
