@@ -1,16 +1,9 @@
 #include "eval_test.hpp"
-#include <cimm/parse.hpp>
 
 namespace cimm
 {
 
-struct fn_test : eval_test
-{
-    auto evaluate_parsed(const string& expr)
-    {
-        return evaluate(parse_expression(expr));
-    }
-};
+struct fn_test : eval_test { };
 
 TEST_F(fn_test, should_evaluate_functions_without_arguments)
 {

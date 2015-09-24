@@ -89,6 +89,11 @@ auto evaluate(environment& env, const symbol& s) -> expression
     return found->second;
 }
 
+auto evaluate(environment& env, const vector& v) -> expression
+{
+    return map(v, [&](auto& e) { return evaluate_expression(env, e); });
+}
+
 template <typename expression_type>
 auto evaluate(environment&, const expression_type& e) -> expression
 {

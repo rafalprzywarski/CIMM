@@ -102,4 +102,11 @@ TEST_F(eval_test, should_check_inequality_of_expressions)
     EXPECT_EQ(boolean(false), evaluate(list{symbol("not="), integer(3), integer(3)}));
 }
 
+TEST_F(eval_test, should_evaluate_elements_of_a_vector)
+{
+    EXPECT_EQ((vector{}), evaluate_parsed("[]"));
+    EXPECT_EQ((vector{integer(3)}), evaluate_parsed("[(+ 1 2)]"));
+    EXPECT_EQ((vector{integer(3), integer(4), integer(5)}), evaluate_parsed("[(+ 1 2) (- 6 2) (+ 2 3)]"));
+}
+
 }
