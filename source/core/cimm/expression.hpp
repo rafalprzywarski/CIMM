@@ -87,6 +87,15 @@ using expression_variant = boost::variant<
     boost::recursive_wrapper<function>
 >;
 
+template <typename expression_type>
+struct is_sequence : std::false_type { };
+
+template <>
+struct is_sequence<list> : std::true_type { };
+
+template <>
+struct is_sequence<vector> : std::true_type { };
+
 class expression
 {
 public:

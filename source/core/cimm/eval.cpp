@@ -27,7 +27,7 @@ auto execute(environment&, native_function f, const list& args) -> expression
 }
 
 template <typename expression_type>
-auto replace_symbols(const expression_type& e, const vector&, const list&) -> expression_type
+auto replace_symbols(const expression_type& e, const vector&, const list&) -> typename std::enable_if<!is_sequence<expression_type>::value, expression_type>::type
 {
     return e;
 }
@@ -41,22 +41,12 @@ auto replace_symbols(const symbol& s, const vector& symbols, const list& values)
     return replace_symbols(s, rest(symbols), rest(values));
 }
 
-auto replace_symbols(const list& l, const vector& symbols, const list& values) -> list;
-
-auto replace_symbols(const vector& v, const vector& symbols, const list& values) -> vector
+template <typename sequence_type>
+auto replace_symbols(const sequence_type& seq, const vector& symbols, const list& values) -> typename std::enable_if<is_sequence<sequence_type>::value, sequence_type>::type
 {
-    return map(v, [&](auto& e) {
+    return map(seq, [&](auto& e) {
         return apply([&](auto& e) -> expression { return replace_symbols(e, symbols, values); }, e);
     });
-}
-
-auto replace_symbols(const list& l, const vector& symbols, const list& values) -> list
-{
-    if (is_empty(l))
-        return l;
-    return cons(
-        apply([&](auto& e) -> expression { return replace_symbols(e, symbols, values); }, first(l)),
-        replace_symbols(rest(l), symbols, values));
 }
 
 auto execute(environment& env, const function& f, const list& args) -> expression
