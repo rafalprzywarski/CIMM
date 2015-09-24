@@ -62,6 +62,8 @@ auto replace_symbols(const list& seq, const vector& symbols, const list& values)
         auto params = first(rest(seq));
         return list{special::fn, params, replace_symbols(first(rest(rest(seq))), remove_params(symbols, as_vector(params)), values)};
     }
+    if (first(seq) == special::quote)
+        return seq;
 
     return map(seq, [&](auto& e) { return replace_symbols(e, symbols, values); });
 }

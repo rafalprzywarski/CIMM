@@ -65,4 +65,10 @@ TEST_F(fn_test, should_not_apply_parameters_overridden_by_an_inner_function)
     EXPECT_EQ(integer(6), evaluate_parsed("((fn [x y z] ((fn [x] ((fn [y] (+ x y z)) 2)) 1)) 9 8 3)"));
 }
 
+TEST_F(fn_test, should_not_apply_parameters_inside_quote)
+{
+    EXPECT_EQ(symbol("x"), evaluate_parsed("((fn [x] 'x) 5)"));
+    EXPECT_EQ(list{symbol("x")}, evaluate_parsed("((fn [x] '(x)) 5)"));
+}
+
 }

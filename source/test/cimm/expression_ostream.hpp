@@ -20,6 +20,11 @@ inline auto operator<<(std::ostream& os, const vector& v) -> std::ostream&
     return os << str(v);
 }
 
+inline auto operator<<(std::ostream& os, const symbol& s) -> std::ostream&
+{
+    return os << str(s);
+}
+
 inline auto operator<<(std::ostream& os, const expression& e) -> std::ostream&
 {
     return os << str(e);
