@@ -43,7 +43,7 @@ auto replace_symbols(const symbol& s, const vector& symbols, const list& values)
 
 auto replace_symbols(const list& l, const vector& symbols, const list& values) -> list
 {
-    if (is_empty(symbols) || is_empty(l))
+    if (is_empty(l))
         return l;
     return cons(
         apply([&](auto& e) -> expression { return replace_symbols(e, symbols, values); }, first(l)),
