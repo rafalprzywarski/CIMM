@@ -234,6 +234,16 @@ public:
     {
         return static_cast<const list&>(left) == static_cast<const list&>(right);
     }
+
+    template <typename F>
+    friend auto map(vector const& v, F&& f)
+    {
+        std::vector<expression> r;
+        r.reserve(count(v));
+        for (auto& e : v)
+          r.push_back(f(e));
+        return vector(r);
+    }
 };
 
 inline auto is_empty(const vector& v)

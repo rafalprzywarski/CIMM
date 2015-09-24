@@ -41,6 +41,11 @@ auto replace_symbols(const symbol& s, const vector& symbols, const list& values)
     return replace_symbols(s, rest(symbols), rest(values));
 }
 
+auto replace_symbols(const vector& v, const vector& symbols, const list& values) -> vector
+{
+    return map(v, [&](auto& e) { return replace_symbols(as_symbol(e), symbols, values); });
+}
+
 auto replace_symbols(const list& l, const vector& symbols, const list& values) -> list
 {
     if (is_empty(l))

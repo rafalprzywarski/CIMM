@@ -50,4 +50,11 @@ TEST_F(fn_test, replace_all_parameters_in_one_step)
     EXPECT_ANY_THROW(evaluate_parsed("(add 'y' 2)"));
 }
 
+TEST_F(fn_test, should_apply_parameters_in_vectors)
+{
+    EXPECT_EQ(vector{}, evaluate_parsed("((fn [u v] []) 2 1)"));
+    EXPECT_EQ(vector{integer(2)}, evaluate_parsed("((fn [u v] [u]) 2 1)"));
+    EXPECT_EQ((vector{integer(1), integer(2)}), evaluate_parsed("((fn [u v] [v u]) 2 1)"));
+}
+
 }
