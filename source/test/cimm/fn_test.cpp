@@ -50,7 +50,7 @@ TEST_F(fn_test, should_apply_parameters_in_vectors)
     EXPECT_EQ((vector{integer(1), integer(2)}), evaluate_parsed("((fn [u v] [v u]) 2 1)"));
 }
 
-TEST_F(fn_test, DISABLED_should_apply_parameters_in_vector_elements)
+TEST_F(fn_test, should_apply_parameters_in_vector_elements)
 {
     EXPECT_EQ((vector{integer(7)}), evaluate_parsed("((fn [x] [(+ x 2)]) 5)"));
 }
