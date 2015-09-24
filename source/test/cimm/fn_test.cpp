@@ -55,4 +55,14 @@ TEST_F(fn_test, should_apply_parameters_in_vector_elements)
     EXPECT_EQ((vector{integer(7)}), evaluate_parsed("((fn [x] [(+ x 2)]) 5)"));
 }
 
+TEST_F(fn_test, should_not_apply_parameters_overridden_by_an_inner_function)
+{
+    EXPECT_EQ(integer(3), evaluate_parsed("((fn [x] (+ x ((fn [x] x) 1))) 2)"));
+    EXPECT_EQ(integer(4), evaluate_parsed("((fn [x y] ((fn [x] (+ x y)) 1)) 2 3)"));
+    EXPECT_EQ(
+        integer(1 + 2 + 64 + 16 + 4 + 8),
+        evaluate_parsed("((fn [x y z] (+ ((fn [x y] (+ x y z)) 1 2) ((fn [z y] (+ x y z)) 4 8))) 16 32 64)"));
+    EXPECT_EQ(integer(6), evaluate_parsed("((fn [x y z] ((fn [x] ((fn [y] (+ x y z)) 2)) 1)) 9 8 3)"));
+}
+
 }
