@@ -23,7 +23,8 @@ auto fn(environment& env, const list& args) -> expression
 
 auto if_(environment&, const list& args) -> expression
 {
-    return first(rest(args));
+    auto cond = first(args);
+    return (cond != false && cond != nil) ? first(rest(args)) : first(rest(rest(args)));
 }
 
 auto execute(environment&, native_function f, const list& args) -> expression

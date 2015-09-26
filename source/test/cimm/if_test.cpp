@@ -19,4 +19,10 @@ TEST_F(if_test, should_return_the_first_value_if_the_condition_is_true_without_e
     EXPECT_EQ(parse(":first"), evaluate_parsed("(if + :first (not-evaluated))"));
 }
 
+TEST_F(if_test, should_return_the_second_value_if_the_condition_is_false_without_evaluating_the_first_value)
+{
+    EXPECT_EQ(parse(":second"), evaluate_parsed("(if false (not-evaluated) :second)"));
+    EXPECT_EQ(parse(":second"), evaluate_parsed("(if nil (not-evaluated) :second)"));
+}
+
 }
