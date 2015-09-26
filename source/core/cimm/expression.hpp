@@ -199,7 +199,7 @@ inline auto is_empty(const list& l)
 
 inline auto first(const list& l)
 {
-    return *begin(l);
+    return is_empty(l) ? nil : *begin(l);
 }
 
 inline auto rest(const list& l)
