@@ -32,6 +32,8 @@ struct arity_error : evaluation_error
 {
     arity_error(const string& msg)
         : evaluation_error(msg) { }
+    arity_error(integer n, const string& from)
+        : evaluation_error("Wrong number of args (" + str(n) + ") passed to: " + from) { }
 };
 
 }

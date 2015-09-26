@@ -3,7 +3,21 @@
 namespace cimm
 {
 
-struct list_test : eval_test { };
+struct list_test : eval_test
+{
+    void assertArityError(integer n, const string& from, const string& source)
+    {
+        try
+        {
+            evaluate_parsed(source);
+            FAIL() << "expected an exception";
+        }
+        catch (arity_error& e)
+        {
+            EXPECT_EQ("Wrong number of args (" + str(n) + ") passed to: " + from, e.what());
+        }
+    }
+};
 
 TEST_F(list_test, should_create_a_list)
 {
@@ -22,9 +36,9 @@ TEST_F(list_test, first_should_return_nil_for_an_empty_list)
     EXPECT_EQ(expression(nil), evaluate(list{symbol("first"), list{special::quote, list{}}}));
 }
 
-TEST_F(list_test, first_should_return_nil_for_no_arguments)
+TEST_F(list_test, first_should_fail_when_given_no_arguments)
 {
-    EXPECT_EQ(expression(nil), evaluate(list{symbol("first")}));
+    assertArityError(0, "first", "(first)");
 }
 
 TEST_F(list_test, rest_should_return_an_empty_list_for_no_arguments)

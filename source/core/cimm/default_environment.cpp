@@ -93,7 +93,7 @@ auto list_f(const list& l) -> expression
 auto first_f(const list& l) -> expression
 {
     if (is_empty(l))
-      return nil;
+        throw arity_error(0, "first");
     list a = as_list(first(l));
     return is_empty(a) ? nil : first(a);
 }
