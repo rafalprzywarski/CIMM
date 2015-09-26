@@ -139,6 +139,11 @@ auto vector_f(const list& args) -> expression
     return vector(args);
 }
 
+auto vec_f(const list& args) -> expression
+{
+    return vector(as_list(first(args)));
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -159,6 +164,7 @@ auto create_default_environment() -> environment
     define_native_function(env, symbol("cons"), cons_f);
     define_native_function(env, symbol("conj"), conj_f);
     define_native_function(env, symbol("vector"), vector_f);
+    define_native_function(env, symbol("vec"), vec_f);
 
     return env;
 }
