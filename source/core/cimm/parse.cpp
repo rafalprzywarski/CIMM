@@ -24,7 +24,7 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, expression(), a
     expression_grammar() : expression_grammar::base_type(expression_rule, "expression-grammar")
     {
         quote_rule = qi::lit('\'') > expression_rule[_val = bind(quote_expr, _1)];
-        expression_variant_rule = qi::int_ | boolean_rule | list_rule | vector_rule | string_rule | keyword_rule | symbol_rule;
+        expression_variant_rule = qi::int_ | boolean_rule | list_rule | vector_rule | string_rule | keyword_rule | nil_rule | symbol_rule;
     }
 
     template <typename type>
@@ -41,6 +41,7 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, expression(), a
     rule<std::vector<expression>> list_vector_rule{qi::lit('(') >> *expression_rule >> qi::lit(')')};
     rule<std::vector<expression>> vector_vector_rule{qi::lit('[') >> *expression_rule >> qi::lit(']')};
     rule<boolean> boolean_rule{(qi::lit("true") >> qi::attr(true)) | (qi::lit("false") >> qi::attr(false))};
+    rule<nil_type> nil_rule{qi::lit("nil") >> qi::attr(nil)};
     rule<list> list_rule{list_vector_rule};
     rule<vector> vector_rule{vector_vector_rule};
 };

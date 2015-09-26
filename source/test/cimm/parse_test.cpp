@@ -80,4 +80,9 @@ TEST(parse_test, should_parse_a_vector_of_expressions)
     EXPECT_EQ(expression(vector{keyword("x")}), parse_expression("[:x]"));
 }
 
+TEST(parse_test, should_parse_nil)
+{
+    EXPECT_EQ(nil, parse_expression("nil"));
+}
+
 }
