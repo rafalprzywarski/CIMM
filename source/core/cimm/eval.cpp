@@ -21,10 +21,10 @@ auto fn(environment& env, const list& args) -> expression
     return function{as_vector(first(args)), first(rest(args))};
 }
 
-auto if_(environment&, const list& args) -> expression
+auto if_(environment& env, const list& args) -> expression
 {
     auto cond = first(args);
-    return (cond != false && cond != nil) ? first(rest(args)) : first(rest(rest(args)));
+    return evaluate_expression(env, first(rest(cond != false && cond != nil ? args : rest(args))));
 }
 
 auto execute(environment&, native_function f, const list& args) -> expression
