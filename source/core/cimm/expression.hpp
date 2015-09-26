@@ -215,6 +215,11 @@ inline auto cons(expression e, const list& l)
     return list(v);
 }
 
+inline auto conj(const list& l, expression e)
+{
+    return cons(e, l);
+}
+
 class vector : private list
 {
 public:
@@ -231,6 +236,11 @@ public:
     friend auto end(const vector& v)
     {
         return end(static_cast<const list&>(v));
+    }
+
+    friend auto count(const vector& v) -> integer
+    {
+        return count(static_cast<const list&>(v));
     }
 
     friend auto operator==(const vector& left, const vector& right)
@@ -273,6 +283,26 @@ struct function
 inline auto operator==(const function&, const function&)
 {
     return false;
+}
+
+inline auto conj(const vector& v, expression e)
+{
+    std::vector<expression> r;
+    r.reserve(count(v) + 1);
+    r.assign(begin(v), end(v));
+    r.push_back(std::move(e));
+    return vector(r);
+}
+
+template <typename expression_type>
+inline auto conj(const expression_type& , const expression& )
+{
+    return nil;
+}
+
+inline auto conj(const expression& seq, const expression& e) -> expression
+{
+    return apply([&](auto& seq) -> expression { return conj(seq, e); }, seq);
 }
 
 }

@@ -131,7 +131,7 @@ auto cons_f(const list& args) -> expression
 
 auto conj_f(const list& args) -> expression
 {
-    return cons(first(rest(args)), as_list(first(args)));
+    return conj(first(args), first(rest(args)));
 }
 
 auto vector_f(const list& args) -> expression

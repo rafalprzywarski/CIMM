@@ -19,4 +19,11 @@ TEST_F(vector_test, should_create_a_vector_from_a_list)
     EXPECT_EQ(parse("[:a \"b\"]"), evaluate_parsed("(vec '(:a \"b\"))"));
 }
 
+TEST_F(vector_test, conj_should_add_an_element_at_the_end_of_the_vector)
+{
+    EXPECT_EQ(parse("[5]"), evaluate_parsed("(conj [] 5)"));
+    EXPECT_EQ(parse("[5 7]"), evaluate_parsed("(conj [5] 7)"));
+    EXPECT_EQ(parse("[5 7 9]"), evaluate_parsed("(conj [5 7] 9)"));
+}
+
 }
