@@ -23,8 +23,11 @@ auto fn(environment& env, const list& args) -> expression
 
 auto if_(environment& env, const list& args) -> expression
 {
+    if (count(args) < 2)
+        throw arity_error("too few arguments to if");
     auto cond = first(args);
-    return evaluate_expression(env, first(rest(cond != false && cond != nil ? args : rest(args))));
+    auto is_true = cond != false && cond != nil;
+    return evaluate_expression(env, first(rest(is_true ? args : rest(args))));
 }
 
 auto execute(environment&, native_function f, const list& args) -> expression

@@ -37,4 +37,26 @@ TEST_F(if_test, should_return_nil_if_second_value_is_not_provided)
     EXPECT_EQ(nil, evaluate_parsed("(if false 5)"));
 }
 
+TEST_F(if_test, should_fail_if_not_given_enough_arguments)
+{
+    try
+    {
+        evaluate_parsed("(if)");
+        FAIL() << "expected an exception";
+    }
+    catch (arity_error& e)
+    {
+        ASSERT_STREQ("too few arguments to if", e.what());
+    }
+    try
+    {
+        evaluate_parsed("(if true)");
+        FAIL() << "expected an exception";
+    }
+    catch (arity_error& e)
+    {
+        ASSERT_STREQ("too few arguments to if", e.what());
+    }
+}
+
 }

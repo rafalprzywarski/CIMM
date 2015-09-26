@@ -28,4 +28,10 @@ struct undefined_symbol_error : evaluation_error
         : evaluation_error("undefined symbol \'" + str(name) + "\'") { }
 };
 
+struct arity_error : evaluation_error
+{
+    arity_error(const string& msg)
+        : evaluation_error(msg) { }
+};
+
 }
