@@ -32,7 +32,7 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, expression(), a
 
     rule<string> string_rule{qi::lit('\"') >> qi::no_skip[*(qi::char_ - '\"')] >> qi::lit('\"')};
     rule<string> char_seq_rule{qi::no_skip[+(qi::char_ - ')' - ']' - ' ')]};
-    rule<string> keyword_char_seq_rule{qi::no_skip[qi::lit(':') >> +(qi::char_ - ')' - ' ')]};
+    rule<string> keyword_char_seq_rule{qi::lit(':') >> char_seq_rule};
     rule<keyword> keyword_rule{keyword_char_seq_rule};
     rule<symbol> symbol_rule{char_seq_rule};
     rule<expression_variant> expression_variant_rule;

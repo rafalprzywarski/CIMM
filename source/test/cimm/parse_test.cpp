@@ -33,6 +33,7 @@ TEST(parse_test, should_parse_a_list_of_expressions)
     EXPECT_EQ(expression(list{integer(1)}), parse_expression("(1)"));
     EXPECT_EQ(expression(list{symbol("+"), symbol("abc"), integer(-3)}), parse_expression("(+ abc -3)"));
     EXPECT_EQ(expression(list{list{list{symbol("x"), integer(-3)}, integer(1)}, list{integer(7)}}), parse_expression("(((x -3) 1) (7))"));
+    EXPECT_EQ(expression(list{keyword("x")}), parse_expression("(:x)"));
 }
 
 TEST(parse_test, should_parse_boolean_values)
@@ -76,6 +77,7 @@ TEST(parse_test, should_parse_a_vector_of_expressions)
     EXPECT_EQ(expression(vector{integer(1)}), parse_expression("[1]"));
     EXPECT_EQ(expression(vector{symbol("+"), symbol("abc"), integer(-3)}), parse_expression("[+ abc -3]"));
     EXPECT_EQ(expression(vector{vector{list{symbol("x"), integer(-3)}, integer(1)}, list{integer(7)}}), parse_expression("[[(x -3) 1] (7)]"));
+    EXPECT_EQ(expression(vector{keyword("x")}), parse_expression("[:x]"));
 }
 
 }
