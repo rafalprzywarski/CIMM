@@ -43,6 +43,7 @@ namespace special
 static const symbol quote{"quote"};
 static const symbol def{"def"};
 static const symbol fn{"fn"};
+static const symbol if_{"if"};
 
 }
 

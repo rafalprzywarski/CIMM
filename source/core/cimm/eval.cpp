@@ -21,6 +21,11 @@ auto fn(environment& env, const list& args) -> expression
     return function{as_vector(first(args)), first(rest(args))};
 }
 
+auto if_(environment&, const list& args) -> expression
+{
+    return first(rest(args));
+}
+
 auto execute(environment&, native_function f, const list& args) -> expression
 {
     return f(args);
@@ -95,6 +100,8 @@ auto evaluate(environment& env, const list& l) -> expression
         return def(env, rest(l));
     if (name == special::fn)
         return fn(env, rest(l));
+    if (name == special::if_)
+        return if_(env, rest(l));
     auto evaluated = map(l, [&env](auto const& a) { return evaluate_expression(env, a); });
     return apply([&](const auto& first) { return execute(env, first, rest(evaluated)); }, first(evaluated));
 }
