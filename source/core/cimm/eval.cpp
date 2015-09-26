@@ -25,6 +25,8 @@ auto if_(environment& env, const list& args) -> expression
 {
     if (count(args) < 2)
         throw arity_error("too few arguments to if");
+    if (count(args) > 3)
+        throw arity_error("too many arguments to if");
     auto cond = first(args);
     auto is_true = cond != false && cond != nil;
     return evaluate_expression(env, first(rest(is_true ? args : rest(args))));

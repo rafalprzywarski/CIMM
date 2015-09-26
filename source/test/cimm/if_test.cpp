@@ -59,4 +59,26 @@ TEST_F(if_test, should_fail_if_not_given_enough_arguments)
     }
 }
 
+TEST_F(if_test, should_fail_if_given_too_many_arguments)
+{
+    try
+    {
+        evaluate_parsed("(if true 1 2 :extra)");
+        FAIL() << "expected an exception";
+    }
+    catch (arity_error& e)
+    {
+        ASSERT_STREQ("too many arguments to if", e.what());
+    }
+    try
+    {
+        evaluate_parsed("(if true 1 2 :extra :more)");
+        FAIL() << "expected an exception";
+    }
+    catch (arity_error& e)
+    {
+        ASSERT_STREQ("too many arguments to if", e.what());
+    }
+}
+
 }
