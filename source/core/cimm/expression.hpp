@@ -220,6 +220,9 @@ class vector : private list
 public:
     using list::list;
 
+    vector() = default;
+    explicit vector(const list& l) : list(l) { }
+
     friend auto begin(const vector& v)
     {
         return begin(static_cast<const list&>(v));

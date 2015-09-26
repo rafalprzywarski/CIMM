@@ -134,6 +134,11 @@ auto conj_f(const list& args) -> expression
     return cons(first(rest(args)), as_list(first(args)));
 }
 
+auto vector_f(const list& args) -> expression
+{
+    return vector(args);
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -153,6 +158,7 @@ auto create_default_environment() -> environment
     define_native_function(env, symbol("count"), count_f);
     define_native_function(env, symbol("cons"), cons_f);
     define_native_function(env, symbol("conj"), conj_f);
+    define_native_function(env, symbol("vector"), vector_f);
 
     return env;
 }

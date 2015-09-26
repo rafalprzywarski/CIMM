@@ -21,6 +21,11 @@ struct eval_test : testing::Test
     {
         return evaluate(parse_expression(expr));
     }
+
+    auto parse(const string& expr)
+    {
+        return parse_expression(expr);
+    }
 };
 
 }
