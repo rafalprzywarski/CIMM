@@ -12,7 +12,7 @@ public:
     slist(expression e, slist next) : node_(std::make_shared<node>(std::move(e), std::move(next.node_))), count_(next.count() + 1) { }
     integer count() const { return count_; }
     expression first() const { return node_ ? node_->value : nil; }
-    auto cons(expression e) const { return slist{std::make_shared<node>(std::move(e), node_), count_ + 1}; }
+    auto cons(expression e) const { return slist{std::move(e), *this}; }
     auto next() const { return node_ ? slist{node_->next, count_ - 1} : slist{}; }
 
 private:
