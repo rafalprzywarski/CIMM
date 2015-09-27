@@ -64,4 +64,19 @@ TEST(slist_test, next_should_return_a_list_without_the_first_element)
     ASSERT_EQ(nil, l3.first());
 }
 
+TEST(slist_test, should_be_equality_comparable)
+{
+    ASSERT_TRUE(slist{} == slist{});
+    ASSERT_FALSE(slist{} == slist{integer(5)});
+    ASSERT_FALSE(slist{integer(5)} == slist{});
+    ASSERT_FALSE(slist{nil} == slist{});
+    ASSERT_TRUE(slist{integer(5)} == slist{integer(5)});
+    ASSERT_FALSE(slist{integer(7)} == slist{integer(5)});
+    ASSERT_TRUE((slist{integer(5), slist{integer(7)}} == slist{integer(5), slist{integer(7)}}));
+    ASSERT_FALSE((slist{integer(5)} == slist{integer(5), slist{integer(7)}}));
+    ASSERT_FALSE((slist{integer(5), slist{integer(7)}} == slist{integer(5)}));
+    ASSERT_FALSE((slist{integer(5), slist{integer(6)}} == slist{integer(5), slist{integer(7)}}));
+    ASSERT_FALSE((slist{integer(5), slist{integer(7)}} == slist{integer(5), slist{integer(6)}}));
+}
+
 }

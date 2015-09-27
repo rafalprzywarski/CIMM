@@ -15,6 +15,11 @@ public:
     auto cons(expression e) const { return slist{std::move(e), *this}; }
     auto next() const { return node_ ? slist{node_->next, count_ - 1} : slist{}; }
 
+    friend auto operator==(const slist& left, const slist& right)
+    {
+        return left.count() == right.count() && (!left.node_ || *left.node_ == *right.node_);
+    }
+
 private:
 
     struct node
@@ -24,6 +29,11 @@ private:
 
         node(expression value, std::shared_ptr<node> next = nullptr)
             : value(std::move(value)), next(std::move(next)) { }
+
+        auto operator==(const node& other) const -> bool
+        {
+            return value == other.value && (!next || *next == *other.next);
+        }
     };
 
     std::shared_ptr<node> node_;
