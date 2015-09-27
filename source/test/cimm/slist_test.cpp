@@ -17,6 +17,23 @@ TEST(slist_test, should_be_constructible_from_one_element)
     ASSERT_EQ(integer(5), l.first());
 }
 
+TEST(slist_test, should_be_constructible_from_an_element_and_a_list)
+{
+    slist empty{};
+
+    slist l1{expression(integer(11)), empty};
+    ASSERT_EQ(1, l1.count());
+    ASSERT_EQ(integer(11), l1.first());
+    ASSERT_EQ(0, l1.next().count());
+    ASSERT_EQ(nil, l1.next().first());
+
+    slist l2{expression(integer(22)), l1};
+    ASSERT_EQ(2, l2.count());
+    ASSERT_EQ(integer(22), l2.first());
+    ASSERT_EQ(1, l2.next().count());
+    ASSERT_EQ(integer(11), l2.next().first());
+}
+
 TEST(slist_test, cons_should_create_a_new_list_an_element_added_at_the_beginning)
 {
     auto l = slist{}.cons(nil);

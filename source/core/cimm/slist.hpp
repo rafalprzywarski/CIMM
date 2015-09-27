@@ -9,6 +9,7 @@ class slist
 public:
     slist() = default;
     slist(expression e) : node_(std::make_shared<node>(std::move(e))), count_(1) { }
+    slist(expression e, slist next) : node_(std::make_shared<node>(std::move(e), std::move(next.node_))), count_(next.count() + 1) { }
     integer count() const { return count_; }
     expression first() const { return node_ ? node_->value : nil; }
     auto cons(expression e) const { return slist{std::make_shared<node>(std::move(e), node_), count_ + 1}; }
