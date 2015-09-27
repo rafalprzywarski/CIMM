@@ -8,20 +8,21 @@ class slist
 {
 public:
     slist() = default;
+    slist(expression e) : node_(std::make_shared<node>(std::move(e))), count_(1) { }
     integer count() const { return count_; }
     expression first() const { return node_ ? node_->value : nil; }
-    auto cons(expression e) const { return slist{std::make_shared<node>(e, node_), count_ + 1}; }
+    auto cons(expression e) const { return slist{std::make_shared<node>(std::move(e), node_), count_ + 1}; }
     auto next() const { return node_ ? slist{node_->next, count_ - 1} : slist{}; }
 
 private:
 
     struct node
     {
-        expression value;
-        std::shared_ptr<node> next;
+        const expression value;
+        const std::shared_ptr<node> next;
 
-        node(expression value, std::shared_ptr<node> next)
-            : value(value), next(next) { }
+        node(expression value, std::shared_ptr<node> next = nullptr)
+            : value(std::move(value)), next(std::move(next)) { }
     };
 
     std::shared_ptr<node> node_;
