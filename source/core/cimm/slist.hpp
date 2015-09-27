@@ -13,6 +13,7 @@ public:
     integer count() const { return count_; }
     expression first() const { return value; }
     auto cons(expression e) const { return slist{e, *this}; }
+    auto next() const { return slist{}; }
 private:
     integer count_ = 0;
     expression value;

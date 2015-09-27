@@ -20,4 +20,11 @@ TEST(slist_test, cons_should_create_a_new_list_an_element_added_at_the_beginning
     ASSERT_EQ(integer(5), l2.first());
 }
 
+TEST(slist_test, next_should_return_an_empty_list_for_an_empty_list)
+{
+    auto l = slist{}.next();
+    ASSERT_EQ(0, l.count());
+    ASSERT_EQ(nil, l.first());
+}
+
 }
