@@ -7,8 +7,15 @@ namespace cimm
 class slist
 {
 public:
-    integer count() const { return 0; }
-    expression first() const { return nil; }
+    slist() = default;
+    slist(expression e, const slist& next)
+        : count_(next.count() + 1), value(std::move(e)) { }
+    integer count() const { return count_; }
+    expression first() const { return value; }
+    auto cons(expression e) const { return slist{e, *this}; }
+private:
+    integer count_ = 0;
+    expression value;
 };
 
 }
