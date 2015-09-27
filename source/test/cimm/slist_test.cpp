@@ -27,4 +27,17 @@ TEST(slist_test, next_should_return_an_empty_list_for_an_empty_list)
     ASSERT_EQ(nil, l.first());
 }
 
+TEST(slist_test, next_should_return_a_list_without_the_first_element)
+{
+    auto l = slist{}.cons(integer(2)).cons(integer(3)).cons(integer(5)).next();
+    ASSERT_EQ(2, l.count());
+    ASSERT_EQ(integer(3), l.first());
+    auto l2 = l.next();
+    ASSERT_EQ(1, l2.count());
+    ASSERT_EQ(integer(2), l2.first());
+    auto l3 = l2.next();
+    ASSERT_EQ(0, l3.count());
+    ASSERT_EQ(nil, l3.first());
+}
+
 }
