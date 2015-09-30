@@ -29,6 +29,11 @@ private:
         return l.value.size();
     }
 
+    friend auto is_empty(const list& l)
+    {
+        return l.value.empty();
+    }
+
     template <typename F>
     friend auto map(list const& l, F&& f)
     {
@@ -39,35 +44,30 @@ private:
         return list(r);
     }
 
+    friend auto first(const list& l)
+    {
+        return is_empty(l) ? nil : *begin(l.value);
+    }
+
+    friend auto rest(const list& l)
+    {
+        return is_empty(l) ? list{} : list({std::next(begin(l.value)), end(l.value)});
+    }
+
+    friend auto cons(expression e, const list& l)
+    {
+        std::vector<expression> v;
+        v.reserve(count(l) + 1);
+        v.push_back(std::move(e));
+        v.insert(end(v), begin(l.value), end(l.value));
+        return list(v);
+    }
+
     friend auto operator==(const list& left, const list& right)
     {
         return left.value == right.value;
     }
 };
-
-inline auto is_empty(const list& l)
-{
-    return begin(l) == end(l);
-}
-
-inline auto first(const list& l)
-{
-    return is_empty(l) ? nil : *begin(l);
-}
-
-inline auto rest(const list& l)
-{
-    return is_empty(l) ? list{} : list({std::next(begin(l)), end(l)});
-}
-
-inline auto cons(expression e, const list& l)
-{
-    std::vector<expression> v;
-    v.reserve(count(l) + 1);
-    v.push_back(std::move(e));
-    v.insert(end(v), begin(l), end(l));
-    return list(v);
-}
 
 inline auto conj(const list& l, expression e)
 {
