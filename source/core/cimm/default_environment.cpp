@@ -24,7 +24,7 @@ auto is_equal(const list& l) -> boolean
 {
     auto e = begin(l);
     if (e == end(l))
-      return true;
+      throw arity_error(count(l), "=");
     auto first = *e;
     while (++e != end(l))
         if (first != *e)

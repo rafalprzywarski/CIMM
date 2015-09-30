@@ -57,7 +57,6 @@ TEST_F(eval_test, should_evaluate_function_arguments)
 
 TEST_F(eval_test, should_check_equality_of_boolean_values)
 {
-    EXPECT_EQ(boolean(true), evaluate(list{symbol("=")}));
     EXPECT_EQ(boolean(true), evaluate(list{symbol("="), boolean(true)}));
     EXPECT_EQ(boolean(true), evaluate(list{symbol("="), boolean(false)}));
     EXPECT_EQ(boolean(true), evaluate(list{symbol("="), boolean(false), boolean(false)}));
@@ -66,6 +65,19 @@ TEST_F(eval_test, should_check_equality_of_boolean_values)
     EXPECT_EQ(boolean(false), evaluate(list{symbol("="), boolean(false), boolean(true), boolean(false)}));
     EXPECT_EQ(boolean(false), evaluate(list{symbol("="), boolean(false), boolean(false), boolean(true)}));
     EXPECT_EQ(boolean(true), evaluate(list{symbol("="), boolean(true), boolean(true), boolean(true)}));
+}
+
+TEST_F(eval_test, equality_should_fail_when_given_no_arguments)
+{
+    try
+    {
+        evaluate_parsed("(=)");
+        FAIL() << "expected an exception";
+    }
+    catch (arity_error& e)
+    {
+        ASSERT_STREQ("Wrong number of args (0) passed to: =", e.what());
+    }
 }
 
 TEST_F(eval_test, should_check_equality_of_integers)
