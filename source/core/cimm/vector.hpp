@@ -10,7 +10,12 @@ class vector
 {
 public:
     vector() = default;
-    explicit vector(const list& l) : value(begin(l), end(l)) { }
+    explicit vector(list l)
+    {
+        value.reserve(count(l));
+        for (; not is_empty(l); l = rest(l))
+            value.push_back(first(l));
+    }
     vector(const std::initializer_list<expression>& l) : value(l) { }
     explicit vector(const std::vector<expression>& v) : value(std::move(v)) { }
 
