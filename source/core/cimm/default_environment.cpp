@@ -10,8 +10,8 @@ namespace
 auto add_integers(const list& l) -> expression
 {
     integer sum{0};
-    for (auto e = begin(l); e != end(l); ++e)
-        sum += as_integer(*e);
+    for (auto e = l; not is_empty(e); e = rest(e))
+        sum += as_integer(first(e));
     return sum;
 }
 
@@ -22,12 +22,11 @@ auto subtract_integers(const list& l) -> expression
 
 auto is_equal(const list& l) -> boolean
 {
-    auto e = begin(l);
-    if (e == end(l))
+    if (is_empty(l))
       throw arity_error(count(l), "=");
-    auto first = *e;
-    while (++e != end(l))
-        if (first != *e)
+    auto c = first(l);
+    for (auto e = rest(l); not is_empty(e); e = rest(e))
+        if (c != first(e))
             return false;
     return true;
 }
