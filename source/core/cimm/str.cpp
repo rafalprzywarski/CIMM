@@ -7,8 +7,7 @@ namespace cimm
 namespace
 {
 
-template <typename C>
-string join(char open, C const& c, char close)
+string join(char open, vector const& c, char close)
 {
     std::ostringstream os;
     os << open;
@@ -17,6 +16,20 @@ string join(char open, C const& c, char close)
         if (e != begin(c))
           os << ' ';
         os << str(*e);
+    }
+    os << close;
+    return os.str();
+}
+
+string join(char open, list const& l, char close)
+{
+    std::ostringstream os;
+    os << open;
+    for (auto e = l; not is_empty(e); e = rest(e))
+    {
+        if (count(e) != count(l))
+          os << ' ';
+        os << str(first(e));
     }
     os << close;
     return os.str();

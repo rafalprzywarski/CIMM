@@ -14,16 +14,6 @@ public:
 private:
     std::vector<expression> value;
 
-    friend auto begin(const list& l)
-    {
-        return begin(l.value);
-    }
-
-    friend auto end(const list& l)
-    {
-        return end(l.value);
-    }
-
     friend auto count(const list& l) -> integer
     {
         return l.value.size();
