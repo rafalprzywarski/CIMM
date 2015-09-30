@@ -221,32 +221,32 @@ inline auto conj(const list& l, expression e)
     return cons(e, l);
 }
 
-class vector : private list
+class vector
 {
 public:
-    using list::list;
-
     vector() = default;
-    explicit vector(const list& l) : list(l) { }
+    explicit vector(const list& l) : value(begin(l), end(l)) { }
+    vector(const std::initializer_list<expression>& l) : value(l) { }
+    explicit vector(const std::vector<expression>& v) : value(std::move(v)) { }
 
     friend auto begin(const vector& v)
     {
-        return begin(static_cast<const list&>(v));
+        return begin(v.value);
     }
 
     friend auto end(const vector& v)
     {
-        return end(static_cast<const list&>(v));
+        return end(v.value);
     }
 
     friend auto count(const vector& v) -> integer
     {
-        return count(static_cast<const list&>(v));
+        return v.value.size();
     }
 
     friend auto operator==(const vector& left, const vector& right)
     {
-        return static_cast<const list&>(left) == static_cast<const list&>(right);
+        return left.value == right.value;
     }
 
     template <typename F>
@@ -258,6 +258,8 @@ public:
           r.push_back(f(e));
         return vector(r);
     }
+private:
+    std::vector<expression> value;
 };
 
 inline auto is_empty(const vector& v)
