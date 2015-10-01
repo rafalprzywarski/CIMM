@@ -53,28 +53,28 @@ private:
         return list(l.value.cons(std::move(e)));
     }
 
-    friend auto reverse(list l) -> list
-    {
-        slist r;
-        for (; not is_empty(l); l = rest(l))
-            r = r.cons(first(l));
-        return r;
-    }
-
-    template <typename F>
-    friend auto map(list l, F&& f) -> list
-    {
-        list mapped;
-        for (; not is_empty(l); l = rest(l))
-            mapped = cons(f(first(l)), mapped);
-        return reverse(mapped);
-    }
-
     friend auto operator==(const list& left, const list& right)
     {
         return left.value == right.value;
     }
 };
+
+inline auto reverse(list l) -> list
+{
+    list r;
+    for (; not is_empty(l); l = rest(l))
+        r = cons(first(l), r);
+    return r;
+}
+
+template <typename F>
+inline auto map(list l, F&& f) -> list
+{
+    list mapped;
+    for (; not is_empty(l); l = rest(l))
+        mapped = cons(f(first(l)), mapped);
+    return reverse(mapped);
+}
 
 inline auto conj(const list& l, expression e)
 {
