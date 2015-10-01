@@ -76,7 +76,7 @@ auto replace_symbols(const list& seq, const vector& symbols, const list& values)
     if (first(seq) == special::quote)
         return seq;
 
-    return map(seq, [&](auto& e) { return replace_symbols(e, symbols, values); });
+    return map(seq, [&](auto const& e) { return replace_symbols(e, symbols, values); });
 }
 
 auto replace_symbols(const expression& e, const vector& symbols, const list& values) -> expression

@@ -1,6 +1,8 @@
 #pragma once
 #include "expression.hpp"
+#include "slist.hpp"
 #include <vector>
+#include <boost/range/adaptor/reversed.hpp>
 
 namespace cimm
 {
@@ -9,48 +11,63 @@ class list
 {
 public:
     list() = default;
-    list(const std::initializer_list<expression>& l) : value(l) { }
-    list(const std::vector<expression>& v) : value(v) { }
+    list(const std::initializer_list<expression>& l)
+    {
+        for (auto& e : boost::adaptors::reverse(l))
+            value = slist{e, value};
+    }
+
+    list(const std::vector<expression>& v)
+    {
+        for (auto& e : boost::adaptors::reverse(v))
+            value = slist{e, value};
+    }
+
 private:
-    std::vector<expression> value;
+    slist value;
+
+    list(slist l) : value(std::move(l)) { }
 
     friend auto count(const list& l) -> integer
     {
-        return l.value.size();
+        return l.value.count();
     }
 
     friend auto is_empty(const list& l)
     {
-        return l.value.empty();
+        return l.value.count() == 0;
     }
 
-    template <typename F>
-    friend auto map(list const& l, F&& f)
+    friend auto first(const list& l) -> expression
     {
-        std::vector<expression> r;
-        r.reserve(count(l));
-        for (auto& e : l.value)
-          r.push_back(f(e));
-        return list(r);
-    }
-
-    friend auto first(const list& l)
-    {
-        return is_empty(l) ? nil : *begin(l.value);
+        return l.value.first();
     }
 
     friend auto rest(const list& l)
     {
-        return is_empty(l) ? list{} : list({std::next(begin(l.value)), end(l.value)});
+        return list(l.value.next());
     }
 
     friend auto cons(expression e, const list& l)
     {
-        std::vector<expression> v;
-        v.reserve(count(l) + 1);
-        v.push_back(std::move(e));
-        v.insert(end(v), begin(l.value), end(l.value));
-        return list(v);
+        return list(l.value.cons(std::move(e)));
+    }
+
+    friend auto reverse(list l) -> list
+    {
+        slist r;
+        for (; not is_empty(l); l = rest(l))
+            r = r.cons(first(l));
+        return r;
+    }
+
+    template <typename F>
+    friend auto map(list l, F&& f) -> list
+    {
+        list mapped;
+        for (; not is_empty(l); l = rest(l))
+            mapped = cons(f(first(l)), mapped);
+        return reverse(mapped);
     }
 
     friend auto operator==(const list& left, const list& right)
