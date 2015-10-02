@@ -151,7 +151,23 @@ inline auto operator!=(const expression& left, const expression& right)
     return !(left == right);
 }
 
+inline auto operator==(const function&, const function&)
+{
+    return false;
+}
+
 }
 
 #include "list.hpp"
 #include "vector.hpp"
+
+namespace cimm
+{
+
+struct function
+{
+    vector params;
+    expression body;
+};
+
+}

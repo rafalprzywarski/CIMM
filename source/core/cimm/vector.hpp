@@ -67,17 +67,6 @@ inline auto rest(const vector& l)
     return is_empty(l) ? vector{} : vector({std::next(begin(l)), end(l)});
 }
 
-struct function
-{
-    vector params;
-    expression body;
-};
-
-inline auto operator==(const function&, const function&)
-{
-    return false;
-}
-
 inline auto conj(const vector& v, expression e)
 {
     std::vector<expression> r;
