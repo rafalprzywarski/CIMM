@@ -15,6 +15,21 @@ public:
     auto cons(expression e) const { return slist{std::move(e), *this}; }
     auto next() const { return node_ ? slist{node_->next, count_ - 1} : slist{}; }
 
+    template <typename F>
+    auto map(F&& f) const
+    {
+        if (count() == 0)
+            return *this;
+
+        auto dnode = std::make_shared<node>(f(node_->value));
+        slist d{dnode, count()};
+
+        for (auto snode = node_->next; snode; snode = snode->next, dnode = dnode->next)
+            dnode->next = std::make_shared<node>(f(snode->value));;
+
+        return d;
+    }
+
     friend auto operator==(const slist& left, const slist& right)
     {
         return left.count() == right.count() && (!left.node_ || *left.node_ == *right.node_);
@@ -25,7 +40,7 @@ private:
     struct node
     {
         const expression value;
-        const std::shared_ptr<node> next;
+        std::shared_ptr<node> next;
 
         node(expression value, std::shared_ptr<node> next = nullptr)
             : value(std::move(value)), next(std::move(next)) { }

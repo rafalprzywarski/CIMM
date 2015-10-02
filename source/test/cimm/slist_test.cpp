@@ -79,4 +79,15 @@ TEST(slist_test, should_be_equality_comparable)
     ASSERT_FALSE((slist{integer(5), slist{integer(7)}} == slist{integer(5), slist{integer(6)}}));
 }
 
+TEST(slist_test, should_provide_map_with_a_function)
+{
+    auto id = [](const expression& e) { return e; };
+    ASSERT_TRUE(slist{} == slist{}.map(id));
+    ASSERT_TRUE(slist{integer(5)} == slist{integer(5)}.map(id));
+
+    auto add7 = [](const expression& e) -> expression { return as_integer(e) + integer(7); };
+    ASSERT_TRUE(slist{integer(12)} == slist{integer(5)}.map(add7));
+    ASSERT_TRUE(slist{integer(12)}.cons(integer(5)).cons(integer(3)) == slist{integer(5)}.cons(integer(-2)).cons(integer(-4)).map(add7));
+}
+
 }
