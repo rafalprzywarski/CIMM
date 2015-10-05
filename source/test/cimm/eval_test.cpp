@@ -1,4 +1,5 @@
 #include "eval_test.hpp"
+#include <cimm/type_error.hpp>
 
 namespace cimm
 {
@@ -9,6 +10,21 @@ TEST_F(eval_test, should_add_integers)
     EXPECT_EQ(integer(3), evaluate(list{symbol("+"), integer(4), integer(-1)}));
     EXPECT_EQ(integer(6), evaluate(list{symbol("+"), integer(1), integer(2), integer(3)}));
     EXPECT_EQ(integer(3), evaluate(list{symbol("+"), integer(3)}));
+}
+
+TEST_F(eval_test, should_fail_when_trying_to_add_nonintegers)
+{
+    try
+    {
+        evaluate_parsed("(+ 'a 7)");
+        FAIL() << "exprected exception";
+    }
+    catch (type_error const& e)
+    {
+        ASSERT_STREQ("a is not an integer", e.what());
+    }
+    ASSERT_THROW(evaluate_parsed("(+ :x)"), type_error);
+    ASSERT_THROW(evaluate_parsed("(+ 1 3 :bad)"), type_error);
 }
 
 TEST_F(eval_test, should_subtract_integers)

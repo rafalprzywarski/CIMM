@@ -1,5 +1,6 @@
 #include "default_environment.hpp"
 #include "error.hpp"
+#include "type_cast.hpp"
 
 namespace cimm
 {

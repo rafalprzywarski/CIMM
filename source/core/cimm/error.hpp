@@ -1,14 +1,10 @@
 #pragma once
+#include "evaluation_error.hpp"
 #include "expression.hpp"
 #include "str.hpp"
 
 namespace cimm
 {
-
-struct evaluation_error : std::runtime_error
-{
-    evaluation_error(const string& msg) : std::runtime_error(msg) {}
-};
 
 struct cannot_create_symbol : evaluation_error
 {

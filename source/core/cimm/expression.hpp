@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include "string.hpp"
 #include <boost/variant.hpp>
 
 namespace cimm
@@ -112,37 +112,18 @@ public:
         return boost::apply_visitor(v, e.value);
     }
 
+    friend auto as_list(const expression& e) -> list const&;
+    friend auto as_vector(const expression& e) -> vector const&;
+    friend auto as_symbol(const expression& e) -> symbol const&;
+    friend auto as_integer(const expression& e) -> integer;
+    friend auto as_function(const expression& e) -> native_function;
+
 private:
     expression_variant value;
 
     friend auto operator==(const expression& left, const expression& right)
     {
         return left.value == right.value;
-    }
-
-    friend auto as_list(const expression& e) -> list const&
-    {
-        return boost::get<list>(e.value);
-    }
-
-    friend auto as_vector(const expression& e) -> vector const&
-    {
-        return boost::get<vector>(e.value);
-    }
-
-    friend auto as_symbol(const expression& e) -> symbol const&
-    {
-        return boost::get<symbol>(e.value);
-    }
-
-    friend auto as_integer(const expression& e) -> integer
-    {
-        return boost::get<integer>(e.value);
-    }
-
-    friend auto as_function(const expression& e) -> native_function
-    {
-        return boost::get<native_function>(e.value);
     }
 };
 
