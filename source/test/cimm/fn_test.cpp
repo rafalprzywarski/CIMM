@@ -71,4 +71,14 @@ TEST_F(fn_test, should_not_apply_parameters_inside_quote)
     EXPECT_EQ(list{symbol("x")}, evaluate_parsed("((fn [x] '(x)) 5)"));
 }
 
+TEST_F(fn_test, DISABLED_should_define_functions_overloaded_by_parameter_count)
+{
+    EXPECT_EQ(integer(3), evaluate_parsed("((fn ([x] x)) 3)"));
+    EXPECT_EQ(integer(3), evaluate_parsed("((fn ([x] x) ([x y] (+ x y 7))) 3)"));
+    EXPECT_EQ(integer(3 + 5 + 7), evaluate_parsed("((fn ([x] x) ([x y] (+ x y 7))) 3 5)"));
+    EXPECT_EQ(integer(1), evaluate_parsed("((fn ([x] x) ([x y] y) ([x y z] z)) 1)"));
+    EXPECT_EQ(integer(2), evaluate_parsed("((fn ([x] x) ([x y] y) ([x y z] z)) 1 2)"));
+    EXPECT_EQ(integer(3), evaluate_parsed("((fn ([x] x) ([x y] y) ([x y z] z)) 1 2 3)"));
+}
+
 }
