@@ -27,7 +27,7 @@ struct eval_test : testing::Test
         return parse_expression(expr);
     }
 
-    void assertArityError(integer n, const string& from, const string& source)
+    void assert_arity_error(integer n, const string& from, const string& source)
     {
         try
         {

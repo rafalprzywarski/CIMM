@@ -24,13 +24,13 @@ TEST_F(list_test, first_should_return_nil_for_an_empty_list)
 
 TEST_F(list_test, first_should_fail_when_given_no_arguments)
 {
-    assertArityError(0, "first", "(first)");
+    assert_arity_error(0, "first", "(first)");
 }
 
 TEST_F(list_test, first_should_fail_when_given_too_many_arguments)
 {
-    assertArityError(2, "first", "(first '(1 2) 3)");
-    assertArityError(3, "first", "(first '(1 2) 3 4)");
+    assert_arity_error(2, "first", "(first '(1 2) 3)");
+    assert_arity_error(3, "first", "(first '(1 2) 3 4)");
 }
 
 TEST_F(list_test, rest_should_return_an_empty_list_for_no_arguments)

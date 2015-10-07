@@ -83,8 +83,8 @@ TEST_F(fn_test, should_define_functions_overloaded_by_parameter_count)
 
 TEST_F(fn_test, should_fail_when_called_with_invalid_number_of_arguments)
 {
-    assertArityError(2, "fn", "((fn ([x] x)) 3 3)");
-    assertArityError(3, "fn", "((fn ([x] x) ([x y] y)) 3 4 5)");
+    assert_arity_error(2, "fn", "((fn ([x] x)) 3 3)");
+    assert_arity_error(3, "fn", "((fn ([x] x) ([x y] y)) 3 4 5)");
 }
 
 }
