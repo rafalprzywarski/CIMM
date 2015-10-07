@@ -16,9 +16,41 @@ auto def(environment& env, const list& args) -> expression
     return nil;
 }
 
+struct fn_visitor : expression::visitor<expression>
+{
+    const list& args;
+    fn_visitor(const list& args) : args(args) { }
+
+    auto operator()(const vector& params) const -> expression
+    {
+        return function{{{params, first(rest(args))}}};
+    }
+
+    auto operator()(const list& ) const -> expression
+    {
+        auto defs = args;
+        function f;
+        f.overloads.reserve(count(defs));
+        for (; !is_empty(defs); defs = rest(defs))
+        {
+            auto def = as_list(first(defs));
+            auto params = as_vector(first(def));
+            auto body = first(rest(def));
+            f.overloads.push_back({params, body});
+        }
+        return f;
+    }
+
+    template <typename other>
+    auto operator()(const other& ) const -> expression
+    {
+        return nil;
+    }
+};
+
 auto fn(environment& env, const list& args) -> expression
 {
-    return function{as_vector(first(args)), first(rest(args))};
+    return apply(fn_visitor{args}, first(args));
 }
 
 auto if_(environment& env, const list& args) -> expression
@@ -84,11 +116,19 @@ auto replace_symbols(const expression& e, const vector& symbols, const list& val
     return apply([&](auto& e) -> expression { return replace_symbols(e, symbols, values); }, e);
 }
 
+auto execute(environment& env, const function::overload& overload, const list& args) -> expression
+{
+    if (is_empty(overload.params))
+        return evaluate_expression(env, overload.body);
+    return evaluate_expression(env, apply([&](auto& e) -> expression { return replace_symbols(e, overload.params, args); }, overload.body));
+}
+
 auto execute(environment& env, const function& f, const list& args) -> expression
 {
-    if (is_empty(f.params))
-        return evaluate_expression(env, f.body);
-    return evaluate_expression(env, apply([&](auto& e) -> expression { return replace_symbols(e, f.params, args); }, f.body));
+    auto overload = std::find_if(begin(f.overloads), end(f.overloads), [&](auto& o) { return count(o.params) == count(args); });
+    if (overload == end(f.overloads))
+        return nil;
+    return execute(env, *overload, args);
 }
 
 template <typename expression_type>

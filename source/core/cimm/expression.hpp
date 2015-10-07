@@ -147,8 +147,12 @@ namespace cimm
 
 struct function
 {
-    vector params;
-    expression body;
+    struct overload
+    {
+        vector params;
+        expression body;
+    };
+    std::vector<overload> overloads;
 };
 
 }
