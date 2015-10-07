@@ -3,21 +3,7 @@
 namespace cimm
 {
 
-struct list_test : eval_test
-{
-    void assertArityError(integer n, const string& from, const string& source)
-    {
-        try
-        {
-            evaluate_parsed(source);
-            FAIL() << "expected an exception";
-        }
-        catch (arity_error& e)
-        {
-            EXPECT_EQ("Wrong number of args (" + str(n) + ") passed to: " + from, e.what());
-        }
-    }
-};
+struct list_test : eval_test { };
 
 TEST_F(list_test, should_create_a_list)
 {

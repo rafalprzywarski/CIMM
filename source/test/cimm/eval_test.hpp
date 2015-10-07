@@ -26,6 +26,19 @@ struct eval_test : testing::Test
     {
         return parse_expression(expr);
     }
+
+    void assertArityError(integer n, const string& from, const string& source)
+    {
+        try
+        {
+            evaluate_parsed(source);
+            FAIL() << "expected an exception; source: " << source;
+        }
+        catch (arity_error& e)
+        {
+            EXPECT_EQ("Wrong number of args (" + str(n) + ") passed to: " + from, e.what());
+        }
+    }
 };
 
 }

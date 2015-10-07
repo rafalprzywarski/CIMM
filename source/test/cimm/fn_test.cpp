@@ -81,4 +81,10 @@ TEST_F(fn_test, should_define_functions_overloaded_by_parameter_count)
     EXPECT_EQ(integer(3), evaluate_parsed("((fn ([x] x) ([x y] y) ([x y z] z)) 1 2 3)"));
 }
 
+TEST_F(fn_test, should_fail_when_called_with_invalid_number_of_arguments)
+{
+    assertArityError(2, "fn", "((fn ([x] x)) 3 3)");
+    assertArityError(3, "fn", "((fn ([x] x) ([x y] y)) 3 4 5)");
+}
+
 }

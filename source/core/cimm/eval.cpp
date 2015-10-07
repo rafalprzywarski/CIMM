@@ -127,7 +127,7 @@ auto execute(environment& env, const function& f, const list& args) -> expressio
 {
     auto overload = std::find_if(begin(f.overloads), end(f.overloads), [&](auto& o) { return count(o.params) == count(args); });
     if (overload == end(f.overloads))
-        return nil;
+        throw arity_error(count(args), "fn");
     return execute(env, *overload, args);
 }
 
