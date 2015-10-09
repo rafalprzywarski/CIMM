@@ -69,7 +69,7 @@ TEST(str_test, should_convert_native_function_as_text_function)
 
 TEST(str_test, should_convert_functions)
 {
-    function f{{{vector{symbol("x"), symbol("y")}, list{symbol("+"), symbol("x"), symbol("y")}}}};
+    function f{{{vector{symbol("x"), symbol("y")}, list{{list{symbol("+"), symbol("x"), symbol("y")}}}}}};
     EXPECT_EQ("fn : [x y] -> (+ x y)", str(f));
 }
 

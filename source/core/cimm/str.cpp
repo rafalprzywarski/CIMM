@@ -50,7 +50,7 @@ auto str(const expression& e) -> string
         string operator()(const list& l) const { return join('(', l, ')'); }
         string operator()(const vector& v) const { return join('[', v, ']'); }
         string operator()(const native_function& ) const { return "function"; }
-        string operator()(const function& f) const { return "fn : " + str(f.overloads.at(0).params) + " -> " + str(f.overloads.at(0).body); }
+        string operator()(const function& f) const { return "fn : " + str(f.overloads.at(0).params) + " -> " + str(first(f.overloads.at(0).body)); }
     };
 
     return apply(to_string(), e);

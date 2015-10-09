@@ -150,7 +150,7 @@ struct function
     struct overload
     {
         vector params;
-        expression body;
+        list body;
     };
     std::vector<overload> overloads;
 };

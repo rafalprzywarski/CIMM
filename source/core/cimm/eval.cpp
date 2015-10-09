@@ -23,7 +23,7 @@ struct fn_visitor : expression::visitor<expression>
 
     auto operator()(const vector& params) const -> expression
     {
-        return function{{{params, first(rest(args))}}};
+        return function{{{params, rest(args)}}};
     }
 
     auto operator()(const list& ) const -> expression
@@ -35,7 +35,7 @@ struct fn_visitor : expression::visitor<expression>
         {
             auto def = as_list(first(defs));
             auto params = as_vector(first(def));
-            auto body = first(rest(def));
+            auto body = rest(def);
             f.overloads.push_back({params, body});
         }
         return f;
@@ -118,9 +118,11 @@ auto replace_symbols(const expression& e, const vector& symbols, const list& val
 
 auto execute(environment& env, const function::overload& overload, const list& args) -> expression
 {
-    if (is_empty(overload.params))
-        return evaluate_expression(env, overload.body);
-    return evaluate_expression(env, apply([&](auto& e) -> expression { return replace_symbols(e, overload.params, args); }, overload.body));
+    auto body = overload.body;
+    expression result;
+    for (; !is_empty(body); body = rest(body))
+        result = evaluate_expression(env, apply([&](auto& e) -> expression { return replace_symbols(e, overload.params, args); }, first(body)));
+    return result;
 }
 
 auto execute(environment& env, const function& f, const list& args) -> expression

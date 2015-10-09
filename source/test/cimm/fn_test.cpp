@@ -87,4 +87,9 @@ TEST_F(fn_test, should_fail_when_called_with_invalid_number_of_arguments)
     assert_arity_error(3, "fn", "((fn ([x] x) ([x y] y)) 3 4 5)");
 }
 
+TEST_F(fn_test, should_evaluate_all_body_expressions_in_order)
+{
+    EXPECT_EQ(integer(3), evaluate_parsed("((fn ([x] (def a x) (def b a) (+ b 1))) 2)"));
+}
+
 }
