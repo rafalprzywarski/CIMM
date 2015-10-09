@@ -92,4 +92,10 @@ TEST_F(fn_test, should_evaluate_all_body_expressions_in_order)
     EXPECT_EQ(integer(3), evaluate_parsed("((fn ([x] (def a x) (def b a) (+ b 1))) 2)"));
 }
 
+TEST_F(fn_test, should_fail_when_calling_a_function_with_no_overloads)
+{
+    assert_arity_error(0, "fn", "((fn))");
+    assert_arity_error(2, "fn", "((fn) 1 2)");
+}
+
 }

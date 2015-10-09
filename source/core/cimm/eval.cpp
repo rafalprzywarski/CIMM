@@ -41,6 +41,11 @@ struct fn_visitor : expression::visitor<expression>
         return f;
     }
 
+    auto operator()(const nil_type& ) const -> expression
+    {
+        return function{};
+    }
+
     template <typename other>
     auto operator()(const other& ) const -> expression
     {
