@@ -39,6 +39,28 @@ struct eval_test : testing::Test
             EXPECT_EQ("Wrong number of args (" + str(n) + ") passed to: " + from, e.what());
         }
     }
+
+    template <typename error_type>
+    void assert_evaluation_error(const string& msg, const string& source)
+    {
+        try
+        {
+            evaluate_parsed(source);
+            FAIL() << "expected an exception; source: " << source;
+        }
+        catch (error_type const& e)
+        {
+            EXPECT_EQ(msg, e.what());
+        }
+        catch (std::exception const& e)
+        {
+            FAIL() << "unexpected exception with message: " << e.what();
+        }
+        catch (...)
+        {
+            FAIL() << "unknown exception";
+        }
+    }
 };
 
 }

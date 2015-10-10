@@ -1,4 +1,5 @@
 #include "eval_test.hpp"
+#include <cimm/type_error.hpp>
 
 namespace cimm
 {
@@ -96,6 +97,12 @@ TEST_F(fn_test, should_fail_when_calling_a_function_with_no_overloads)
 {
     assert_arity_error(0, "fn", "((fn))");
     assert_arity_error(2, "fn", "((fn) 1 2)");
+}
+
+TEST_F(fn_test, should_fail_when_passed_nil_as_parameter_list)
+{
+    assert_evaluation_error<type_error>("nil is not a vector", "(fn nil)");
+    assert_evaluation_error<type_error>("nil is not a vector", "(fn (nil))");
 }
 
 }

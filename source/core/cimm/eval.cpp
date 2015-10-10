@@ -1,5 +1,6 @@
 #include "eval.hpp"
 #include "error.hpp"
+#include "type_error.hpp"
 
 namespace cimm
 {
@@ -41,20 +42,17 @@ struct fn_visitor : expression::visitor<expression>
         return f;
     }
 
-    auto operator()(const nil_type& ) const -> expression
-    {
-        return function{};
-    }
-
     template <typename other>
-    auto operator()(const other& ) const -> expression
+    auto operator()(const other& e) const -> expression
     {
-        return nil;
+        throw type_error(e, "a vector");
     }
 };
 
 auto fn(environment& env, const list& args) -> expression
 {
+    if (is_empty(args))
+        return function{};
     return apply(fn_visitor{args}, first(args));
 }
 

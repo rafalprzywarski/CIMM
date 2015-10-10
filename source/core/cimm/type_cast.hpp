@@ -12,7 +12,9 @@ auto as_list(const expression& e) -> list const&
 
 auto as_vector(const expression& e) -> vector const&
 {
-    return boost::get<vector>(e.value);
+    if (auto val = boost::get<vector>(&e.value))
+        return *val;
+    throw type_error(str(e), "a vector");
 }
 
 auto as_symbol(const expression& e) -> symbol const&
