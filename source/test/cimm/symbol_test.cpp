@@ -12,15 +12,7 @@ TEST_F(symbol_test, should_make_symbols_from_strings)
 
 TEST_F(symbol_test, should_fail_to_create_symbols_from_other_types)
 {
-    try
-    {
-        evaluate(list{symbol("symbol"), keyword("abc")});
-        FAIL() << "expected an error";
-    }
-    catch (cannot_create_symbol const& e)
-    {
-        ASSERT_STREQ("cannot create a symbol from :abc", e.what());
-    }
+    assert_evaluation_error<cannot_create_symbol>("cannot create a symbol from :abc", "(symbol :abc)");
     ASSERT_THROW(evaluate(list{symbol("symbol"), nil}), cannot_create_symbol);
     ASSERT_THROW(evaluate(list{symbol("symbol"), integer(5)}), cannot_create_symbol);
 }
@@ -32,15 +24,7 @@ TEST_F(symbol_test, should_make_symbols_from_the_first_parameter_only)
 
 TEST_F(symbol_test, should_fail_for_no_parameters)
 {
-    try
-    {
-        evaluate(list{symbol("symbol")});
-        FAIL() << "expected an error";
-    }
-    catch (cannot_create_symbol const& e)
-    {
-        ASSERT_STREQ("cannot create a symbol from nil", e.what());
-    }
+    assert_evaluation_error<cannot_create_symbol>("cannot create a symbol from nil", "(symbol)");
 }
 
 }
