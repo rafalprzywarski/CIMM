@@ -14,15 +14,7 @@ TEST_F(eval_test, should_add_integers)
 
 TEST_F(eval_test, should_fail_when_trying_to_add_nonintegers)
 {
-    try
-    {
-        evaluate_parsed("(+ 'a 7)");
-        FAIL() << "exprected exception";
-    }
-    catch (type_error const& e)
-    {
-        ASSERT_STREQ("a is not an integer", e.what());
-    }
+    assert_evaluation_error<type_error>("a is not an integer", "(+ 'a 7)");
     ASSERT_THROW(evaluate_parsed("(+ :x)"), type_error);
     ASSERT_THROW(evaluate_parsed("(+ 1 3 :bad)"), type_error);
 }
@@ -35,15 +27,7 @@ TEST_F(eval_test, should_subtract_integers)
 
 TEST_F(eval_test, should_fail_when_given_undefined_function)
 {
-    try
-    {
-        evaluate_expression(env, list{symbol("bad")});
-        FAIL() << "expected an evaluation error";
-    }
-    catch (undefined_symbol_error const& e)
-    {
-        ASSERT_STREQ("undefined symbol \'bad\'", e.what());
-    }
+    assert_evaluation_error<undefined_symbol_error>("undefined symbol \'bad\'", "(bad)");
 }
 
 TEST_F(eval_test, should_execute_functions_from_the_environment)
@@ -85,15 +69,7 @@ TEST_F(eval_test, should_check_equality_of_boolean_values)
 
 TEST_F(eval_test, equality_should_fail_when_given_no_arguments)
 {
-    try
-    {
-        evaluate_parsed("(=)");
-        FAIL() << "expected an exception";
-    }
-    catch (arity_error& e)
-    {
-        ASSERT_STREQ("Wrong number of args (0) passed to: =", e.what());
-    }
+    assert_arity_error(0, "=", "(=)");
 }
 
 TEST_F(eval_test, should_check_equality_of_integers)
