@@ -45,46 +45,14 @@ TEST_F(if_test, should_return_nil_if_second_value_is_not_provided)
 
 TEST_F(if_test, should_fail_if_not_given_enough_arguments)
 {
-    try
-    {
-        evaluate_parsed("(if)");
-        FAIL() << "expected an exception";
-    }
-    catch (arity_error& e)
-    {
-        ASSERT_STREQ("too few arguments to if", e.what());
-    }
-    try
-    {
-        evaluate_parsed("(if true)");
-        FAIL() << "expected an exception";
-    }
-    catch (arity_error& e)
-    {
-        ASSERT_STREQ("too few arguments to if", e.what());
-    }
+    assert_arity_error(0, "if", "(if)");
+    assert_arity_error(1, "if", "(if true)");
 }
 
 TEST_F(if_test, should_fail_if_given_too_many_arguments)
 {
-    try
-    {
-        evaluate_parsed("(if true 1 2 :extra)");
-        FAIL() << "expected an exception";
-    }
-    catch (arity_error& e)
-    {
-        ASSERT_STREQ("too many arguments to if", e.what());
-    }
-    try
-    {
-        evaluate_parsed("(if true 1 2 :extra :more)");
-        FAIL() << "expected an exception";
-    }
-    catch (arity_error& e)
-    {
-        ASSERT_STREQ("too many arguments to if", e.what());
-    }
+    assert_arity_error(4, "if", "(if true 1 2 :extra)");
+    assert_arity_error(5, "if", "(if true 1 2 :extra :more)");
 }
 
 }
