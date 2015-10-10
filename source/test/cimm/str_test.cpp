@@ -64,7 +64,7 @@ TEST(str_test, should_convert_a_vector_of_expressions_to_strings_separated_by_si
 TEST(str_test, should_convert_native_function_as_text_function)
 {
     native_function f = [](const list&) -> expression { return nil; };
-    EXPECT_EQ(string("function"), str(expression(f)));
+    EXPECT_EQ("fn", str(expression(f)));
 }
 
 TEST(str_test, should_convert_functions)
