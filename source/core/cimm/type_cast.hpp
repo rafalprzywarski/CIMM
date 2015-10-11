@@ -29,9 +29,4 @@ auto as_integer(const expression& e) -> integer
     throw type_error(str(e), "an integer");
 }
 
-auto as_function(const expression& e) -> native_function
-{
-    return boost::get<native_function>(e.value);
-}
-
 }

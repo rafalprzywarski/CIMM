@@ -116,7 +116,6 @@ public:
     friend auto as_vector(const expression& e) -> vector const&;
     friend auto as_symbol(const expression& e) -> symbol const&;
     friend auto as_integer(const expression& e) -> integer;
-    friend auto as_function(const expression& e) -> native_function;
 
 private:
     expression_variant value;
