@@ -10,7 +10,7 @@ matrix:
         apt:
           packages:
             - clang-3.7
-            - libboost1.55-dev
+            - libboost1.58-dev
           sources:
             - boost-latest
     - os: linux
@@ -20,7 +20,7 @@ matrix:
         apt:
           packages:
             - g++-5
-            - libboost1.55-dev
+            - libboost1.58-dev
           sources:
             - ubuntu-toolchain-r-test
             - boost-latest
