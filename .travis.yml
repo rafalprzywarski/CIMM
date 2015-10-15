@@ -5,7 +5,7 @@ matrix:
   include:
     - os: linux
       language: c++
-      env: CMAKE_COMPILER=clang++3.7
+      env: CMAKE_COMPILER=clang++-3.7
       addons:
         apt:
           packages:
