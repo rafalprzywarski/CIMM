@@ -30,4 +30,4 @@ matrix:
 
 install:
 
-script: ./build_and_test.sh
+script: CXX=${CMAKE_COMPILER} ./build_and_test.sh
