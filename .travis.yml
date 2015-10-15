@@ -5,20 +5,21 @@ matrix:
   include:
     - os: linux
       language: c++
-      env: CMAKE_COMPILER=clang++
+      env: CMAKE_COMPILER=clang++3.7
       addons:
         apt:
           packages:
+            - clang-3.7
             - libboost1.55-dev
           sources:
             - boost-latest
     - os: linux
       language: c++
-      env: CMAKE_COMPILER=g++-4.9
+      env: CMAKE_COMPILER=g++-5
       addons:
         apt:
           packages:
-            - g++-4.9
+            - g++-5
             - libboost1.55-dev
           sources:
             - ubuntu-toolchain-r-test
