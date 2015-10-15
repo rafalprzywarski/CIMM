@@ -14,11 +14,11 @@ matrix:
             - boost-latest
     - os: linux
       language: c++
-      env: CMAKE_COMPILER=g++-4.8
+      env: CMAKE_COMPILER=g++-4.9
       addons:
         apt:
           packages:
-            - g++-4.8
+            - g++-4.9
             - libboost1.55-dev
           sources:
             - ubuntu-toolchain-r-test
