@@ -1,8 +1,10 @@
 #pragma once
-#include "expression.hpp"
+#include "string.hpp"
 
 namespace cimm
 {
+
+class expression;
 
 auto str(const expression& e) -> string;
 

@@ -70,6 +70,22 @@ TEST_F(eval_test, should_execute_functions_with_specified_arity_from_the_environ
     EXPECT_EQ(integer(-1), evaluate_expression(env, list{symbol("func-2"), integer(2), integer(3)}));
 }
 
+TEST_F(eval_test, should_fail_when_executing_a_functions_with_specified_arity_from_the_environment_with_mismatched_number_of_args)
+{
+    env = {};
+    auto func0 = []() -> expression { return nil; };
+    auto func1 = [](const expression& a) -> expression { return nil; };
+    auto func2 = [](const expression& a, const expression& b) -> expression { return nil; };
+
+    define_native_function(env, symbol("func-0"), func0);
+    define_native_function(env, symbol("func-1"), func1);
+    define_native_function(env, symbol("func-2"), func2);
+
+    assert_arity_error(2, "func-0", "(func-0 10 11)");
+    assert_arity_error(2, "func-1", "(func-1 10 11)");
+    assert_arity_error(3, "func-2", "(func-2 10 11 12)");
+}
+
 TEST_F(eval_test, should_evaluate_function_arguments)
 {
     environment env;

@@ -1,4 +1,5 @@
 #include "str.hpp"
+#include "expression.hpp"
 #include <sstream>
 
 namespace cimm

@@ -77,12 +77,33 @@ using native_function_0 = expression(*)();
 using native_function_1 = expression(*)(const expression&);
 using native_function_2 = expression(*)(const expression&, const expression&);
 
-using native_function = boost::variant<
+using native_function_variant = boost::variant<
     native_function_va,
     native_function_0,
     native_function_1,
     native_function_2
 >;
+
+class native_function
+{
+public:
+    template <typename func>
+    native_function(const string& name, func f) : name(name), f(f) { }
+
+    auto operator()(const list& args) -> expression;
+
+    friend auto name(const native_function& f) { return f.name; }
+
+    friend auto operator==(const native_function& left, const native_function& right)
+    {
+        return left.f == right.f;
+    }
+
+private:
+
+    string name;
+    native_function_variant f;
+};
 
 template <typename result_type>
 struct native_function_visitor : boost::static_visitor<result_type> { };
@@ -153,6 +174,7 @@ inline auto operator==(const function&, const function&)
 
 #include "list.hpp"
 #include "vector.hpp"
+#include "error.hpp"
 
 namespace cimm
 {
@@ -166,5 +188,29 @@ struct function
     };
     std::vector<overload> overloads;
 };
+
+inline auto native_function::operator()(const list& args) -> expression
+{
+    struct evaluate : boost::static_visitor<expression>
+    {
+        const string& name;
+        const list& args;
+        evaluate(const string& name, const list& args) : name(name), args(args) { }
+
+        void verify_arity(integer arity, const list& args)
+        {
+            auto n = count(args);
+            if (n != arity)
+                throw arity_error(n, name);
+        }
+
+        auto operator()(const native_function_va& f) { return f(args); }
+        auto operator()(const native_function_0& f) { verify_arity(0, args); return f(); }
+        auto operator()(const native_function_1& f) { verify_arity(1, args); return f(first(args)); }
+        auto operator()(const native_function_2& f) { verify_arity(2, args); return f(first(args), first(rest(args))); }
+    };
+    evaluate v(name, args);
+    return boost::apply_visitor(v, f);
+}
 
 }

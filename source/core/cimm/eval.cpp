@@ -65,21 +65,9 @@ auto if_(environment& env, const list& args) -> expression
     return evaluate_expression(env, first(rest(is_true ? args : rest(args))));
 }
 
-struct execute_native_function : native_function_visitor<expression>
-{
-    const list& args;
-    execute_native_function(const list& args) : args(args) { }
-
-    auto operator()(const native_function_va& f) { return f(args); }
-    auto operator()(const native_function_0& f) { return f(); }
-    auto operator()(const native_function_1& f) { return f(first(args)); }
-    auto operator()(const native_function_2& f) { return f(first(args), first(rest(args))); }
-};
-
 auto execute(environment&, native_function f, const list& args) -> expression
 {
-    execute_native_function v(args);
-    return boost::apply_visitor(v, f);
+    return f(args);
 }
 
 auto replace_symbols(const expression& e, const vector& symbols, const list& values) -> expression;
