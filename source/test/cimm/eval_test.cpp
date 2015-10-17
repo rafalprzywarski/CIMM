@@ -47,8 +47,8 @@ TEST_F(eval_test, should_execute_functions_from_the_environment)
     auto func1 = [](const list& l) -> expression { return count(l); };
     auto func2 = [](const list& l) -> expression { return l; };
 
-    define_native_function(env, symbol("func-1"), func1);
-    define_native_function(env, symbol("func-2"), func2);
+    define_native_function(env, {"func-1", func1});
+    define_native_function(env, {"func-2", func2});
 
     EXPECT_EQ(integer(2), evaluate_expression(env, list{symbol("func-1"), integer(1), integer(2)}));
     EXPECT_EQ(expression(list{boolean(true), integer(2)}), evaluate_expression(env, list{symbol("func-2"), boolean(true), integer(2)}));
@@ -61,9 +61,9 @@ TEST_F(eval_test, should_execute_functions_with_specified_arity_from_the_environ
     auto func1 = [](const expression& a) -> expression { return -as_integer(a); };
     auto func2 = [](const expression& a, const expression& b) -> expression { return as_integer(a) - as_integer(b); };
 
-    define_native_function(env, symbol("func-0"), func0);
-    define_native_function(env, symbol("func-1"), func1);
-    define_native_function(env, symbol("func-2"), func2);
+    define_native_function(env, {"func-0", func0});
+    define_native_function(env, {"func-1", func1});
+    define_native_function(env, {"func-2", func2});
 
     EXPECT_EQ(integer(7), evaluate_expression(env, list{symbol("func-0")}));
     EXPECT_EQ(integer(-3), evaluate_expression(env, list{symbol("func-1"), integer(3)}));
@@ -77,9 +77,9 @@ TEST_F(eval_test, should_fail_when_executing_a_functions_with_specified_arity_fr
     auto func1 = [](const expression& a) -> expression { return nil; };
     auto func2 = [](const expression& a, const expression& b) -> expression { return nil; };
 
-    define_native_function(env, symbol("func-0"), func0);
-    define_native_function(env, symbol("func-1"), func1);
-    define_native_function(env, symbol("func-2"), func2);
+    define_native_function(env, {"func-0", func0});
+    define_native_function(env, {"func-1", func1});
+    define_native_function(env, {"func-2", func2});
 
     assert_arity_error(2, "func-0", "(func-0 10 11)");
     assert_arity_error(2, "func-1", "(func-1 10 11)");
@@ -89,10 +89,10 @@ TEST_F(eval_test, should_fail_when_executing_a_functions_with_specified_arity_fr
 TEST_F(eval_test, should_evaluate_function_arguments)
 {
     environment env;
-    define_native_function(env, symbol("id"), [](const list& l) -> expression { return first(l); });
-    define_native_function(env, symbol("double"), [](const list& l) -> expression { return as_integer(first(l)) * integer(2); });
-    define_native_function(env, symbol("first"), [](const list& l) -> expression { return first(l); });
-    define_native_function(env, symbol("second"), [](const list& l) -> expression { return first(rest(l)); });
+    define_native_function(env, {"id", [](const list& l) -> expression { return first(l); }});
+    define_native_function(env, {"double", [](const list& l) -> expression { return as_integer(first(l)) * integer(2); }});
+    define_native_function(env, {"first", [](const list& l) -> expression { return first(l); }});
+    define_native_function(env, {"second", [](const list& l) -> expression { return first(rest(l)); }});
 
     EXPECT_EQ(integer(7), evaluate_expression(env, list{symbol("first"), list{symbol("id"), integer(7)}, list{symbol("double"), integer(10)}}));
     EXPECT_EQ(integer(20), evaluate_expression(env, list{symbol("second"), list{symbol("id"), integer(7)}, list{symbol("double"), integer(10)}}));

@@ -159,21 +159,21 @@ auto create_default_environment() -> environment
 {
     environment env;
 
-    define_native_function(env, symbol("+"), add_integers);
-    define_native_function(env, symbol("-"), subtract_integers);
-    define_native_function(env, symbol("="), is_equal_f);
-    define_native_function(env, symbol("not="), is_unequal_f);
-    define_native_function(env, symbol("not"), not_f);
-    define_native_function(env, symbol("keyword"), keyword_f);
-    define_native_function(env, symbol("symbol"), symbol_f);
-    define_native_function(env, symbol("list"), list_f);
-    define_native_function(env, symbol("first"), first_f);
-    define_native_function(env, symbol("rest"), rest_f);
-    define_native_function(env, symbol("count"), count_f);
-    define_native_function(env, symbol("cons"), cons_f);
-    define_native_function(env, symbol("conj"), conj_f);
-    define_native_function(env, symbol("vector"), vector_f);
-    define_native_function(env, symbol("vec"), vec_f);
+    define_native_function(env, {"+", add_integers});
+    define_native_function(env, {"-", subtract_integers});
+    define_native_function(env, {"=", is_equal_f});
+    define_native_function(env, {"not=", is_unequal_f});
+    define_native_function(env, {"not", not_f});
+    define_native_function(env, {"keyword", keyword_f});
+    define_native_function(env, {"symbol", symbol_f});
+    define_native_function(env, {"list", list_f});
+    define_native_function(env, {"first", first_f});
+    define_native_function(env, {"rest", rest_f});
+    define_native_function(env, {"count", count_f});
+    define_native_function(env, {"cons", cons_f});
+    define_native_function(env, {"conj", conj_f});
+    define_native_function(env, {"vector", vector_f});
+    define_native_function(env, {"vec", vec_f});
 
     return env;
 }
