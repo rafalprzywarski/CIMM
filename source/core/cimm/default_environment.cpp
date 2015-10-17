@@ -74,7 +74,9 @@ struct make_keyword : expression::visitor<expression>
 
 auto keyword_f(const list& l) -> expression
 {
-  return is_empty(l) ? nil : apply(make_keyword(), first(l));
+    if (is_empty(l))
+        throw arity_error(count(l), "keyword");
+    return apply(make_keyword(), first(l));
 }
 
 struct make_symbol : expression::visitor<expression>
