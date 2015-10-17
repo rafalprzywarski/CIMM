@@ -94,6 +94,10 @@ public:
 
 private:
 
+    auto is_va() { return f.which() == 0; }
+
+    auto has_args(integer n) { return f.which() == (n + 1); }
+
     using variant = boost::variant<
         native_function_va,
         native_function_0,
@@ -191,25 +195,25 @@ struct function
 
 inline auto native_function::operator()(const list& args) -> expression
 {
+    if (is_va())
+        return boost::get<native_function_va>(f)(args);
+
+    auto n = count(args);
+    if (!has_args(n))
+        throw arity_error(n, name);
+
     struct evaluate : boost::static_visitor<expression>
     {
-        const string& name;
         const list& args;
-        evaluate(const string& name, const list& args) : name(name), args(args) { }
-
-        void verify_arity(integer arity, const list& args)
-        {
-            auto n = count(args);
-            if (n != arity)
-                throw arity_error(n, name);
-        }
+        evaluate(const list& args) : args(args) { }
 
         auto operator()(const native_function_va& f) { return f(args); }
-        auto operator()(const native_function_0& f) { verify_arity(0, args); return f(); }
-        auto operator()(const native_function_1& f) { verify_arity(1, args); return f(first(args)); }
-        auto operator()(const native_function_2& f) { verify_arity(2, args); return f(first(args), first(rest(args))); }
+        auto operator()(const native_function_0& f) { return f(); }
+        auto operator()(const native_function_1& f) { return f(first(args)); }
+        auto operator()(const native_function_2& f) { return f(first(args), first(rest(args))); }
     };
-    evaluate v(name, args);
+
+    evaluate v(args);
     return boost::apply_visitor(v, f);
 }
 
