@@ -30,6 +30,11 @@ TEST_F(eval_test, should_subtract_integers)
     EXPECT_EQ(integer(5), evaluate(list{symbol("-"), integer(4), integer(-1)}));
 }
 
+TEST_F(eval_test, should_fail_when_given_no_arguments_to_minus)
+{
+    assert_arity_error(0, "-", "(-)");
+}
+
 TEST_F(eval_test, should_fail_when_given_undefined_function)
 {
     assert_evaluation_error<undefined_symbol_error>("undefined symbol \'bad\'", "(bad)");

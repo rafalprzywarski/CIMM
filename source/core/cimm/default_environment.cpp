@@ -18,6 +18,8 @@ auto add_integers(const list& l) -> expression
 
 auto subtract_integers(const list& l) -> expression
 {
+    if (is_empty(l))
+        throw arity_error(count(l), "-");
     if (count(l) == 1)
         return -as_integer(first(l));
     return as_integer(first(l)) - as_integer(first(rest(l)));
