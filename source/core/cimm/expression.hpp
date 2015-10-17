@@ -77,13 +77,6 @@ using native_function_0 = expression(*)();
 using native_function_1 = expression(*)(const expression&);
 using native_function_2 = expression(*)(const expression&, const expression&);
 
-using native_function_variant = boost::variant<
-    native_function_va,
-    native_function_0,
-    native_function_1,
-    native_function_2
->;
-
 class native_function
 {
 public:
@@ -101,8 +94,15 @@ public:
 
 private:
 
+    using variant = boost::variant<
+        native_function_va,
+        native_function_0,
+        native_function_1,
+        native_function_2
+    >;
+
     string name;
-    native_function_variant f;
+    variant f;
 };
 
 template <typename result_type>
