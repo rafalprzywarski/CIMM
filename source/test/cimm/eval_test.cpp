@@ -54,6 +54,22 @@ TEST_F(eval_test, should_execute_functions_from_the_environment)
     EXPECT_EQ(expression(list{boolean(true), integer(2)}), evaluate_expression(env, list{symbol("func-2"), boolean(true), integer(2)}));
 }
 
+TEST_F(eval_test, should_execute_functions_with_specified_arity_from_the_environment)
+{
+    environment env;
+    auto func0 = []() -> expression { return integer(7); };
+    auto func1 = [](const expression& a) -> expression { return -as_integer(a); };
+    auto func2 = [](const expression& a, const expression& b) -> expression { return as_integer(a) - as_integer(b); };
+
+    define_native_function(env, symbol("func-0"), func0);
+    define_native_function(env, symbol("func-1"), func1);
+    define_native_function(env, symbol("func-2"), func2);
+
+    EXPECT_EQ(integer(7), evaluate_expression(env, list{symbol("func-0")}));
+    EXPECT_EQ(integer(-3), evaluate_expression(env, list{symbol("func-1"), integer(3)}));
+    EXPECT_EQ(integer(-1), evaluate_expression(env, list{symbol("func-2"), integer(2), integer(3)}));
+}
+
 TEST_F(eval_test, should_evaluate_function_arguments)
 {
     environment env;

@@ -72,7 +72,20 @@ struct function;
 class expression;
 struct environment;
 
-using native_function = expression(*)(list const&);
+using native_function_va = expression(*)(list const&);
+using native_function_0 = expression(*)();
+using native_function_1 = expression(*)(const expression&);
+using native_function_2 = expression(*)(const expression&, const expression&);
+
+using native_function = boost::variant<
+    native_function_va,
+    native_function_0,
+    native_function_1,
+    native_function_2
+>;
+
+template <typename result_type>
+struct native_function_visitor : boost::static_visitor<result_type> { };
 
 using expression_variant = boost::variant<
     nil_type,
