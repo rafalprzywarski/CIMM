@@ -19,6 +19,11 @@ TEST_F(eval_test, should_fail_when_trying_to_add_nonintegers)
     ASSERT_THROW(evaluate_parsed("(+ 1 3 :bad)"), type_error);
 }
 
+TEST_F(eval_test, should_negate_integers)
+{
+    EXPECT_EQ(integer(-2), evaluate_parsed("(- 2)"));
+}
+
 TEST_F(eval_test, should_subtract_integers)
 {
     EXPECT_EQ(integer(-3), evaluate(list{symbol("-"), integer(2), integer(5)}));
