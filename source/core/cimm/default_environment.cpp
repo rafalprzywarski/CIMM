@@ -22,7 +22,10 @@ auto subtract_integers(const list& l) -> expression
         throw arity_error(count(l), "-");
     if (count(l) == 1)
         return -as_integer(first(l));
-    return as_integer(first(l)) - as_integer(first(rest(l)));
+    integer d = as_integer(first(l));
+    for (auto e = rest(l); not is_empty(e); e = rest(e))
+        d -= as_integer(first(e));
+    return d;
 }
 
 auto is_equal(const list& l) -> boolean

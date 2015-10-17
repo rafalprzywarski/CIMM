@@ -26,8 +26,9 @@ TEST_F(eval_test, should_negate_integers)
 
 TEST_F(eval_test, should_subtract_integers)
 {
-    EXPECT_EQ(integer(-3), evaluate(list{symbol("-"), integer(2), integer(5)}));
-    EXPECT_EQ(integer(5), evaluate(list{symbol("-"), integer(4), integer(-1)}));
+    EXPECT_EQ(integer(-3), evaluate_parsed("(- 2 5)"));
+    EXPECT_EQ(integer(5), evaluate_parsed("(- 4 -1)"));
+    EXPECT_EQ(integer(-27), evaluate_parsed("(- 4 -1 12 20)"));
 }
 
 TEST_F(eval_test, should_fail_when_given_no_arguments_to_minus)
