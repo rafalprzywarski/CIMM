@@ -24,7 +24,7 @@ TEST_F(symbol_test, should_make_symbols_from_the_first_parameter_only)
 
 TEST_F(symbol_test, should_fail_for_no_parameters)
 {
-    assert_evaluation_error<cannot_create_symbol>("cannot create a symbol from nil", "(symbol)");
+    assert_arity_error(0, "symbol", "(symbol)");
 }
 
 }

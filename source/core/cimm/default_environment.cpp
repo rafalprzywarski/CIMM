@@ -87,6 +87,8 @@ struct make_symbol : expression::visitor<expression>
 
 auto symbol_f(const list& l) -> expression
 {
+    if (is_empty(l))
+        throw arity_error(count(l), "symbol");
     return apply(make_symbol(), first(l));
 }
 
