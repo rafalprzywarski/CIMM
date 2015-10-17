@@ -99,12 +99,10 @@ auto list_f(const list& l) -> expression
     return l;
 }
 
-auto first_f(const list& l) -> expression
+auto first_f(const expression& e) -> expression
 {
-    if (count(l) != 1)
-        throw arity_error(count(l), "first");
-    list a = as_list(first(l));
-    return is_empty(a) ? nil : first(a);
+    list l = as_list(e);
+    return is_empty(l) ? nil : first(l);
 }
 
 auto rest_f(const list& args) -> expression
