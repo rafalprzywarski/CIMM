@@ -65,6 +65,23 @@ auto if_(environment& env, const list& args) -> expression
     return evaluate_expression(env, first(rest(is_true ? args : rest(args))));
 }
 
+struct visit_catch : expression::visitor<expression>
+{
+    environment& env;
+    expression handler;
+    visit_catch(environment& env, const expression& handler) : env(env), handler(handler) { }
+
+    auto operator()(const error& e) { return evaluate_expression(env, list{handler, unwrap(e)}); }
+
+    template <typename expression_type>
+    auto operator()(const expression_type& e) { return e; }
+};
+
+auto catch_(environment& env, const list& args) -> expression
+{
+    return apply(visit_catch{env, first(rest(args))}, evaluate_expression(env, first(args)));
+}
+
 auto execute(environment&, native_function f, const list& args) -> expression
 {
     return f(args);
@@ -151,6 +168,8 @@ auto evaluate(environment& env, const list& l) -> expression
         return fn(env, rest(l));
     if (name == special::if_)
         return if_(env, rest(l));
+    if (name == special::catch_)
+        return catch_(env, rest(l));
     auto evaluated = map(l, [&env](auto const& a) { return evaluate_expression(env, a); });
     return apply([&](const auto& first) { return execute(env, first, rest(evaluated)); }, first(evaluated));
 }

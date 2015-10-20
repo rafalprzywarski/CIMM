@@ -44,6 +44,7 @@ static const symbol quote{"quote"};
 static const symbol def{"def"};
 static const symbol fn{"fn"};
 static const symbol if_{"if"};
+static const symbol catch_{"catch"};
 
 }
 
@@ -192,6 +193,12 @@ public:
     {
         return string("error: ") + cimm::str(e.value);
     }
+
+    friend auto unwrap(const error& e)
+    {
+        return e.value;
+    }
+
 private:
     expression value;
 };

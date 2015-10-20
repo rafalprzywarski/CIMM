@@ -11,7 +11,7 @@ TEST_F(error_test, throw_should_wrap_an_expression_in_an_error)
     EXPECT_EQ((error{expression{list{integer(1), integer(2), integer(3)}}}), evaluate_parsed("(throw '(1 2 3))"));
 }
 
-TEST_F(error_test, DISABLED_catch_should_pass_the_unwrapped_error_expression_to_the_handler)
+TEST_F(error_test, catch_should_pass_the_unwrapped_error_expression_to_the_handler)
 {
     EXPECT_EQ(integer(8), evaluate_parsed("(catch (throw 5) (fn [e] (+ e 3)))"));
 }

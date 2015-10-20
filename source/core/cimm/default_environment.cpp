@@ -156,11 +156,6 @@ auto throw_f(const expression& e) -> expression
     return error{e};
 }
 
-auto catch_f(const expression& e, const expression& handler) -> expression
-{
-    return e;
-}
-
 }
 
 auto create_default_environment() -> environment
@@ -183,7 +178,6 @@ auto create_default_environment() -> environment
     define_native_function(env, {"vector", vector_f});
     define_native_function(env, {"vec", vec_f});
     define_native_function(env, {"throw", throw_f});
-    define_native_function(env, {"catch", catch_f});
 
     return env;
 }
