@@ -44,6 +44,13 @@ TEST_F(fn_test, replace_all_parameters_in_one_step)
     EXPECT_ANY_THROW(evaluate_parsed("(add 'y' 2)"));
 }
 
+TEST_F(fn_test, should_not_evaluate_passed_lists)
+{
+    evaluate_parsed("(def id (fn [x] x))");
+    EXPECT_EQ(list{}, evaluate_parsed("(id '())"));
+    EXPECT_EQ((list{integer(1), integer(2)}), evaluate_parsed("(id '(1 2))"));
+}
+
 TEST_F(fn_test, should_apply_parameters_in_vectors)
 {
     EXPECT_EQ(vector{}, evaluate_parsed("((fn [u v] []) 2 1)"));

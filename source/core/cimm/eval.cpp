@@ -100,7 +100,7 @@ auto replace_symbols(const symbol& s, const vector& symbols, const list& values)
     if (is_empty(symbols))
         return s;
     if (s == first(symbols))
-        return first(values);
+        return list{special::quote, first(values)};
     return replace_symbols(s, rest(symbols), rest(values));
 }
 
