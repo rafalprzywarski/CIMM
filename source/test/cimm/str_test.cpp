@@ -74,4 +74,10 @@ TEST(str_test, should_convert_functions)
     EXPECT_EQ("fn", str(f));
 }
 
+TEST(str_test, should_convert_errors)
+{
+    EXPECT_EQ(string{"error: bad"}, str(error{expression{string{"bad"}}}));
+    EXPECT_EQ(string{"error: 7"}, str(error{expression{integer(7)}}));
+}
+
 }

@@ -52,7 +52,7 @@ auto str(const expression& e) -> string
         string operator()(const vector& v) const { return join('[', v, ']'); }
         string operator()(const native_function& ) const { return "fn"; }
         string operator()(const function& f) const { return "fn"; }
-        string operator()(const error& e) const { return {}; }
+        string operator()(const error& e) const { return str(e); }
     };
 
     return apply(to_string(), e);

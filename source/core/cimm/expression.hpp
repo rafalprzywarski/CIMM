@@ -1,5 +1,6 @@
 #pragma once
 #include "string.hpp"
+#include "str.hpp"
 #include <boost/variant.hpp>
 
 namespace cimm
@@ -187,6 +188,10 @@ public:
         return left.value == right.value;
     }
 
+    friend auto str(const error& e) -> string
+    {
+        return string("error: ") + cimm::str(e.value);
+    }
 private:
     expression value;
 };
