@@ -156,6 +156,14 @@ auto throw_f(const expression& e) -> expression
     return error{e};
 }
 
+auto str_f(const list& args) -> expression
+{
+    string s;
+    for (auto l = args; not is_empty(l); l = rest(l))
+        s += str(first(l));
+    return s;
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -178,6 +186,7 @@ auto create_default_environment() -> environment
     define_native_function(env, {"vector", vector_f});
     define_native_function(env, {"vec", vec_f});
     define_native_function(env, {"throw", throw_f});
+    define_native_function(env, {"str", str_f});
 
     return env;
 }

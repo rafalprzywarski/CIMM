@@ -156,4 +156,11 @@ TEST_F(eval_test, should_evaluate_elements_of_a_vector)
     EXPECT_EQ((vector{integer(3), integer(4), integer(5)}), evaluate_parsed("[(+ 1 2) (- 6 2) (+ 2 3)]"));
 }
 
+TEST_F(eval_test, should_concatenate_expressions_as_strings)
+{
+    EXPECT_EQ(string{}, evaluate_parsed("(str)"));
+    EXPECT_EQ(string{"Sonia"}, evaluate_parsed("(str \"Sonia\")"));
+    EXPECT_EQ(string{"Sonia5:last"}, evaluate_parsed("(str \"Sonia\" 5 :last)"));
+}
+
 }
