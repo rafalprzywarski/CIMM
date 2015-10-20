@@ -16,10 +16,10 @@ TEST_F(error_test, DISABLED_catch_should_pass_the_unwrapped_error_expression_to_
     EXPECT_EQ(integer(8), evaluate_parsed("(catch (throw 5) (fn [e] (+ e 3)))"));
 }
 
-TEST_F(error_test, DISABLED_try_and_catch_should_pass_through_if_no_error_was_returned)
+TEST_F(error_test, catch_should_pass_through_if_no_error_was_returned)
 {
     EXPECT_EQ(integer(5), evaluate_parsed("(catch 5 (fn [e] (+ e 3)))"));
-    EXPECT_EQ(symbol("test"), evaluate_parsed("(catch :test (fn [e] (+ e 3)))"));
+    EXPECT_EQ(keyword("test"), evaluate_parsed("(catch :test (fn [e] (+ e 3)))"));
 }
 
 }
