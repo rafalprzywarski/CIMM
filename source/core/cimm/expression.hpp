@@ -70,6 +70,7 @@ class list;
 class vector;
 struct function;
 class expression;
+class error;
 struct environment;
 
 using native_function_va = expression(*)(list const&);
@@ -122,7 +123,8 @@ using expression_variant = boost::variant<
     boost::recursive_wrapper<list>,
     boost::recursive_wrapper<vector>,
     native_function,
-    boost::recursive_wrapper<function>
+    boost::recursive_wrapper<function>,
+    boost::recursive_wrapper<error>
 >;
 
 class expression
@@ -140,6 +142,7 @@ public:
     expression(native_function f) : value(f) { }
     expression(const function& f) : value(f) { }
     expression(const expression_variant& v) : value(v) { }
+    expression(const error& e) : value(e) { }
 
     template <typename result_type>
     struct visitor : boost::static_visitor<result_type> { };
@@ -173,6 +176,20 @@ inline auto operator==(const function&, const function&)
 {
     return false;
 }
+
+class error
+{
+public:
+    explicit error(const expression& e) : value(e) { }
+
+    friend auto operator==(const error& left, const error& right)
+    {
+        return left.value == right.value;
+    }
+
+private:
+    expression value;
+};
 
 }
 

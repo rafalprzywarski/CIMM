@@ -151,6 +151,11 @@ auto vec_f(const list& args) -> expression
     return vector(as_list(first(args)));
 }
 
+auto throw_f(const expression& e) -> expression
+{
+    return error{e};
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -172,6 +177,7 @@ auto create_default_environment() -> environment
     define_native_function(env, {"conj", conj_f});
     define_native_function(env, {"vector", vector_f});
     define_native_function(env, {"vec", vec_f});
+    define_native_function(env, {"throw", throw_f});
 
     return env;
 }
