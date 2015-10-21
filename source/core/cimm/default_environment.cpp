@@ -1,6 +1,7 @@
 #include "default_environment.hpp"
 #include "error.hpp"
 #include "type_cast.hpp"
+#include <iostream>
 
 namespace cimm
 {
@@ -164,6 +165,16 @@ auto str_f(const list& args) -> expression
     return s;
 }
 
+auto print_f(const list& args) -> expression
+{
+    if (is_empty(args))
+        return nil;
+    std::cout << str(first(args));
+    for (auto l = rest(args); not is_empty(l); l = rest(l))
+        std::cout << ' ' << str(first(args));
+    return nil;
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -187,6 +198,7 @@ auto create_default_environment() -> environment
     define_native_function(env, {"vec", vec_f});
     define_native_function(env, {"throw", throw_f});
     define_native_function(env, {"str", str_f});
+    define_native_function(env, {"print", print_f});
 
     return env;
 }
