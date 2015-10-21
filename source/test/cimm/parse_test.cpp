@@ -51,6 +51,12 @@ TEST(parse_test, should_parse_quoted_strings)
     EXPECT_EQ(expression(list{string("a"), string("b")}), parse_expression("(\"a\" \"b\")"));
 }
 
+TEST(parse_test, should_parse_escaped_newline_in_strings)
+{
+    EXPECT_EQ(expression(string("ab\ncd")), parse_expression("\"ab\\ncd\""));
+    EXPECT_EQ(expression(string("\n\n\n")), parse_expression("\"\\n\\n\\n\""));
+}
+
 TEST(parse_test, should_parse_a_sequence_of_characters_beginning_with_a_colon_as_a_keyword)
 {
     EXPECT_EQ(expression(keyword("abc123")), parse_expression(":abc123"));
