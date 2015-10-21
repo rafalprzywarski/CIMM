@@ -171,7 +171,8 @@ auto print_f(const list& args) -> expression
         return nil;
     std::cout << str(first(args));
     for (auto l = rest(args); not is_empty(l); l = rest(l))
-        std::cout << ' ' << str(first(args));
+        std::cout << ' ' << str(first(l));
+    std::cout << std::flush;
     return nil;
 }
 
