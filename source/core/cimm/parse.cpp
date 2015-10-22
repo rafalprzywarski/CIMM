@@ -19,9 +19,9 @@ auto quote_expr(const expression& e) -> list
 }
 
 template <typename iterator>
-struct expression_grammar : boost::spirit::qi::grammar<iterator, expression(), ascii::space_type>
+struct expression_grammar : boost::spirit::qi::grammar<iterator, std::vector<expression>(), ascii::space_type>
 {
-    expression_grammar() : expression_grammar::base_type(expression_rule, "expression-grammar")
+    expression_grammar() : expression_grammar::base_type(expressions_rule, "expression-grammar")
     {
         newline.add("\\n", '\n');
         quote_rule = qi::lit('\'') > expression_rule[_val = bind(quote_expr, _1)];
@@ -40,6 +40,7 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, expression(), a
     rule<expression_variant> expression_variant_rule;
     rule<list> quote_rule;
     rule<expression> expression_rule{qi::as<expression>()[quote_rule | expression_variant_rule]};
+    rule<std::vector<expression>> expressions_rule = *expression_rule;
     rule<std::vector<expression>> list_vector_rule{qi::lit('(') >> *expression_rule >> qi::lit(')')};
     rule<std::vector<expression>> vector_vector_rule{qi::lit('[') >> *expression_rule >> qi::lit(']')};
     rule<boolean> boolean_rule{(qi::lit("true") >> qi::attr(true)) | (qi::lit("false") >> qi::attr(false))};
@@ -52,13 +53,18 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, expression(), a
 
 auto parse_expression(const string& expr_text) -> expression
 {
+    return first(parse_expressions(expr_text));
+}
+
+auto parse_expressions(const string& expr_text) -> vector
+{
     auto first = begin(expr_text);
     expression_grammar<std::string::const_iterator> grammar;
-    expression expr;
+    std::vector<expression> exprs;
 
-    boost::spirit::qi::phrase_parse(first, end(expr_text), grammar, ascii::space, expr);
+    boost::spirit::qi::phrase_parse(first, end(expr_text), grammar, ascii::space, exprs);
 
-    return expr;
+    return vector{exprs};
 }
 
 }

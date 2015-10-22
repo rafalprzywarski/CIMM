@@ -91,4 +91,10 @@ TEST(parse_test, should_parse_nil)
     EXPECT_EQ(nil, parse_expression("nil"));
 }
 
+TEST(parse_test, should_parse_multiple_expressions)
+{
+    EXPECT_EQ((vector{list{nil, nil}, vector{integer(1), nil}}), parse_expressions("(nil nil) [1 nil]"));
+    EXPECT_EQ((vector{list{nil, nil}, vector{integer(1), nil}}), parse_expressions("(nil nil)\n[1 nil]"));
+}
+
 }
