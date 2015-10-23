@@ -176,6 +176,11 @@ auto print_f(const list& args) -> expression
     return nil;
 }
 
+auto exit_f(const expression& exit_code) -> expression
+{
+    std::exit(as_integer(exit_code));
+}
+
 }
 
 auto create_default_environment() -> environment
@@ -200,6 +205,7 @@ auto create_default_environment() -> environment
     define_native_function(env, {"throw", throw_f});
     define_native_function(env, {"str", str_f});
     define_native_function(env, {"print", print_f});
+    define_native_function(env, {"exit", exit_f});
 
     return env;
 }
