@@ -86,7 +86,7 @@ public:
     template <typename func>
     native_function(const string& name, func f) : name(name), f(f) { }
 
-    auto operator()(const list& args) -> expression;
+    auto operator()(const list& args) const -> expression;
 
     friend auto name(const native_function& f) { return f.name; }
 
@@ -97,9 +97,11 @@ public:
 
 private:
 
-    auto is_va() { return f.which() == 0; }
+    auto is_va() const { return f.which() == 0; }
 
-    auto has_args(integer n) { return f.which() == (n + 1); }
+    auto has_args(integer n) const { return f.which() == (n + 1); }
+
+    auto verify_accepts_n_args(integer n) const -> void;
 
     using variant = boost::variant<
         native_function_va,
@@ -222,14 +224,15 @@ struct function
     std::vector<overload> overloads;
 };
 
-inline auto native_function::operator()(const list& args) -> expression
+inline auto native_function::verify_accepts_n_args(integer n) const -> void
 {
-    if (is_va())
-        return boost::get<native_function_va>(f)(args);
-
-    auto n = count(args);
-    if (!has_args(n))
+    if (!is_va() && !has_args(n))
         throw arity_error(n, name);
+}
+
+inline auto native_function::operator()(const list& args) const -> expression
+{
+    verify_accepts_n_args(count(args));
 
     struct evaluate : boost::static_visitor<expression>
     {
