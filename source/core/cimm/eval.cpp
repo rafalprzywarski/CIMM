@@ -156,6 +156,11 @@ auto execute(environment& env, const function& f, const list& args) -> expressio
     return execute(env, *overload, args);
 }
 
+auto execute(environment&, const error& e, const list&) -> expression
+{
+    return e;
+}
+
 template <typename expression_type>
 auto execute(environment&, const expression_type&, const list&) -> expression
 {
