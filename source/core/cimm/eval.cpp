@@ -8,7 +8,12 @@ namespace cimm
 namespace
 {
 
-auto def(environment& env, const list& args) -> expression
+auto evaluate_quote(const list& args)
+{
+    return first(args);
+}
+
+auto evaluate_def(environment& env, const list& args) -> expression
 {
     auto s = first(args);
     if (env.definitions.count(str(s)) != 0)
@@ -49,14 +54,14 @@ struct fn_visitor : expression::visitor<expression>
     }
 };
 
-auto fn(environment& env, const list& args) -> expression
+auto evaluate_fn(environment& env, const list& args) -> expression
 {
     if (is_empty(args))
         return function{};
     return apply(fn_visitor{args}, first(args));
 }
 
-auto if_(environment& env, const list& args) -> expression
+auto evaluate_if(environment& env, const list& args) -> expression
 {
     if (count(args) < 2 || count(args) > 3)
         throw arity_error(count(args), "if");
@@ -77,7 +82,7 @@ struct visit_catch : expression::visitor<expression>
     auto operator()(const expression_type& e) { return e; }
 };
 
-auto catch_(environment& env, const list& args) -> expression
+auto evaluate_catch(environment& env, const list& args) -> expression
 {
     return apply(visit_catch{env, first(rest(args))}, evaluate_expression(env, first(args)));
 }
@@ -157,21 +162,26 @@ auto execute(environment&, const expression_type&, const list&) -> expression
     return nil;
 }
 
+auto evaluate_call(environment& env, const list& l) -> expression
+{
+    auto evaluated = map(l, [&env](auto const& a) { return evaluate_expression(env, a); });
+    return apply([&](const auto& first) { return execute(env, first, rest(evaluated)); }, first(evaluated));
+}
+
 auto evaluate(environment& env, const list& l) -> expression
 {
     auto name = first(l);
     if (name == special::quote)
-        return first(rest(l));
+        return evaluate_quote(rest(l));
     if (name == special::def)
-        return def(env, rest(l));
+        return evaluate_def(env, rest(l));
     if (name == special::fn)
-        return fn(env, rest(l));
+        return evaluate_fn(env, rest(l));
     if (name == special::if_)
-        return if_(env, rest(l));
+        return evaluate_if(env, rest(l));
     if (name == special::catch_)
-        return catch_(env, rest(l));
-    auto evaluated = map(l, [&env](auto const& a) { return evaluate_expression(env, a); });
-    return apply([&](const auto& first) { return execute(env, first, rest(evaluated)); }, first(evaluated));
+        return evaluate_catch(env, rest(l));
+    return evaluate_call(env, l);
 }
 
 auto evaluate(environment& env, const symbol& s) -> expression
