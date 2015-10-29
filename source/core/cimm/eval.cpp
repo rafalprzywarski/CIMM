@@ -156,20 +156,26 @@ auto execute(environment& env, const function& f, const list& args) -> expressio
     return execute(env, *overload, args);
 }
 
-auto execute(environment&, const error& e, const list&) -> expression
-{
-    return e;
-}
-
 template <typename expression_type>
 auto execute(environment&, const expression_type&, const list&) -> expression
 {
     return nil;
 }
 
+auto find_error(const list& l) -> expression
+{
+    for (auto it = l; not is_empty(it); it = rest(it))
+        if (is_error(first(it)))
+            return first(it);
+    return nil;
+}
+
 auto evaluate_call(environment& env, const list& l) -> expression
 {
     auto evaluated = map(l, [&env](auto const& a) { return evaluate_expression(env, a); });
+    auto error = find_error(evaluated);
+    if (error != nil)
+        return error;
     return apply([&](const auto& first) { return execute(env, first, rest(evaluated)); }, first(evaluated));
 }
 

@@ -29,4 +29,10 @@ auto as_integer(const expression& e) -> integer
     throw type_error(str(e), "an integer");
 }
 
+auto is_error(const expression& e) -> bool
+{
+    return boost::get<error>(&e.value) != nullptr;
+}
+
+
 }

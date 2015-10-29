@@ -161,6 +161,7 @@ public:
     friend auto as_vector(const expression& e) -> vector const&;
     friend auto as_symbol(const expression& e) -> symbol const&;
     friend auto as_integer(const expression& e) -> integer;
+    friend auto is_error(const expression& e) -> bool;
 
 private:
     expression_variant value;
