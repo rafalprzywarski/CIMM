@@ -149,6 +149,18 @@ TEST_F(eval_test, should_check_inequality_of_expressions)
     EXPECT_EQ(boolean(false), evaluate(list{symbol("not="), integer(3), integer(3)}));
 }
 
+TEST_F(eval_test, should_check_if_integers_are_in_ascending_order)
+{
+    EXPECT_EQ(boolean(true), evaluate_parsed("(< 1)"));
+    EXPECT_EQ(boolean(true), evaluate_parsed("(< 1 2)"));
+    EXPECT_EQ(boolean(false), evaluate_parsed("(< 2 1)"));
+    EXPECT_EQ(boolean(false), evaluate_parsed("(< 1 1)"));
+    EXPECT_EQ(boolean(true), evaluate_parsed("(< 1 2 3)"));
+    EXPECT_EQ(boolean(false), evaluate_parsed("(< 1 2 2)"));
+    EXPECT_EQ(boolean(false), evaluate_parsed("(< 1 2 1)"));
+    EXPECT_EQ(boolean(false), evaluate_parsed("(< 2 2 2)"));
+}
+
 TEST_F(eval_test, should_evaluate_elements_of_a_vector)
 {
     EXPECT_EQ((vector{}), evaluate_parsed("[]"));

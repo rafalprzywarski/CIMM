@@ -50,6 +50,21 @@ auto is_unequal_f(const list& l) -> expression
     return not is_equal(l);
 }
 
+auto is_less_than_f(const list& l) -> expression
+{
+    auto x = as_integer(first(l));
+    auto it = rest(l);
+    while (not is_empty(it))
+    {
+        auto y = as_integer(first(it));
+        if (not (x < y))
+            return false;
+        x = y;
+        it = rest(it);
+    }
+    return true;
+}
+
 struct visit_not : expression::visitor<boolean>
 {
     boolean operator()(const boolean& b) const { return not b; }
@@ -191,6 +206,7 @@ auto create_default_environment() -> environment
     define_native_function(env, {"-", subtract_integers});
     define_native_function(env, {"=", is_equal_f});
     define_native_function(env, {"not=", is_unequal_f});
+    define_native_function(env, {"<", is_less_than_f});
     define_native_function(env, {"not", not_f});
     define_native_function(env, {"keyword", keyword_f});
     define_native_function(env, {"symbol", symbol_f});
