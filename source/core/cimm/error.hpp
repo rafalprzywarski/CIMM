@@ -32,4 +32,10 @@ struct arity_error : evaluation_error
         : evaluation_error("Wrong number of args (" + str(n) + ") passed to: " + from) { }
 };
 
+struct call_error : evaluation_error
+{
+    call_error(const expression& e)
+        : evaluation_error("Cannot call " + str(e)) { }
+};
+
 }

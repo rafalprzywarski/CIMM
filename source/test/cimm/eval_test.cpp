@@ -175,4 +175,14 @@ TEST_F(eval_test, should_concatenate_expressions_as_strings)
     EXPECT_EQ(string{"Sonia5:last"}, evaluate_parsed("(str \"Sonia\" 5 :last)"));
 }
 
+TEST_F(eval_test, should_fail_when_calling_a_nonfunction)
+{
+    assert_evaluation_error<call_error>("Cannot call 5", "(5)");
+    assert_evaluation_error<call_error>("Cannot call (1 2)", "('(1 2))");
+    assert_evaluation_error<call_error>("Cannot call x", "('x)");
+    assert_evaluation_error<call_error>("Cannot call true", "(true)");
+    assert_evaluation_error<call_error>("Cannot call nil", "(nil)");
+    assert_evaluation_error<call_error>("Cannot call [1 2]", "([1 2])");
+}
+
 }

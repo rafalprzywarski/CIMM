@@ -157,9 +157,9 @@ auto execute(environment& env, const function& f, const list& args) -> expressio
 }
 
 template <typename expression_type>
-auto execute(environment&, const expression_type&, const list&) -> expression
+auto execute(environment&, const expression_type& e, const list&) -> expression
 {
-    return nil;
+    throw call_error(e);
 }
 
 auto find_error(const list& l) -> expression

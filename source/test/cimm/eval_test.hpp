@@ -45,8 +45,8 @@ struct eval_test : testing::Test
     {
         try
         {
-            evaluate_parsed(source);
-            FAIL() << "expected an exception; source: " << source;
+            auto result = evaluate_parsed(source);
+            FAIL() << "expected an exception; got " << result << " instead; source: " << source;
         }
         catch (error_type const& e)
         {
