@@ -65,6 +65,9 @@ auto parse_expressions(const string& expr_text) -> vector
 
     boost::spirit::qi::phrase_parse(first, end(expr_text), grammar, ascii::space, exprs);
 
+    if (first != end(expr_text))
+        throw parse_error(string{"unexpected "} + *first);
+
     return vector{exprs};
 }
 
