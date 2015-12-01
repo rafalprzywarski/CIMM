@@ -8,6 +8,7 @@ namespace cimm
 TEST(parse_test, should_parse_a_sequence_of_characters_as_an_symbol)
 {
     ASSERT_EQ(expression(symbol("abc123")), parse_expression("abc123"));
+    ASSERT_EQ(expression(symbol("nil0")), parse_expression("nil0"));
 }
 
 TEST(parse_test, should_parse_a_sequence_of_digits_as_an_integer)
@@ -89,6 +90,9 @@ TEST(parse_test, should_parse_a_vector_of_expressions)
 TEST(parse_test, should_parse_nil)
 {
     EXPECT_EQ(nil, parse_expression("nil"));
+    EXPECT_EQ(nil, parse_expression("nil "));
+    EXPECT_EQ(list{nil}, parse_expression("(nil)"));
+    EXPECT_EQ(vector{nil}, parse_expression("[nil]"));
 }
 
 TEST(parse_test, should_parse_multiple_expressions)

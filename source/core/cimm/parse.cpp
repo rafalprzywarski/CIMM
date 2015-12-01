@@ -33,7 +33,8 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, std::vector<exp
 
     qi::symbols<char const, char const> newline;
     rule<string> string_rule{qi::lit('\"') >> qi::no_skip[*(newline | (qi::char_ - '\"'))] >> qi::lit('\"')};
-    rule<string> char_seq_rule{qi::no_skip[+(qi::char_ - ')' - ']' - ' ')]};
+    decltype(qi::char_ - ')' - ']' - ' ') symbol_char{qi::char_ - ')' - ']' - ' '};
+    rule<string> char_seq_rule{qi::no_skip[+symbol_char]};
     rule<string> keyword_char_seq_rule{qi::lit(':') >> char_seq_rule};
     rule<keyword> keyword_rule{keyword_char_seq_rule};
     rule<symbol> symbol_rule{char_seq_rule};
@@ -44,7 +45,7 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, std::vector<exp
     rule<std::vector<expression>> list_vector_rule{qi::lit('(') >> *expression_rule >> qi::lit(')')};
     rule<std::vector<expression>> vector_vector_rule{qi::lit('[') >> *expression_rule >> qi::lit(']')};
     rule<boolean> boolean_rule{(qi::lit("true") >> qi::attr(true)) | (qi::lit("false") >> qi::attr(false))};
-    rule<nil_type> nil_rule{qi::lit("nil") >> qi::attr(nil)};
+    rule<nil_type> nil_rule{qi::no_skip[qi::lit("nil") >> !symbol_char] >> qi::attr(nil)};
     rule<list> list_rule{list_vector_rule};
     rule<vector> vector_rule{vector_vector_rule};
 };
