@@ -6,7 +6,6 @@
 namespace cimm
 {
 
-using string = std::string;
 using integer = int;
 using boolean = bool;
 struct nil_type {};
