@@ -14,7 +14,7 @@ auto as_vector(const expression& e) -> vector const&
 {
     if (auto val = boost::get<vector>(&e.value))
         return *val;
-    throw type_error(str(e), "a vector");
+    throw type_error(e, "a vector");
 }
 
 auto as_symbol(const expression& e) -> symbol const&
@@ -26,7 +26,7 @@ auto as_integer(const expression& e) -> integer
 {
     if (auto val = boost::get<integer>(&e.value))
         return *val;
-    throw type_error(str(e), "an integer");
+    throw type_error(e, "an integer");
 }
 
 auto is_error(const expression& e) -> bool
