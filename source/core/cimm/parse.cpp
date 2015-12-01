@@ -70,7 +70,7 @@ auto parse_expressions(const string& expr_text) -> vector
     }
     catch (boost::spirit::qi::expectation_failure<std::string::const_iterator> const& e)
     {
-        throw parse_error("unexpected EOF");
+        throw parse_error("unexpected end of input");
     }
 
     if (first != end(expr_text))

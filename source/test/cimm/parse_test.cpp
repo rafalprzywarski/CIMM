@@ -144,16 +144,16 @@ TEST_F(parse_test, should_parse_multiple_expressions)
 
 TEST_F(parse_test, should_fail_when_missing_a_closing_paren)
 {
-    assert_parse_error("unexpected EOF", "(");
-    assert_parse_error("unexpected EOF", "( 5 ");
-    assert_parse_error("unexpected EOF", "(()");
+    assert_parse_error("unexpected end of input", "(");
+    assert_parse_error("unexpected end of input", "( 5 ");
+    assert_parse_error("unexpected end of input", "(()");
 }
 
 TEST_F(parse_test, should_fail_when_missing_a_closing_bracket)
 {
-    assert_parse_error("unexpected EOF", "[");
-    assert_parse_error("unexpected EOF", "[ 5 ");
-    assert_parse_error("unexpected EOF", "[[]");
+    assert_parse_error("unexpected end of input", "[");
+    assert_parse_error("unexpected end of input", "[ 5 ");
+    assert_parse_error("unexpected end of input", "[[]");
 }
 
 }
