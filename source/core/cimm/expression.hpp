@@ -130,6 +130,11 @@ private:
     variant f;
 };
 
+inline auto pr_str(const native_function& ) -> string
+{
+    return string{"fn"};
+}
+
 template <typename result_type>
 struct native_function_visitor : boost::static_visitor<result_type> { };
 
@@ -240,6 +245,11 @@ struct function
     };
     std::vector<overload> overloads;
 };
+
+inline auto pr_str(const function& ) -> string
+{
+    return string{"fn"};
+}
 
 inline auto native_function::verify_accepts_n_args(integer n) const -> void
 {
