@@ -33,9 +33,10 @@ TEST_F(list_test, first_should_fail_when_given_too_many_arguments)
     assert_arity_error(3, "first", "(first '(1 2) 3 4)");
 }
 
-TEST_F(list_test, rest_should_return_an_empty_list_for_no_arguments)
+TEST_F(list_test, rest_should_fail_when_given_no_or_too_many_arguments)
 {
-    EXPECT_EQ(expression(list{}), evaluate(list{symbol("rest")}));
+    assert_arity_error(0, "rest", "(rest)");
+    assert_arity_error(2, "rest", "(rest '() '())");
 }
 
 TEST_F(list_test, rest_should_return_the_list_of_elements_after_the_first_element)
@@ -45,12 +46,12 @@ TEST_F(list_test, rest_should_return_the_list_of_elements_after_the_first_elemen
     EXPECT_EQ(expression(list{integer(3), integer(7)}), evaluate(list{symbol("rest"), list{special::quote, list{integer(1), integer(3), integer(7)}}}));
 }
 
-TEST_F(list_test, first_should_return_an_empty_list_for_an_empty_list)
+TEST_F(list_test, rest_should_return_an_empty_list_for_an_empty_list)
 {
-    EXPECT_EQ(expression(list{}), evaluate(list{symbol("rest")}));
+    EXPECT_EQ(expression(list{}), evaluate_parsed("(rest '())"));
 }
 
-TEST_F(list_test, first_should_return_an_empty_list_for_nil)
+TEST_F(list_test, rest_should_return_an_empty_list_for_nil)
 {
     EXPECT_EQ(expression(list{}), evaluate(list{symbol("rest"), nil}));
 }

@@ -134,14 +134,11 @@ auto first_f(const expression& e) -> expression
     return apply(first_visitor(), e);
 }
 
-auto rest_f(const list& args) -> expression
+auto rest_f(const expression& e) -> expression
 {
-    if (is_empty(args))
+    if (e == nil)
         return list{};
-    auto f = first(args);
-    if (f == nil)
-        return list{};
-    return rest(as_list(f));
+    return rest(as_list(e));
 }
 
 auto count_f(const list& args) -> expression
