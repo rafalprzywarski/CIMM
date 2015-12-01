@@ -7,7 +7,19 @@ namespace cimm
 {
 
 using integer = int;
+
+inline auto pr_str(const integer& v) -> string
+{
+    return std::to_string(v);
+}
+
 using boolean = bool;
+
+inline auto pr_str(const boolean& b) -> string
+{
+    return b ? string{"true"} : string{"false"};
+}
+
 struct nil_type {};
 static constexpr nil_type nil{};
 
