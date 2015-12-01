@@ -13,6 +13,10 @@ void eval_line(cimm::environment& env, const std::string& line)
         auto result = cimm::evaluate_expression(env, expr);
         std::cout << "> " << cimm::pr_str(result) << std::endl;
     }
+    catch (cimm::parse_error const& e)
+    {
+        std::cout << "error: " << e.what() << std::endl;
+    }
     catch (cimm::evaluation_error const& e)
     {
         std::cout << "error: " << e.what() << std::endl;
