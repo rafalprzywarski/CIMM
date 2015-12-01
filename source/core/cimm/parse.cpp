@@ -24,7 +24,7 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, std::vector<exp
 {
     expression_grammar() : expression_grammar::base_type(expressions_rule, "expression-grammar")
     {
-        escaped.add("\\n", '\n')("\\\\", '\\');
+        escaped.add("\\n", '\n')("\\\\", '\\')("\\\"", '\"');
         quote_rule = qi::lit('\'') > expression_rule[_val = bind(quote_expr, _1)];
         expression_variant_rule = qi::int_ | boolean_rule | list_rule | vector_rule | string_rule | keyword_rule | nil_rule | symbol_rule;
     }
