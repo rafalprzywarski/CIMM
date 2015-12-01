@@ -7,8 +7,10 @@ namespace cimm
 
 TEST(parse_test, should_parse_a_sequence_of_characters_as_an_symbol)
 {
-    ASSERT_EQ(expression(symbol("abc123")), parse_expression("abc123"));
-    ASSERT_EQ(expression(symbol("nil0")), parse_expression("nil0"));
+    EXPECT_EQ(expression(symbol("abc123")), parse_expression("abc123"));
+    EXPECT_EQ(expression(symbol("nil0")), parse_expression("nil0"));
+    EXPECT_EQ(expression(symbol("true0")), parse_expression("true0"));
+    EXPECT_EQ(expression(symbol("false0")), parse_expression("false0"));
 }
 
 TEST(parse_test, should_parse_a_sequence_of_digits_as_an_integer)
@@ -40,8 +42,13 @@ TEST(parse_test, should_parse_a_list_of_expressions)
 TEST(parse_test, should_parse_boolean_values)
 {
     EXPECT_EQ(expression(boolean(true)), parse_expression("true"));
+    EXPECT_EQ(expression(boolean(true)), parse_expression("true "));
+    EXPECT_EQ(expression(list{boolean(true)}), parse_expression("(true)"));
+    EXPECT_EQ(expression(vector{boolean(true)}), parse_expression("[true]"));
     EXPECT_EQ(expression(boolean(false)), parse_expression("false"));
-    EXPECT_EQ(expression(list{boolean(true), boolean(false)}), parse_expression("(true false)"));
+    EXPECT_EQ(expression(boolean(false)), parse_expression("false "));
+    EXPECT_EQ(expression(list{boolean(false)}), parse_expression("(false)"));
+    EXPECT_EQ(expression(vector{boolean(false)}), parse_expression("[false]"));
 }
 
 TEST(parse_test, should_parse_quoted_strings)

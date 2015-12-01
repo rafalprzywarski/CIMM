@@ -44,7 +44,7 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, std::vector<exp
     rule<std::vector<expression>> expressions_rule = *expression_rule;
     rule<std::vector<expression>> list_vector_rule{qi::lit('(') >> *expression_rule >> qi::lit(')')};
     rule<std::vector<expression>> vector_vector_rule{qi::lit('[') >> *expression_rule >> qi::lit(']')};
-    rule<boolean> boolean_rule{(qi::lit("true") >> qi::attr(true)) | (qi::lit("false") >> qi::attr(false))};
+    rule<boolean> boolean_rule{(qi::no_skip[qi::lit("true") >> !symbol_char] >> qi::attr(true)) | (qi::no_skip[qi::lit("false") >> !symbol_char] >> qi::attr(false))};
     rule<nil_type> nil_rule{qi::no_skip[qi::lit("nil") >> !symbol_char] >> qi::attr(nil)};
     rule<list> list_rule{list_vector_rule};
     rule<vector> vector_rule{vector_vector_rule};
