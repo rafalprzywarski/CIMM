@@ -142,4 +142,11 @@ TEST_F(parse_test, should_parse_multiple_expressions)
     EXPECT_EQ((vector{list{nil, nil}, vector{integer(1), nil}}), parse_expressions("(nil nil)\n[1 nil]"));
 }
 
+TEST_F(parse_test, should_fail_when_missing_a_closing_paren)
+{
+    assert_parse_error("unexpected EOF", "(");
+    assert_parse_error("unexpected EOF", "( 5 ");
+    assert_parse_error("unexpected EOF", "(()");
+}
+
 }

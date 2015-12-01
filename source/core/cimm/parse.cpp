@@ -1,6 +1,7 @@
 #include "parse.hpp"
 #include <boost/spirit/home/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
+#include <boost/spirit/include/qi_expect.hpp>
 
 namespace cimm
 {
@@ -42,7 +43,7 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, std::vector<exp
     rule<list> quote_rule;
     rule<expression> expression_rule{qi::as<expression>()[quote_rule | expression_variant_rule]};
     rule<std::vector<expression>> expressions_rule = *expression_rule;
-    rule<std::vector<expression>> list_vector_rule{qi::lit('(') >> *expression_rule >> qi::lit(')')};
+    rule<std::vector<expression>> list_vector_rule{qi::lit('(') >> *expression_rule > qi::lit(')')};
     rule<std::vector<expression>> vector_vector_rule{qi::lit('[') >> *expression_rule >> qi::lit(']')};
     rule<boolean> boolean_rule{(qi::no_skip[qi::lit("true") >> !symbol_char] >> qi::attr(true)) | (qi::no_skip[qi::lit("false") >> !symbol_char] >> qi::attr(false))};
     rule<nil_type> nil_rule{qi::no_skip[qi::lit("nil") >> !symbol_char] >> qi::attr(nil)};
@@ -63,7 +64,14 @@ auto parse_expressions(const string& expr_text) -> vector
     expression_grammar<std::string::const_iterator> grammar;
     std::vector<expression> exprs;
 
-    boost::spirit::qi::phrase_parse(first, end(expr_text), grammar, ascii::space, exprs);
+    try
+    {
+        boost::spirit::qi::phrase_parse(first, end(expr_text), grammar, ascii::space, exprs);
+    }
+    catch (boost::spirit::qi::expectation_failure<std::string::const_iterator> const& e)
+    {
+        throw parse_error("unexpected EOF");
+    }
 
     if (first != end(expr_text))
         throw parse_error(string{"unexpected "} + *first);
