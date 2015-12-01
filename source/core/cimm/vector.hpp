@@ -59,7 +59,7 @@ inline auto is_empty(const vector& v)
 
 inline auto first(const vector& v)
 {
-    return *begin(v);
+    return is_empty(v) ? nil : *begin(v);
 }
 
 inline auto rest(const vector& l)

@@ -115,10 +115,23 @@ auto list_f(const list& l) -> expression
     return l;
 }
 
+namespace
+{
+
+struct first_visitor : expression::visitor<expression>
+{
+    auto operator()(const list& l) -> expression { return first(l); }
+    auto operator()(const vector& v) -> expression { return first(v); }
+
+    template <typename expression_type>
+    auto operator()(const expression_type& v) -> expression { return {}; }
+};
+
+}
+
 auto first_f(const expression& e) -> expression
 {
-    list l = as_list(e);
-    return is_empty(l) ? nil : first(l);
+    return apply(first_visitor(), e);
 }
 
 auto rest_f(const list& args) -> expression
