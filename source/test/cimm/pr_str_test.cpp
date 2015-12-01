@@ -45,6 +45,11 @@ TEST(pr_str_test, should_escape_newline_characters)
     ASSERT_EQ(string("\"\\na\\nb\\nc\\n\""), pr_str(expression(string("\na\nb\nc\n"))));
 }
 
+TEST(pr_str_test, should_escape_quotes)
+{
+    ASSERT_EQ(string("\"\\\"a\\\"\""), pr_str(expression(string("\"a\""))));
+}
+
 TEST(pr_str_test, should_convert_nil_to_a_string)
 {
     ASSERT_EQ(string("nil"), pr_str(expression(nil)));

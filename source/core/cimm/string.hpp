@@ -12,6 +12,8 @@ inline auto pr_str(const string& s) -> string
     for (auto c : s)
         if (c == '\n')
             printed += "\\n";
+        else if (c == '\"')
+            printed += "\\\"";
         else
             printed += c;
     printed += "\"";
