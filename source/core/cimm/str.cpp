@@ -66,7 +66,7 @@ struct pr_to_string : expression::visitor<string>
     string operator()(const string& s) const { return '\"' + s + '\"'; }
 
     template <typename expression_type>
-    string operator()(const expression_type& ) const { return {}; }
+    string operator()(const expression_type& e) const { return str(e); }
 };
 
 }
