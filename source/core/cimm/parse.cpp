@@ -33,7 +33,7 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, std::vector<exp
     using rule = qi::rule<iterator, type(), ascii::space_type>;
 
     qi::symbols<char const, char const> newline;
-    rule<string> string_rule{qi::lit('\"') >> qi::no_skip[*(newline | (qi::char_ - '\"'))] >> qi::lit('\"')};
+    rule<string> string_rule{qi::lit('\"') >> qi::no_skip[*(newline | (qi::char_ - '\"'))] > qi::lit('\"')};
     decltype(qi::char_ - ')' - ']' - ' ' - '\"') symbol_char{qi::char_ - ')' - ']' - ' ' - '\"'};
     rule<string> char_seq_rule{qi::no_skip[+symbol_char]};
     rule<string> keyword_char_seq_rule{qi::lit(':') >> char_seq_rule};

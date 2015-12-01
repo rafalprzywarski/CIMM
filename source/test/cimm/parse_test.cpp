@@ -160,4 +160,9 @@ TEST_F(parse_test, should_fail_when_missing_a_closing_bracket)
     assert_parse_error("unexpected end of input", "[[]");
 }
 
+TEST_F(parse_test, should_fail_when_missing_a_closing_quote)
+{
+    assert_parse_error("unexpected end of input", "\"");
+}
+
 }
