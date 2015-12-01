@@ -27,7 +27,7 @@ auto pr_str(list const& l) -> string
     {
         if (count(e) != count(l))
           os << ' ';
-        os << str(first(e));
+        os << pr_str(first(e));
     }
     os << ')';
     return os.str();

@@ -67,6 +67,11 @@ TEST(pr_str_test, should_quote_strings_in_vectors)
     EXPECT_EQ(string("[\"abc\"]"), pr_str(expression{vector{string{"abc"}}}));
 }
 
+TEST(pr_str_test, should_quote_strings_in_lists)
+{
+    EXPECT_EQ(string("(\"abc\")"), pr_str(expression{list{string{"abc"}}}));
+}
+
 TEST(pr_str_test, should_convert_native_function_as_text_function)
 {
     native_function f{string("some"), [](const list&) -> expression { return nil; }};
