@@ -27,6 +27,10 @@ int main(int argc, const char *const *argv)
             run(f);
         }
     }
+    catch (cimm::parse_error const& e)
+    {
+        std::cout << "error: " << e.what() << std::endl;
+    }
     catch (cimm::evaluation_error const& e)
     {
         std::cout << "error: " << e.what() << std::endl;
