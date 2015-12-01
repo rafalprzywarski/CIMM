@@ -183,6 +183,7 @@ TEST_F(eval_test, should_fail_when_calling_a_nonfunction)
     assert_evaluation_error<call_error>("Cannot call true", "(true)");
     assert_evaluation_error<call_error>("Cannot call nil", "(nil)");
     assert_evaluation_error<call_error>("Cannot call [1 2]", "([1 2])");
+    assert_evaluation_error<call_error>("Cannot call \"x\"", "(\"x\")");
 }
 
 }

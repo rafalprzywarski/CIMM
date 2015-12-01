@@ -35,7 +35,7 @@ struct arity_error : evaluation_error
 struct call_error : evaluation_error
 {
     call_error(const expression& e)
-        : evaluation_error("Cannot call " + str(e)) { }
+        : evaluation_error("Cannot call " + pr_str(e)) { }
 };
 
 }
