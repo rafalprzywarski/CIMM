@@ -41,9 +41,9 @@ TEST_F(list_test, rest_should_fail_when_given_no_or_too_many_arguments)
 
 TEST_F(list_test, rest_should_return_the_list_of_elements_after_the_first_element)
 {
-    EXPECT_EQ(expression(list{}), evaluate(list{symbol("rest"), list{special::quote, list{integer(3)}}}));
-    EXPECT_EQ(expression(list{integer(3)}), evaluate(list{symbol("rest"), list{special::quote, list{integer(1), integer(3)}}}));
-    EXPECT_EQ(expression(list{integer(3), integer(7)}), evaluate(list{symbol("rest"), list{special::quote, list{integer(1), integer(3), integer(7)}}}));
+    EXPECT_EQ(expression(list{}), evaluate_parsed("(rest '(3))"));
+    EXPECT_EQ(expression(list{integer(3)}), evaluate_parsed("(rest '(1 3))"));
+    EXPECT_EQ(expression(list{integer(3), integer(7)}), evaluate_parsed("(rest '(1 3 7))"));
 }
 
 TEST_F(list_test, rest_should_return_an_empty_list_for_an_empty_list)
