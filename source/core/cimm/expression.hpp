@@ -17,6 +17,11 @@ inline auto operator==(const nil_type& left, const nil_type& right)
     return true;
 }
 
+inline auto pr_str(const nil_type& ) -> string
+{
+    return "nil";
+}
+
 class symbol
 {
 public:

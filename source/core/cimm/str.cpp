@@ -60,7 +60,7 @@ namespace
 
 struct pr_to_string : expression::visitor<string>
 {
-    string operator()(const nil_type& ) const { return "nil"; }
+    string operator()(const nil_type& nil) const { return pr_str(nil); }
     string operator()(const symbol& s) const { return pr_str(s); }
     string operator()(const keyword& k) const { return pr_str(k); }
     string operator()(const string& s) const { return '\"' + s + '\"'; }
