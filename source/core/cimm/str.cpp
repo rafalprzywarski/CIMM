@@ -58,4 +58,22 @@ auto str(const expression& e) -> string
     return apply(to_string(), e);
 }
 
+namespace
+{
+
+struct pr_to_string : expression::visitor<string>
+{
+    string operator()(const string& s) const { return '\"' + s + '\"'; }
+
+    template <typename expression_type>
+    string operator()(const expression_type& ) const { return {}; }
+};
+
+}
+
+auto pr_str(const expression& e) -> string
+{
+    return apply(pr_to_string(), e);
+}
+
 }

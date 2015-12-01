@@ -10,6 +10,7 @@ add_executable(cimm_test
   cimm/list_test.cpp
   cimm/keyword_test.cpp
   cimm/parse_test.cpp
+  cimm/pr_str_test.cpp
   cimm/slist_test.cpp
   cimm/str_test.cpp
   cimm/symbol_test.cpp

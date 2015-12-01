@@ -7,5 +7,6 @@ namespace cimm
 class expression;
 
 auto str(const expression& e) -> string;
+auto pr_str(const expression& e) -> string;
 
 }
