@@ -8,7 +8,14 @@ using string = std::string;
 
 inline auto pr_str(const string& s) -> string
 {
-    return '\"' + s + '\"';
+    string printed = "\"";
+    for (auto c : s)
+        if (c == '\n')
+            printed += "\\n";
+        else
+            printed += c;
+    printed += "\"";
+    return printed;
 }
 
 }
