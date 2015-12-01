@@ -62,6 +62,11 @@ TEST(pr_str_test, should_convert_a_vector_of_expressions_to_strings_separated_by
     EXPECT_EQ(string("[[(1) 2] (+ a) xyz]"), pr_str(expression(vector{vector{list{integer(1)}, integer(2)}, list{symbol("+"), symbol("a")}, symbol("xyz")})));
 }
 
+TEST(pr_str_test, should_quote_strings_in_vectors)
+{
+    EXPECT_EQ(string("[\"abc\"]"), pr_str(expression{vector{string{"abc"}}}));
+}
+
 TEST(pr_str_test, should_convert_native_function_as_text_function)
 {
     native_function f{string("some"), [](const list&) -> expression { return nil; }};

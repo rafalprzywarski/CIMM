@@ -13,7 +13,7 @@ auto pr_str(vector const& v) -> string
     {
         if (e != begin(v))
           os << ' ';
-        os << str(*e);
+        os << pr_str(*e);
     }
     os << ']';
     return os.str();
