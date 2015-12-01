@@ -59,7 +59,7 @@ public:
         return left.value == right.value;
     }
 
-    friend auto str(const keyword& k) -> string
+    friend auto pr_str(const keyword& k) -> string
     {
         return ':' + k.value;
     }
