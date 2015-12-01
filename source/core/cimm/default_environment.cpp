@@ -193,6 +193,14 @@ auto str_f(const list& args) -> expression
     return s;
 }
 
+auto pr_str_f(const list& args) -> expression
+{
+    string s;
+    for (auto l = args; not is_empty(l); l = rest(l))
+        s += pr_str(first(l));
+    return s;
+}
+
 auto print_f(const list& args) -> expression
 {
     if (is_empty(args))
@@ -233,6 +241,7 @@ auto create_default_environment() -> environment
     define_native_function(env, {"vec", vec_f});
     define_native_function(env, {"throw", throw_f});
     define_native_function(env, {"str", str_f});
+    define_native_function(env, {"pr-str", pr_str_f});
     define_native_function(env, {"print", print_f});
     define_native_function(env, {"exit", exit_f});
 
