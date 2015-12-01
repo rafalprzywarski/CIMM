@@ -1,4 +1,5 @@
 #include "eval_test.hpp"
+#include <cimm/type_error.hpp>
 
 namespace cimm
 {
@@ -22,6 +23,11 @@ TEST_F(vector_test, should_create_a_vector_from_a_list)
 TEST_F(vector_test, first_should_provide_the_first_element)
 {
     EXPECT_EQ(parse(":a"), evaluate_parsed("(first [:a \"b\"])"));
+}
+
+TEST_F(vector_test, first_should_fail_when_not_passed_sequence)
+{
+    assert_evaluation_error<type_error>("7 is not a sequence", "(first 7)");
 }
 
 TEST_F(vector_test, first_should_return_nil_for_an_empty_vector)

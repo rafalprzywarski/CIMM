@@ -124,7 +124,7 @@ struct first_visitor : expression::visitor<expression>
     auto operator()(const vector& v) -> expression { return first(v); }
 
     template <typename expression_type>
-    auto operator()(const expression_type& v) -> expression { return {}; }
+    auto operator()(const expression_type& e) -> expression { throw type_error(e, "a sequence"); }
 };
 
 }
