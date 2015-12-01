@@ -70,7 +70,7 @@ struct pr_to_string : expression::visitor<string>
     string operator()(const vector& v) const { return join('[', v, ']'); }
     string operator()(const native_function& f) const { return pr_str(f); }
     string operator()(const function& f) const { return pr_str(f); }
-    string operator()(const error& e) const { return str(e); }
+    string operator()(const error& e) const { return pr_str(e); }
 };
 
 }

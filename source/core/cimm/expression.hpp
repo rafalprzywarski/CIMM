@@ -213,7 +213,7 @@ public:
         return left.value == right.value;
     }
 
-    friend auto str(const error& e) -> string
+    friend auto pr_str(const error& e) -> string
     {
         return string("error: ") + cimm::str(e.value);
     }
