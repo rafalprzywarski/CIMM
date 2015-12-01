@@ -28,11 +28,6 @@ int main()
     auto environment = cimm::create_default_environment();
     std::string line;
 
-    while (1)
-    {
-        std::cout << "$ " << std::flush;
-        if (!std::getline(std::cin, line))
-            break;
+    while ((std::cout << "$ " << std::flush) && std::getline(std::cin, line))
         eval_line(environment, line);
-    }
 }
