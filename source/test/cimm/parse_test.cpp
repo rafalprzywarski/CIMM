@@ -82,6 +82,10 @@ TEST_F(parse_test, should_parse_quoted_strings)
     EXPECT_EQ(expression(string("abc123")), parse_expression("\"abc123\""));
     EXPECT_EQ(expression(list{string("a"), string("b")}), parse_expression("(\"a\" \"b\")"));
 }
+TEST_F(parse_test, should_not_treat_strings_as_parts_of_symbols)
+{
+    EXPECT_EQ(expression(list{symbol("ab"), string("cd")}), parse_expression("(ab\"cd\")"));
+}
 
 TEST_F(parse_test, should_parse_escaped_newline_in_strings)
 {
