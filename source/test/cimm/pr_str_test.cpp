@@ -76,7 +76,7 @@ TEST(pr_str_test, should_convert_functions)
 
 TEST(pr_str_test, should_convert_errors)
 {
-    EXPECT_EQ(string{"error: bad"}, pr_str(error{expression{string{"bad"}}}));
+    EXPECT_EQ(string{"error: \"bad\""}, pr_str(error{expression{string{"bad"}}}));
     EXPECT_EQ(string{"error: 7"}, pr_str(error{expression{integer(7)}}));
 }
 

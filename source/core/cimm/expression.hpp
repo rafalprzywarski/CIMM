@@ -215,7 +215,7 @@ public:
 
     friend auto pr_str(const error& e) -> string
     {
-        return string("error: ") + cimm::str(e.value);
+        return string("error: ") + cimm::pr_str(e.value);
     }
 
     friend auto unwrap(const error& e)
