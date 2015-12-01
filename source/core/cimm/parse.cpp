@@ -24,7 +24,7 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, std::vector<exp
 {
     expression_grammar() : expression_grammar::base_type(expressions_rule, "expression-grammar")
     {
-        newline.add("\\n", '\n');
+        escaped.add("\\n", '\n')("\\\\", '\\');
         quote_rule = qi::lit('\'') > expression_rule[_val = bind(quote_expr, _1)];
         expression_variant_rule = qi::int_ | boolean_rule | list_rule | vector_rule | string_rule | keyword_rule | nil_rule | symbol_rule;
     }
@@ -32,8 +32,8 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, std::vector<exp
     template <typename type>
     using rule = qi::rule<iterator, type(), ascii::space_type>;
 
-    qi::symbols<char const, char const> newline;
-    rule<string> string_rule{qi::lit('\"') >> qi::no_skip[*(newline | (qi::char_ - '\"'))] > qi::lit('\"')};
+    qi::symbols<char const, char const> escaped;
+    rule<string> string_rule{qi::lit('\"') >> qi::no_skip[*(escaped | (qi::char_ - '\"'))] > qi::lit('\"')};
     decltype(qi::char_ - ')' - ']' - ' ' - '\"') symbol_char{qi::char_ - ')' - ']' - ' ' - '\"'};
     rule<string> char_seq_rule{qi::no_skip[+symbol_char]};
     rule<string> keyword_char_seq_rule{qi::lit(':') >> char_seq_rule};

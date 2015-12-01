@@ -93,6 +93,12 @@ TEST_F(parse_test, should_parse_escaped_newline_in_strings)
     EXPECT_EQ(expression(string("\n\n\n")), parse_expression("\"\\n\\n\\n\""));
 }
 
+TEST_F(parse_test, should_parse_escaped_backslashes_in_strings)
+{
+    EXPECT_EQ(expression(string("ab\\cd")), parse_expression("\"ab\\\\cd\""));
+    EXPECT_EQ(expression(string("\\\\\\")), parse_expression("\"\\\\\\\\\\\\\""));
+}
+
 TEST_F(parse_test, should_parse_a_sequence_of_characters_beginning_with_a_colon_as_a_keyword)
 {
     EXPECT_EQ(expression(keyword("abc123")), parse_expression(":abc123"));
