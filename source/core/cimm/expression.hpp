@@ -28,7 +28,7 @@ public:
         return left.value == right.value;
     }
 
-    friend auto str(const symbol& s) -> string const&
+    friend auto pr_str(const symbol& s) -> string const&
     {
         return s.value;
     }
