@@ -5,37 +5,32 @@
 namespace cimm
 {
 
-namespace
-{
-
-string join(char open, vector const& c, char close)
+auto pr_str(vector const& v) -> string
 {
     std::ostringstream os;
-    os << open;
-    for (auto e = begin(c); e != end(c); ++e)
+    os << '[';
+    for (auto e = begin(v); e != end(v); ++e)
     {
-        if (e != begin(c))
+        if (e != begin(v))
           os << ' ';
         os << str(*e);
     }
-    os << close;
+    os << ']';
     return os.str();
 }
 
-string join(char open, list const& l, char close)
+auto pr_str(list const& l) -> string
 {
     std::ostringstream os;
-    os << open;
+    os << '(';
     for (auto e = l; not is_empty(e); e = rest(e))
     {
         if (count(e) != count(l))
           os << ' ';
         os << str(first(e));
     }
-    os << close;
+    os << ')';
     return os.str();
-}
-
 }
 
 namespace
@@ -66,8 +61,8 @@ struct pr_to_string : expression::visitor<string>
     string operator()(const string& s) const { return pr_str(s); }
     string operator()(const integer& v) const { return pr_str(v); }
     string operator()(const boolean& b) const { return pr_str(b); }
-    string operator()(const list& l) const { return join('(', l, ')'); }
-    string operator()(const vector& v) const { return join('[', v, ']'); }
+    string operator()(const list& l) const { return pr_str(l); }
+    string operator()(const vector& v) const { return pr_str(v); }
     string operator()(const native_function& f) const { return pr_str(f); }
     string operator()(const function& f) const { return pr_str(f); }
     string operator()(const error& e) const { return pr_str(e); }
