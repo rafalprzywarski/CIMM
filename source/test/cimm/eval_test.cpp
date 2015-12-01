@@ -193,4 +193,9 @@ TEST_F(eval_test, should_fail_when_calling_a_nonfunction)
     assert_evaluation_error<call_error>("Cannot call \"x\"", "(\"x\")");
 }
 
+TEST_F(eval_test, conj_should_fail_when_not_given_a_sequence)
+{
+    assert_evaluation_error<type_error>("7 is not a sequence", "(conj 7 1)");
+}
+
 }

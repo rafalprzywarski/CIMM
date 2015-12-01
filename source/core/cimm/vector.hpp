@@ -1,6 +1,7 @@
 #pragma once
 #include "expression.hpp"
 #include "list.hpp"
+#include "type_error.hpp"
 #include <vector>
 
 namespace cimm
@@ -77,9 +78,9 @@ inline auto conj(const vector& v, expression e)
 }
 
 template <typename expression_type>
-inline auto conj(const expression_type& , const expression& )
+inline auto conj(const expression_type& e, const expression& ) -> expression
 {
-    return nil;
+    throw type_error(e, "a sequence");
 }
 
 inline auto conj(const expression& seq, const expression& e) -> expression
