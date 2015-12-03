@@ -19,6 +19,22 @@ TEST_F(eval_test, should_fail_when_trying_to_add_nonintegers)
     ASSERT_THROW(evaluate_parsed("(+ 1 3 :bad)"), type_error);
 }
 
+TEST_F(eval_test, should_multiply_integers)
+{
+    EXPECT_EQ(integer(10), evaluate_parsed("(* 2 5)"));
+    EXPECT_EQ(integer(-4), evaluate_parsed("(* 4 -1)"));
+    EXPECT_EQ(integer(6), evaluate_parsed("(* 1 2 3)"));
+    EXPECT_EQ(integer(3), evaluate_parsed("(* 3)"));
+    EXPECT_EQ(integer(1), evaluate_parsed("(*)"));
+}
+
+TEST_F(eval_test, should_fail_when_trying_to_multiply_nonintegers)
+{
+    assert_evaluation_error<type_error>("a is not an integer", "(* 'a 7)");
+    ASSERT_THROW(evaluate_parsed("(* :x)"), type_error);
+    ASSERT_THROW(evaluate_parsed("(* 1 3 :bad)"), type_error);
+}
+
 TEST_F(eval_test, should_negate_integers)
 {
     EXPECT_EQ(integer(-2), evaluate_parsed("(- 2)"));

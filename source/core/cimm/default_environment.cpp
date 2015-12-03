@@ -17,6 +17,14 @@ auto add_integers(const list& l) -> expression
     return sum;
 }
 
+auto multiply_integers(const list& l) -> expression
+{
+    integer prod{1};
+    for (auto e = l; not is_empty(e); e = rest(e))
+        prod *= as_integer(first(e));
+    return prod;
+}
+
 auto subtract_integers(const list& l) -> expression
 {
     if (is_empty(l))
@@ -221,6 +229,7 @@ auto create_default_environment() -> environment
     environment env;
 
     define_native_function(env, {"+", add_integers});
+    define_native_function(env, {"*", multiply_integers});
     define_native_function(env, {"-", subtract_integers});
     define_native_function(env, {"=", is_equal_f});
     define_native_function(env, {"not=", is_unequal_f});
