@@ -38,4 +38,10 @@ struct call_error : evaluation_error
         : evaluation_error("Cannot call " + pr_str(e)) { }
 };
 
+struct let_forms_error : evaluation_error
+{
+    let_forms_error()
+        : evaluation_error("let requires an even number of forms in binding vector") { }
+};
+
 }

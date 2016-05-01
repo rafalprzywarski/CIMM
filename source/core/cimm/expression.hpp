@@ -61,6 +61,7 @@ static const symbol def{"def"};
 static const symbol fn{"fn"};
 static const symbol if_{"if"};
 static const symbol catch_{"catch"};
+static const symbol let{"let"};
 
 }
 

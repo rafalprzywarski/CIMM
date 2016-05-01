@@ -7,6 +7,7 @@ add_executable(cimm_test
   cimm/eval_test.cpp
   cimm/fn_test.cpp
   cimm/if_test.cpp
+  cimm/let_test.cpp
   cimm/list_test.cpp
   cimm/keyword_test.cpp
   cimm/parse_test.cpp

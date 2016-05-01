@@ -139,6 +139,20 @@ auto replace_symbols(const expression& e, const vector& symbols, const list& val
     return apply([&](auto& e) -> expression { return replace_symbols(e, symbols, values); }, e);
 }
 
+auto replace_symbols(const expression& e, const vector& pairs) -> expression
+{
+    if (count(pairs) % 2 != 0)
+        throw let_forms_error();
+
+    std::vector<expression> names, values;
+    for (auto it = begin(pairs); it != end(pairs); it += 2)
+    {
+        names.push_back(it[0]);
+        values.push_back(it[1]);
+    }
+    return replace_symbols(e, vector{names}, list{values});
+}
+
 auto execute(environment& env, const function::overload& overload, const list& args) -> expression
 {
     auto body = overload.body;
@@ -179,6 +193,12 @@ auto evaluate_call(environment& env, const list& l) -> expression
     return apply([&](const auto& first) { return execute(env, first, rest(evaluated)); }, first(evaluated));
 }
 
+auto evaluate_let(environment& env, const list& l) -> expression
+{
+    auto pairs = as_vector(first(l));
+    return evaluate_expression(env, replace_symbols(first(rest(l)), pairs));
+}
+
 auto evaluate(environment& env, const list& l) -> expression
 {
     auto name = first(l);
@@ -192,6 +212,8 @@ auto evaluate(environment& env, const list& l) -> expression
         return evaluate_if(env, rest(l));
     if (name == special::catch_)
         return evaluate_catch(env, rest(l));
+    if (name == special::let)
+        return evaluate_let(env, rest(l));
     return evaluate_call(env, l);
 }
 
