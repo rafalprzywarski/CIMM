@@ -41,6 +41,11 @@ TEST_F(let_test, let_bindings_should_hide_function_bindings)
     EXPECT_EQ(integer{9}, evaluate_parsed("((fn [x] (let [x (+ x 2)] x)) 7)"));
 }
 
+TEST_F(let_test, function_bindings_should_hide_let_bindings)
+{
+    EXPECT_EQ(integer{9}, evaluate_parsed("(let [x 2] ((fn [x] (+ x 7)) x))"));
+}
+
 TEST_F(let_test, should_fail_for_odd_number_of_forms)
 {
     assert_evaluation_error<let_forms_error>("let requires an even number of forms in binding vector", "(let [x] 1)");
