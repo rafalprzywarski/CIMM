@@ -37,6 +37,11 @@ TEST_F(parse_test, should_parse_a_sequence_of_characters_as_an_symbol)
     EXPECT_EQ(expression(symbol("false0")), parse_expression("false0"));
 }
 
+TEST_F(parse_test, should_not_treat_newline_as_part_of_symbol)
+{
+    EXPECT_EQ(expression(symbol("abc123")), parse_expression("abc123\n"));
+}
+
 TEST_F(parse_test, should_parse_a_sequence_of_digits_as_an_integer)
 {
     EXPECT_EQ(expression(integer(1)), parse_expression("1"));
