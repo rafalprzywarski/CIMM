@@ -26,6 +26,16 @@ TEST_F(let_test, nested_bindings_should_hide_parent_bindings)
     EXPECT_EQ(integer{2}, evaluate_parsed("(let [x 1] (let [x 2] x))"));
 }
 
+TEST_F(let_test, nested_bindings_should_be_able_to_use_parent_bindings)
+{
+    EXPECT_EQ(integer{2}, evaluate_parsed("(let [x 1] (let [y (+ 1 x)] y))"));
+}
+
+TEST_F(let_test, nested_bindings_should_be_able_to_use_parent_bindings_with_same_names)
+{
+    EXPECT_EQ(integer{2}, evaluate_parsed("(let [x 1] (let [x (+ 1 x)] x))"));
+}
+
 TEST_F(let_test, should_fail_for_odd_number_of_forms)
 {
     assert_evaluation_error<let_forms_error>("let requires an even number of forms in binding vector", "(let [x] 1)");

@@ -132,11 +132,15 @@ auto replace_symbols(const list& seq, const vector& symbols, const list& values)
     {
         auto pairs = as_vector(first(rest(seq)));
         auto body = first(rest(rest(seq)));
-        std::vector<expression> names;
+        std::vector<expression> names, bindings;
         for (auto it = begin(pairs); it != end(pairs); it += 2)
+        {
             names.push_back(it[0]);
+            bindings.push_back(it[0]);
+            bindings.push_back(replace_symbols(it[1], symbols, values));
+        }
 
-        return list{special::let, pairs, replace_symbols(body, remove_params(symbols, vector{names}), values)};
+        return list{special::let, vector{bindings}, replace_symbols(body, remove_params(symbols, vector{names}), values)};
     }
     if (first(seq) == special::quote)
         return seq;
@@ -147,20 +151,6 @@ auto replace_symbols(const list& seq, const vector& symbols, const list& values)
 auto replace_symbols(const expression& e, const vector& symbols, const list& values) -> expression
 {
     return apply([&](auto& e) -> expression { return replace_symbols(e, symbols, values); }, e);
-}
-
-auto replace_symbols(const expression& e, const vector& pairs) -> expression
-{
-    if (count(pairs) % 2 != 0)
-        throw let_forms_error();
-
-    std::vector<expression> names, values;
-    for (auto it = begin(pairs); it != end(pairs); it += 2)
-    {
-        names.push_back(it[0]);
-        values.push_back(it[1]);
-    }
-    return replace_symbols(e, vector{names}, list{values});
 }
 
 auto execute(environment& env, const function::overload& overload, const list& args) -> expression
@@ -205,8 +195,18 @@ auto evaluate_call(environment& env, const list& l) -> expression
 
 auto evaluate_let(environment& env, const list& l) -> expression
 {
-    auto pairs = as_vector(first(l));
-    return evaluate_expression(env, replace_symbols(first(rest(l)), pairs));
+    auto bindings = as_vector(first(l));
+    if (count(bindings) % 2 != 0)
+        throw let_forms_error();
+
+    std::vector<expression> names, values;
+    for (auto it = begin(bindings); it != end(bindings); it += 2)
+    {
+        names.push_back(it[0]);
+        values.push_back(evaluate_expression(env, it[1]));
+    }
+
+    return evaluate_expression(env, replace_symbols(first(rest(l)), vector{names}, list{values}));
 }
 
 auto evaluate(environment& env, const list& l) -> expression
