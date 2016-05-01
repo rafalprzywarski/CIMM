@@ -121,27 +121,56 @@ auto remove_params(const vector& v, const vector& forbidden)
     return map(v, [&](auto& e) { return (std::find(begin(forbidden), end(forbidden), e) == end(forbidden)) ? e : nil; });
 }
 
+auto replace_symbols_fn(const list& seq, const vector& symbols, const list& values) -> list
+{
+    auto params = first(rest(seq));
+    return list{special::fn, params, replace_symbols(first(rest(rest(seq))), remove_params(symbols, as_vector(params)), values)};
+}
+
+auto get_bindings_symbols(const vector& bindings)
+{
+    std::vector<expression> symbols;
+    symbols.reserve(count(bindings) / 2);
+    for (auto it = begin(bindings); it != end(bindings); it += 2)
+        symbols.push_back(it[0]);
+    return vector{symbols};
+}
+
+auto get_bindings_expressions(const vector& bindings)
+{
+    std::vector<expression> expressions;
+    expressions.reserve(count(bindings) / 2);
+    for (auto it = begin(bindings); it != end(bindings); it += 2)
+        expressions.push_back(it[1]);
+    return list{expressions};
+}
+
+auto replace_symbols_bindings(const vector& bindings, const vector& symbols, const list& values) -> vector
+{
+    std::vector<expression> replaced;
+    replaced.reserve(count(bindings));
+    for (auto it = begin(bindings); it != end(bindings); it += 2)
+    {
+        replaced.push_back(it[0]);
+        replaced.push_back(replace_symbols(it[1], symbols, values));
+    }
+    return vector{replaced};
+}
+
+auto replace_symbols_let(const list& seq, const vector& symbols, const list& values) -> list
+{
+    auto bindings = replace_symbols_bindings(as_vector(first(rest(seq))), symbols, values);
+    auto body = first(rest(rest(seq)));
+
+    return list{special::let, bindings, replace_symbols(body, remove_params(symbols, get_bindings_symbols(bindings)), values)};
+}
+
 auto replace_symbols(const list& seq, const vector& symbols, const list& values) -> list
 {
     if (first(seq) == special::fn)
-    {
-        auto params = first(rest(seq));
-        return list{special::fn, params, replace_symbols(first(rest(rest(seq))), remove_params(symbols, as_vector(params)), values)};
-    }
+        return replace_symbols_fn(seq, symbols, values);
     if (first(seq) == special::let)
-    {
-        auto pairs = as_vector(first(rest(seq)));
-        auto body = first(rest(rest(seq)));
-        std::vector<expression> names, bindings;
-        for (auto it = begin(pairs); it != end(pairs); it += 2)
-        {
-            names.push_back(it[0]);
-            bindings.push_back(it[0]);
-            bindings.push_back(replace_symbols(it[1], symbols, values));
-        }
-
-        return list{special::let, vector{bindings}, replace_symbols(body, remove_params(symbols, vector{names}), values)};
-    }
+        return replace_symbols_let(seq, symbols, values);
     if (first(seq) == special::quote)
         return seq;
 
@@ -199,14 +228,8 @@ auto evaluate_let(environment& env, const list& l) -> expression
     if (count(bindings) % 2 != 0)
         throw let_forms_error();
 
-    std::vector<expression> names, values;
-    for (auto it = begin(bindings); it != end(bindings); it += 2)
-    {
-        names.push_back(it[0]);
-        values.push_back(evaluate_expression(env, it[1]));
-    }
-
-    return evaluate_expression(env, replace_symbols(first(rest(l)), vector{names}, list{values}));
+    auto evaluated = map(get_bindings_expressions(bindings), [&env](auto const& e) { return evaluate_expression(env, e); });
+    return evaluate_expression(env, replace_symbols(first(rest(l)), get_bindings_symbols(bindings), evaluated));
 }
 
 auto evaluate(environment& env, const list& l) -> expression
