@@ -11,9 +11,14 @@ TEST_F(let_test, should_define_local_constants)
     EXPECT_EQ(evaluate_parsed("'(1 2 3)"), evaluate_parsed("(let [a 1 b 2 c 3] (list a b c))"));
 }
 
-TEST_F(let_test, should_allow_for_no_bindings)
+TEST_F(let_test, should_allow_no_bindings)
 {
     EXPECT_EQ(integer{7}, evaluate_parsed("(let [] 7)"));
+}
+
+TEST_F(let_test, should_allow_nesting)
+{
+    EXPECT_EQ(evaluate_parsed("'(1 2 3)"), evaluate_parsed("(let [a 1] (let [b 2] (let [c 3] (list a b c))))"));
 }
 
 TEST_F(let_test, should_fail_for_odd_number_of_forms)
