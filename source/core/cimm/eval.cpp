@@ -128,6 +128,16 @@ auto replace_symbols(const list& seq, const vector& symbols, const list& values)
         auto params = first(rest(seq));
         return list{special::fn, params, replace_symbols(first(rest(rest(seq))), remove_params(symbols, as_vector(params)), values)};
     }
+    if (first(seq) == special::let)
+    {
+        auto pairs = as_vector(first(rest(seq)));
+        auto body = first(rest(rest(seq)));
+        std::vector<expression> names;
+        for (auto it = begin(pairs); it != end(pairs); it += 2)
+            names.push_back(it[0]);
+
+        return list{special::let, pairs, replace_symbols(body, remove_params(symbols, vector{names}), values)};
+    }
     if (first(seq) == special::quote)
         return seq;
 

@@ -21,6 +21,11 @@ TEST_F(let_test, should_allow_nesting)
     EXPECT_EQ(evaluate_parsed("'(1 2 3)"), evaluate_parsed("(let [a 1] (let [b 2] (let [c 3] (list a b c))))"));
 }
 
+TEST_F(let_test, nested_bindings_should_hide_parent_bindings)
+{
+    EXPECT_EQ(integer{2}, evaluate_parsed("(let [x 1] (let [x 2] x))"));
+}
+
 TEST_F(let_test, should_fail_for_odd_number_of_forms)
 {
     assert_evaluation_error<let_forms_error>("let requires an even number of forms in binding vector", "(let [x] 1)");
