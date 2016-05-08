@@ -199,6 +199,11 @@ auto execute(environment& env, const function& f, const list& args) -> expressio
     return execute(env, *overload, args);
 }
 
+auto execute(environment&, const generic_method& e, const list&) -> expression
+{
+    throw no_matching_method_found_error(name(e));
+}
+
 template <typename expression_type>
 auto execute(environment&, const expression_type& e, const list&) -> expression
 {
@@ -232,6 +237,13 @@ auto evaluate_let(environment& env, const list& l) -> expression
     return evaluate_expression(env, replace_symbols(first(rest(l)), get_bindings_symbols(bindings), evaluated));
 }
 
+auto evaluate_defgeneric(environment& env, const list& l) -> expression
+{
+    auto name = as_symbol(first(l));
+    env.definitions.insert({str(name), generic_method(name)});
+    return nil;
+}
+
 auto evaluate(environment& env, const list& l) -> expression
 {
     auto name = first(l);
@@ -247,6 +259,8 @@ auto evaluate(environment& env, const list& l) -> expression
         return evaluate_catch(env, rest(l));
     if (name == special::let)
         return evaluate_let(env, rest(l));
+    if (name == special::defgeneric)
+        return evaluate_defgeneric(env, rest(l));
     return evaluate_call(env, l);
 }
 

@@ -62,6 +62,7 @@ static const symbol fn{"fn"};
 static const symbol if_{"if"};
 static const symbol catch_{"catch"};
 static const symbol let{"let"};
+static const symbol defgeneric{"defgeneric"};
 
 }
 
@@ -139,6 +140,27 @@ inline auto pr_str(const native_function& ) -> string
 template <typename result_type>
 struct native_function_visitor : boost::static_visitor<result_type> { };
 
+class generic_method
+{
+public:
+    generic_method(symbol name) : name(name) { }
+
+    friend auto name(const generic_method& m) { return m.name; }
+
+    friend auto operator==(const generic_method& left, const generic_method& right)
+    {
+        return left.name == right.name;
+    }
+
+    friend auto pr_str(const generic_method& m) -> string
+    {
+        return "generic method " + pr_str(m.name);
+    }
+
+private:
+    symbol name;
+};
+
 using expression_variant = boost::variant<
     nil_type,
     symbol,
@@ -150,7 +172,8 @@ using expression_variant = boost::variant<
     boost::recursive_wrapper<vector>,
     native_function,
     boost::recursive_wrapper<function>,
-    boost::recursive_wrapper<error>
+    boost::recursive_wrapper<error>,
+    generic_method
 >;
 
 class expression
@@ -169,6 +192,7 @@ public:
     expression(const function& f) : value(f) { }
     expression(const expression_variant& v) : value(v) { }
     expression(const error& e) : value(e) { }
+    expression(const generic_method& m) : value(m) { }
 
     template <typename result_type>
     struct visitor : boost::static_visitor<result_type> { };

@@ -44,4 +44,10 @@ struct let_forms_error : evaluation_error
         : evaluation_error("let requires an even number of forms in binding vector") { }
 };
 
+struct no_matching_method_found_error : evaluation_error
+{
+    no_matching_method_found_error(const symbol& name)
+        : evaluation_error("no matching method '" + str(name) + "' found") { }
+};
+
 }
