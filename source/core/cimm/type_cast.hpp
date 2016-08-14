@@ -34,5 +34,9 @@ auto is_error(const expression& e) -> bool
     return boost::get<error>(&e.value) != nullptr;
 }
 
+auto as_generic_method(expression& e) -> generic_method&
+{
+    return boost::get<generic_method>(e.value);
+}
 
 }

@@ -22,17 +22,17 @@ auto evaluate_def(environment& env, const list& args) -> expression
     return nil;
 }
 
-struct fn_visitor : expression::visitor<expression>
+struct fn_visitor : expression::visitor<function>
 {
     const list& args;
     fn_visitor(const list& args) : args(args) { }
 
-    auto operator()(const vector& params) const -> expression
+    auto operator()(const vector& params) const -> function
     {
         return function{{{params, rest(args)}}};
     }
 
-    auto operator()(const list& ) const -> expression
+    auto operator()(const list& ) const -> function
     {
         auto defs = args;
         function f;
@@ -48,13 +48,13 @@ struct fn_visitor : expression::visitor<expression>
     }
 
     template <typename other>
-    auto operator()(const other& e) const -> expression
+    auto operator()(const other& e) const -> function
     {
         throw type_error(e, "a vector");
     }
 };
 
-auto evaluate_fn(environment& env, const list& args) -> expression
+auto evaluate_fn(environment& env, const list& args) -> function
 {
     if (is_empty(args))
         return function{};
@@ -199,9 +199,12 @@ auto execute(environment& env, const function& f, const list& args) -> expressio
     return execute(env, *overload, args);
 }
 
-auto execute(environment&, const generic_method& e, const list&) -> expression
+auto execute(environment& env, const generic_method& e, const list& args) -> expression
 {
-    throw no_matching_method_found_error(name(e));
+    auto methods = get_concrete_methods(e, args);
+    if (methods.empty())
+        throw no_matching_method_found_error(name(e));
+    return execute(env, methods.front(), args);
 }
 
 template <typename expression_type>
@@ -244,6 +247,14 @@ auto evaluate_defgeneric(environment& env, const list& l) -> expression
     return nil;
 }
 
+auto evaluate_defmethod(environment& env, const list& l) -> expression
+{
+    auto name = as_symbol(first(l));
+    auto& m = as_generic_method(env.definitions.find(str(name))->second);
+    define_method(m, evaluate_fn(env, rest(l)));
+    return nil;
+}
+
 auto evaluate(environment& env, const list& l) -> expression
 {
     auto name = first(l);
@@ -261,6 +272,8 @@ auto evaluate(environment& env, const list& l) -> expression
         return evaluate_let(env, rest(l));
     if (name == special::defgeneric)
         return evaluate_defgeneric(env, rest(l));
+    if (name == special::defmethod)
+        return evaluate_defmethod(env, rest(l));
     return evaluate_call(env, l);
 }
 

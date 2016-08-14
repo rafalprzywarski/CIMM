@@ -2,6 +2,7 @@
 #include "string.hpp"
 #include "str.hpp"
 #include <boost/variant.hpp>
+#include <vector>
 
 namespace cimm
 {
@@ -63,6 +64,7 @@ static const symbol if_{"if"};
 static const symbol catch_{"catch"};
 static const symbol let{"let"};
 static const symbol defgeneric{"defgeneric"};
+static const symbol defmethod{"defmethod"};
 
 }
 
@@ -140,26 +142,7 @@ inline auto pr_str(const native_function& ) -> string
 template <typename result_type>
 struct native_function_visitor : boost::static_visitor<result_type> { };
 
-class generic_method
-{
-public:
-    generic_method(symbol name) : name(name) { }
-
-    friend auto name(const generic_method& m) { return m.name; }
-
-    friend auto operator==(const generic_method& left, const generic_method& right)
-    {
-        return left.name == right.name;
-    }
-
-    friend auto pr_str(const generic_method& m) -> string
-    {
-        return "generic method " + pr_str(m.name);
-    }
-
-private:
-    symbol name;
-};
+class generic_method;
 
 using expression_variant = boost::variant<
     nil_type,
@@ -173,7 +156,7 @@ using expression_variant = boost::variant<
     native_function,
     boost::recursive_wrapper<function>,
     boost::recursive_wrapper<error>,
-    generic_method
+    boost::recursive_wrapper<generic_method>
 >;
 
 class expression
@@ -208,6 +191,7 @@ public:
     friend auto as_symbol(const expression& e) -> symbol const&;
     friend auto as_integer(const expression& e) -> integer;
     friend auto is_error(const expression& e) -> bool;
+    friend auto as_generic_method(expression& e) -> generic_method&;
 
 private:
     expression_variant value;
@@ -300,5 +284,37 @@ inline auto native_function::operator()(const list& args) const -> expression
     evaluate v(args);
     return boost::apply_visitor(v, f);
 }
+
+class generic_method
+{
+public:
+    generic_method(symbol name) : name(name) { }
+
+    friend auto name(const generic_method& m) { return m.name; }
+
+    friend auto operator==(const generic_method& left, const generic_method& right)
+    {
+        return left.name == right.name;
+    }
+
+    friend auto pr_str(const generic_method& m) -> string
+    {
+        return "generic method " + pr_str(m.name);
+    }
+
+    friend auto get_concrete_methods(const generic_method& m, const list& ) -> std::vector<function>
+    {
+        return m.methods;
+    }
+
+    friend auto define_method(generic_method& g, function m)
+    {
+        g.methods.push_back(m);
+    }
+
+private:
+    symbol name;
+    std::vector<function> methods;
+};
 
 }
