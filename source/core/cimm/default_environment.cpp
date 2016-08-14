@@ -192,18 +192,18 @@ auto throw_f(const expression& e) -> expression
 
 auto str_f(const list& args) -> expression
 {
-    string s;
+    std::string s;
     for (auto l = args; not is_empty(l); l = rest(l))
-        s += str(first(l));
-    return s;
+        s += str(first(l)).c_str();
+    return string{s};
 }
 
 auto pr_str_f(const list& args) -> expression
 {
-    string s;
+    std::string s;
     for (auto l = args; not is_empty(l); l = rest(l))
-        s += pr_str(first(l));
-    return s;
+        s += pr_str(first(l)).c_str();
+    return string{s};
 }
 
 auto print_f(const list& args) -> expression

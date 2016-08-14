@@ -33,9 +33,9 @@ struct expression_grammar : boost::spirit::qi::grammar<iterator, std::vector<exp
     using rule = qi::rule<iterator, type(), ascii::space_type>;
 
     qi::symbols<char const, char const> escaped;
-    rule<string> string_rule{qi::lit('\"') >> qi::no_skip[*(escaped | (qi::char_ - '\"'))] > qi::lit('\"')};
+    rule<std::string> string_rule{qi::lit('\"') >> qi::no_skip[*(escaped | (qi::char_ - '\"'))] > qi::lit('\"')};
     decltype(qi::char_ - ')' - ']' - ' ' - '\n' - '\"') symbol_char{qi::char_ - ')' - ']' - ' ' - '\n' - '\"'};
-    rule<string> char_seq_rule{qi::no_skip[+symbol_char]};
+    rule<std::string> char_seq_rule{qi::no_skip[+symbol_char]};
     rule<string> keyword_char_seq_rule{qi::lit(':') >> char_seq_rule};
     rule<keyword> keyword_rule{keyword_char_seq_rule};
     rule<symbol> symbol_rule{char_seq_rule};
@@ -61,14 +61,14 @@ auto parse_expression(const string& expr_text) -> expression
 auto parse_expressions(const string& expr_text) -> vector
 {
     auto first = begin(expr_text);
-    expression_grammar<std::string::const_iterator> grammar;
+    expression_grammar<string::const_iterator> grammar;
     std::vector<expression> exprs;
 
     try
     {
         boost::spirit::qi::phrase_parse(first, end(expr_text), grammar, ascii::space, exprs);
     }
-    catch (boost::spirit::qi::expectation_failure<std::string::const_iterator> const& e)
+    catch (boost::spirit::qi::expectation_failure<string::const_iterator> const& e)
     {
         throw parse_error("unexpected end of input");
     }

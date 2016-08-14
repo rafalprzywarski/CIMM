@@ -6,7 +6,7 @@ namespace cimm
 
 struct parse_error : std::runtime_error
 {
-    parse_error(const string& msg) : std::runtime_error(msg) {}
+    parse_error(const string& msg) : std::runtime_error(msg.c_str()) {}
 };
 
 auto parse_expression(const string& expr_text) -> expression;

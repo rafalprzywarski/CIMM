@@ -7,7 +7,7 @@ namespace cimm
 
 struct evaluation_error : std::runtime_error
 {
-    evaluation_error(const string& msg) : std::runtime_error(msg) {}
+    evaluation_error(const string& msg) : std::runtime_error(msg.c_str()) {}
 };
 
 }
