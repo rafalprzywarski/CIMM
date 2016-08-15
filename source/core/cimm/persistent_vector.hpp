@@ -52,7 +52,7 @@ public:
 
     persistent_vector push_back(const T& elem) const
     {
-        auto l = std::make_shared<leaf>();
+        auto l = std::make_shared<tail>();
         new(l->elems) value_type(elem);
         return {l, 1};
     }
@@ -77,6 +77,14 @@ private:
     struct leaf : element
     {
         typename std::aligned_storage<sizeof(value_type), alignof(value_type)>::type elems[num_branches];
+    };
+
+    struct tail : leaf
+    {
+        ~tail() noexcept
+        {
+            reinterpret_cast<value_type *>(this->elems)->~value_type();
+        }
     };
 
     ptr<element> root;
