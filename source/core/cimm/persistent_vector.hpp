@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <initializer_list>
 #include <memory>
+#include <stdexcept>
 
 namespace cimm
 {
@@ -11,7 +12,11 @@ class persistent_vector
 {
 public:
 
-    class const_iterator { };
+    class const_iterator
+    {
+    public:
+        friend bool operator==(const const_iterator& , const const_iterator& ) { return true; }
+    };
 
     using value_type = T;
     using size_type = std::size_t;
@@ -23,15 +28,15 @@ public:
     persistent_vector() = default;
     persistent_vector(const std::initializer_list<T>& elems);
 
-    size_type size() const;
-    bool empty() const;
-    const_reference at(size_type index) const;
+    size_type size() const { return 0; }
+    bool empty() const { return true; }
+    const_reference at(size_type index) const { throw std::out_of_range("persistent_vector: out of range"); }
     const_reference operator[](size_type index) const;
     const_reference front() const;
     const_reference back() const;
 
-    const_iterator begin() const;
-    const_iterator end() const;
+    const_iterator begin() const { return {}; }
+    const_iterator end() const { return {}; }
 
     persistent_vector insert(const_iterator pos, const T& value) const;
     template <typename InputIterator>
