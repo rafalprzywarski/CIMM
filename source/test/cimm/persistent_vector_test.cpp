@@ -50,7 +50,7 @@ TEST_F(persistent_vector_test, push_back_should_create_a_one_element_vector_from
     ASSERT_THROW(one.at(1), std::out_of_range);
 }
 
-TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_appended_at_the_end_of_an_given_vector_within_one_leaf)
+TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_appended_at_the_end_of_a_given_vector_within_one_leaf)
 {
     string_vector two = string_vector{}.push_back(s("one")).push_back(s("two"));
     string_vector three = two.push_back(s("three"));
@@ -71,6 +71,31 @@ TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_
     ASSERT_EQ("one", four.at(0).value);
     ASSERT_EQ("four", four.at(3).value);
     ASSERT_THROW(four.at(4), std::out_of_range);
+}
+
+TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_appended_at_the_end_of_a_given_vector_within_one_level_of_nodes)
+{
+    std::vector<std::string> elems{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen" };
+    for (std::size_t n = 5; n <= 16/*elems.size()*/; ++n)
+    {
+        string_vector vec;
+        for (std::size_t i = 0; i < (n - 1); ++i)
+            vec = vec.push_back(s(elems[i]));
+
+        string_vector appended = vec.push_back(s(elems[n - 1]));
+
+        EXPECT_EQ(n - 1, vec.size());
+        for (std::size_t i = 0; i < (n - 1); ++i)
+            EXPECT_EQ(elems[i], vec.at(i).value) << "at: " << i << " size: " << n;
+
+        EXPECT_THROW(vec.at(n - 1), std::out_of_range);
+
+        EXPECT_EQ(n, appended.size());
+        for (std::size_t i = 0; i < n; ++i)
+            EXPECT_EQ(elems[i], appended.at(i).value) << "at: " << i << " size: " << n;
+
+        EXPECT_THROW(appended.at(n), std::out_of_range);
+    }
 }
 
 }
