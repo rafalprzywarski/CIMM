@@ -63,13 +63,32 @@ public:
         {
             return persistent_vector{std::make_shared<node>(root, std::make_shared<leaf>(elem)), count + 1, shift + log_num_branches};
         }
-        auto& root_node = static_cast<const node&>(*root);
-        auto node_index = count >> log_num_branches;
+        if (count < num_branches * num_branches)
+        {
+            auto& root_node = static_cast<const node&>(*root);
+            auto node_index = count >> log_num_branches;
+            if ((count & index_mask) == 0)
+            {
+                return persistent_vector{root_node.replace_new(node_index, std::make_shared<leaf>(elem)), count + 1, shift};
+            }
+            return persistent_vector{root_node.replace_new(node_index, static_cast<const leaf&>(*root_node.elems[node_index]).push_back_new(elem)), count + 1, shift};
+        }
+        if (count == num_branches * num_branches)
+        {
+            return persistent_vector{std::make_shared<node>(root, std::make_shared<node>(std::make_shared<leaf>(elem))), count + 1, shift + log_num_branches};
+        }
+        auto node_index = (count >> log_num_branches) >> log_num_branches;
+        auto child_index = (count >> log_num_branches) & index_mask;
         if ((count & index_mask) == 0)
         {
-            return persistent_vector{root_node.push_back_new(node_index, std::make_shared<leaf>(elem)), count + 1, shift};
+            auto& root_node = static_cast<const node&>(*root);
+            auto& child_node = static_cast<const node&>(*root_node.elems[node_index]);
+            return persistent_vector{root_node.replace_new(node_index, child_node.replace_new(child_index, std::make_shared<leaf>(elem))), count + 1, shift};
         }
-        return persistent_vector{root_node.push_back_new(node_index, static_cast<const leaf&>(*root_node.elems[node_index]).push_back_new(elem)), count + 1, shift};
+        auto& root_node = static_cast<const node&>(*root);
+        auto& child_node = static_cast<const node&>(*root_node.elems[node_index]);
+        auto& l = static_cast<const leaf&>(*child_node.elems[child_index]);
+        return persistent_vector{root_node.replace_new(node_index, child_node.replace_new(child_index, l.push_back_new(elem))), count + 1, shift};
     }
     persistent_vector pop_back() const;
 private:
@@ -91,17 +110,25 @@ private:
 
         node() = default;
 
+        node(ptr<element> e)
+        {
+            elems[0] = std::move(e);
+        }
+
         node(ptr<element> e0, ptr<element> e1)
         {
             elems[0] = std::move(e0);
             elems[1] = std::move(e1);
         }
 
-        ptr<node> push_back_new(size_type index, ptr<element> n) const
+        ptr<node> replace_new(size_type index, ptr<element> n) const
         {
-            auto new_node = std::make_shared<node>(*this);
-            new_node->elems[index] = std::move(n);
-            return new_node;
+            auto p = std::make_shared<node>();
+            auto& new_node = *p;
+            for (size_type i = 0; i < index; ++i)
+                new_node.elems[i] = elems[i];
+            new_node.elems[index] = std::move(n);
+            return p;
         }
     };
 

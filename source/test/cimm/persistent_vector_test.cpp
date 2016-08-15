@@ -16,13 +16,21 @@ struct persistent_vector_test : testing::Test
         ~traced_string() { --*counter; }
     };
 
+    using string_vector = persistent_vector<traced_string, 2>;
+    int trace_count = 0;
+
     traced_string s(std::string value)
     {
         return traced_string{trace_count, std::move(value)};
     }
 
-    using string_vector = persistent_vector<traced_string, 2>;
-    int trace_count = 0;
+    std::vector<std::string> numbers(unsigned n)
+    {
+        std::vector<std::string> v;
+        for (unsigned i = 1; i <= n; ++i)
+            v.push_back(std::to_string(i));
+        return v;
+    }
 
     void TearDown() override
     {
@@ -73,10 +81,10 @@ TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_
     ASSERT_THROW(four.at(4), std::out_of_range);
 }
 
-TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_appended_at_the_end_of_a_given_vector_within_one_level_of_nodes)
+TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_appended_at_the_end_of_a_given_vector_within_two_levels_of_nodes)
 {
-    std::vector<std::string> elems{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen" };
-    for (std::size_t n = 5; n <= 16/*elems.size()*/; ++n)
+    std::vector<std::string> elems = numbers(4 * 4 * 4);
+    for (std::size_t n = 5; n <= elems.size(); ++n)
     {
         string_vector vec;
         for (std::size_t i = 0; i < (n - 1); ++i)
