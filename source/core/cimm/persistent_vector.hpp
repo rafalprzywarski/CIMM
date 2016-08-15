@@ -7,7 +7,7 @@
 namespace cimm
 {
 
-template <typename T>
+template <typename T, unsigned short log_num_branches = 5>
 class persistent_vector
 {
 public:
@@ -28,9 +28,14 @@ public:
     persistent_vector() = default;
     persistent_vector(const std::initializer_list<T>& elems);
 
-    size_type size() const { return 0; }
-    bool empty() const { return true; }
-    const_reference at(size_type index) const { throw std::out_of_range("persistent_vector: out of range"); }
+    size_type size() const { return count; }
+    bool empty() const { return size() == 0; }
+    const_reference at(size_type index) const
+    {
+        if (index >= count)
+            throw std::out_of_range("persistent_vector: out of range");
+        return *reinterpret_cast<const value_type *>(static_cast<const leaf&>(*root).elems);
+    }
     const_reference operator[](size_type index) const;
     const_reference front() const;
     const_reference back() const;
@@ -45,11 +50,15 @@ public:
     persistent_vector erase(const_iterator pos) const;
     persistent_vector erase(const_iterator first, const_iterator last) const;
 
-    persistent_vector push_back(const T& elem) const;
+    persistent_vector push_back(const T& elem) const
+    {
+        auto l = std::make_shared<leaf>();
+        new(l->elems) value_type(elem);
+        return {l, 1};
+    }
     persistent_vector pop_back() const;
 private:
 
-    static const unsigned short log_num_branches = 5;
     static const std::size_t num_branches = std::size_t(1) << log_num_branches;
 
     template <typename U>
@@ -71,6 +80,9 @@ private:
     };
 
     ptr<element> root;
+    size_type count = 0;
+
+    persistent_vector(ptr<element> root, size_type count) : root(std::move(root)), count(count) { }
 };
 
 }
