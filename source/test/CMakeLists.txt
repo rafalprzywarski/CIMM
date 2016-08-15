@@ -12,6 +12,7 @@ add_executable(cimm_test
   cimm/keyword_test.cpp
   cimm/method_test.cpp
   cimm/parse_test.cpp
+  cimm/persistent_vector_test.cpp
   cimm/pr_str_test.cpp
   cimm/slist_test.cpp
   cimm/str_test.cpp
