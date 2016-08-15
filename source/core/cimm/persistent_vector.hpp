@@ -44,11 +44,28 @@ public:
     persistent_vector pop_back() const;
 private:
 
+    static const unsigned short log_num_branches = 5;
+    static const std::size_t num_branches = std::size_t(1) << log_num_branches;
+
     template <typename U>
     using ptr = std::shared_ptr<U>;
 
-    class node { };
-    ptr<node> root;
+    struct element
+    {
+        virtual ~element() noexcept = default;
+    };
+
+    struct node : element
+    {
+        ptr<element> elems;
+    };
+
+    struct leaf : element
+    {
+        typename std::aligned_storage<sizeof(value_type), alignof(value_type)>::type elems[num_branches];
+    };
+
+    ptr<element> root;
 };
 
 }
