@@ -34,7 +34,7 @@ public:
     {
         if (index >= count)
             throw std::out_of_range("persistent_vector: out of range");
-        return *reinterpret_cast<const value_type *>(static_cast<const leaf&>(*root).elems);
+        return static_cast<const leaf&>(*root).get(index);
     }
     const_reference operator[](size_type index) const;
     const_reference front() const;
@@ -52,9 +52,11 @@ public:
 
     persistent_vector push_back(const T& elem) const
     {
-        auto l = std::make_shared<tail>();
-        new(l->elems) value_type(elem);
-        return {l, 1};
+        auto l = std::make_shared<leaf>();
+        for (size_type i = 0; i < count; ++i)
+            l->push_back(static_cast<const leaf&>(*root).get(i));
+        l->push_back(elem);
+        return {l, count + 1};
     }
     persistent_vector pop_back() const;
 private:
@@ -77,14 +79,21 @@ private:
     struct leaf : element
     {
         typename std::aligned_storage<sizeof(value_type), alignof(value_type)>::type elems[num_branches];
-    };
+        size_type size = 0;
 
-    struct tail : leaf
-    {
-        ~tail() noexcept
+        ~leaf() noexcept
         {
-            reinterpret_cast<value_type *>(this->elems)->~value_type();
+            for (size_type i = 0; i < size; ++i)
+                reinterpret_cast<value_type *>(this->elems + i)->~value_type();
         }
+
+        void push_back(const value_type& elem)
+        {
+            new(elems + size) value_type(elem);
+            ++size;
+        }
+
+        const value_type& get(size_type index) const { return *reinterpret_cast<const value_type *>(elems + index); }
     };
 
     ptr<element> root;

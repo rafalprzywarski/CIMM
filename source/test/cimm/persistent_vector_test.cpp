@@ -40,7 +40,7 @@ TEST_F(persistent_vector_test, default_constructor_should_create_an_empty_vector
     ASSERT_TRUE(empty.begin() == empty.end());
 }
 
-TEST_F(persistent_vector_test, push_back_should_create_a_one_element_vector_from_en_empty_vector)
+TEST_F(persistent_vector_test, push_back_should_create_a_one_element_vector_from_an_empty_vector)
 {
     string_vector v;
     string_vector one = v.push_back(s("one"));
@@ -48,6 +48,29 @@ TEST_F(persistent_vector_test, push_back_should_create_a_one_element_vector_from
     ASSERT_EQ(1u, one.size());
     ASSERT_EQ("one", one.at(0).value);
     ASSERT_THROW(one.at(1), std::out_of_range);
+}
+
+TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_appended_at_the_end_of_an_given_vector_within_one_leaf)
+{
+    string_vector two = string_vector{}.push_back(s("one")).push_back(s("two"));
+    string_vector three = two.push_back(s("three"));
+    string_vector four = three.push_back(s("four"));
+    ASSERT_FALSE(two.empty());
+    ASSERT_EQ(2u, two.size());
+    ASSERT_EQ("one", two.at(0).value);
+    ASSERT_EQ("two", two.at(1).value);
+    ASSERT_THROW(two.at(2), std::out_of_range);
+
+    ASSERT_EQ(3u, three.size());
+    ASSERT_EQ("one", three.at(0).value);
+    ASSERT_EQ("two", three.at(1).value);
+    ASSERT_EQ("three", three.at(2).value);
+    ASSERT_THROW(three.at(3), std::out_of_range);
+
+    ASSERT_EQ(4u, four.size());
+    ASSERT_EQ("one", four.at(0).value);
+    ASSERT_EQ("four", four.at(3).value);
+    ASSERT_THROW(four.at(4), std::out_of_range);
 }
 
 }
