@@ -81,28 +81,34 @@ TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_
     ASSERT_THROW(four.at(4), std::out_of_range);
 }
 
-TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_appended_at_the_end_of_a_given_vector_within_two_levels_of_nodes)
+TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_appended_at_the_end_of_a_given_vector)
 {
-    std::vector<std::string> elems = numbers(4 * 4 * 4);
+    std::vector<std::string> elems = numbers(4 * 4 * 4 * 4 * 4);
     for (std::size_t n = 5; n <= elems.size(); ++n)
     {
-        string_vector vec;
-        for (std::size_t i = 0; i < (n - 1); ++i)
-            vec = vec.push_back(s(elems[i]));
+        try
+        {
+            string_vector vec;
+            for (std::size_t i = 0; i < (n - 1); ++i)
+                vec = vec.push_back(s(elems[i]));
 
-        string_vector appended = vec.push_back(s(elems[n - 1]));
+            string_vector appended = vec.push_back(s(elems[n - 1]));
+            EXPECT_EQ(n - 1, vec.size());
+            for (std::size_t i = 0; i < (n - 1); ++i)
+                EXPECT_EQ(elems[i], vec.at(i).value) << "at: " << i << " size: " << n;
 
-        EXPECT_EQ(n - 1, vec.size());
-        for (std::size_t i = 0; i < (n - 1); ++i)
-            EXPECT_EQ(elems[i], vec.at(i).value) << "at: " << i << " size: " << n;
+            EXPECT_THROW(vec.at(n - 1), std::out_of_range);
 
-        EXPECT_THROW(vec.at(n - 1), std::out_of_range);
+            EXPECT_EQ(n, appended.size());
+            for (std::size_t i = 0; i < n; ++i)
+                EXPECT_EQ(elems[i], appended.at(i).value) << "at: " << i << " size: " << n;
 
-        EXPECT_EQ(n, appended.size());
-        for (std::size_t i = 0; i < n; ++i)
-            EXPECT_EQ(elems[i], appended.at(i).value) << "at: " << i << " size: " << n;
-
-        EXPECT_THROW(appended.at(n), std::out_of_range);
+            EXPECT_THROW(appended.at(n), std::out_of_range);
+        }
+        catch (const std::exception& e)
+        {
+            ADD_FAILURE() << "n = " << n << ", exception: " << e.what();
+        }
     }
 }
 

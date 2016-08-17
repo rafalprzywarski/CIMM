@@ -3,6 +3,7 @@
 #include <initializer_list>
 #include <memory>
 #include <stdexcept>
+#include <array>
 
 namespace cimm
 {
@@ -34,7 +35,7 @@ public:
     {
         if (index >= count)
             throw std::out_of_range("persistent_vector: out of range");
-        return get(*root, index, shift);
+        return get(root, index, shift);
     }
     const_reference operator[](size_type index) const;
     const_reference front() const;
@@ -52,44 +53,14 @@ public:
 
     persistent_vector push_back(const T& elem) const
     {
-        if (count == 0)
-            return {std::make_shared<leaf>(elem), 1, 0};
-        if (count < num_branches)
+        if (count == (num_branches << shift))
         {
-            auto l = static_cast<const leaf&>(*root).push_back_new(elem);
-            return {l, count + 1, shift};
+            return persistent_vector{std::make_shared<node>(root, create_element(elem, shift)), count + 1, shift + log_num_branches};
         }
-        if (count == num_branches)
-        {
-            return persistent_vector{std::make_shared<node>(root, std::make_shared<leaf>(elem)), count + 1, shift + log_num_branches};
-        }
-        if (count < num_branches * num_branches)
-        {
-            auto& root_node = static_cast<const node&>(*root);
-            auto node_index = count >> log_num_branches;
-            if ((count & index_mask) == 0)
-            {
-                return persistent_vector{root_node.replace_new(node_index, std::make_shared<leaf>(elem)), count + 1, shift};
-            }
-            return persistent_vector{root_node.replace_new(node_index, static_cast<const leaf&>(*root_node.elems[node_index]).push_back_new(elem)), count + 1, shift};
-        }
-        if (count == num_branches * num_branches)
-        {
-            return persistent_vector{std::make_shared<node>(root, std::make_shared<node>(std::make_shared<leaf>(elem))), count + 1, shift + log_num_branches};
-        }
-        auto node_index = (count >> log_num_branches) >> log_num_branches;
-        auto child_index = (count >> log_num_branches) & index_mask;
-        if ((count & index_mask) == 0)
-        {
-            auto& root_node = static_cast<const node&>(*root);
-            auto& child_node = static_cast<const node&>(*root_node.elems[node_index]);
-            return persistent_vector{root_node.replace_new(node_index, child_node.replace_new(child_index, std::make_shared<leaf>(elem))), count + 1, shift};
-        }
-        auto& root_node = static_cast<const node&>(*root);
-        auto& child_node = static_cast<const node&>(*root_node.elems[node_index]);
-        auto& l = static_cast<const leaf&>(*child_node.elems[child_index]);
-        return persistent_vector{root_node.replace_new(node_index, child_node.replace_new(child_index, l.push_back_new(elem))), count + 1, shift};
+
+        return persistent_vector{push_back_leaf(root, elem, count, shift), count + 1, shift};
     }
+
     persistent_vector pop_back() const;
 private:
 
@@ -106,7 +77,7 @@ private:
 
     struct node : element
     {
-        ptr<element> elems[num_branches];
+        std::array<ptr<element>, num_branches> elems;
 
         node() = default;
 
@@ -123,6 +94,8 @@ private:
 
         ptr<node> replace_new(size_type index, ptr<element> n) const
         {
+            if (index >= elems.size())
+                throw std::invalid_argument("replace_new index too large");
             auto p = std::make_shared<node>();
             auto& new_node = *p;
             for (size_type i = 0; i < index; ++i)
@@ -132,11 +105,9 @@ private:
         }
     };
 
-    struct leaf : element
+    class leaf : public element
     {
-        typename std::aligned_storage<sizeof(value_type), alignof(value_type)>::type elems[num_branches];
-        size_type count = 0;
-
+    public:
         leaf() = default;
         leaf(const value_type& elem)
         {
@@ -151,6 +122,8 @@ private:
 
         void push_back(const value_type& elem)
         {
+            if (count == num_branches)
+                throw std::out_of_range("leaf push_back full");
             new(elems + count) value_type(elem);
             ++count;
         }
@@ -165,7 +138,14 @@ private:
             return p;
         }
 
-        const value_type& get(size_type index) const { return *reinterpret_cast<const value_type *>(elems + index); }
+        const value_type& get(size_type index) const
+        {
+            if (index >= count)
+                throw std::out_of_range("leaf get out of range");
+            return *reinterpret_cast<const value_type *>(elems + index); }
+    private:
+        typename std::aligned_storage<sizeof(value_type), alignof(value_type)>::type elems[num_branches];
+        size_type count = 0;
     };
 
     ptr<element> root;
@@ -174,12 +154,48 @@ private:
 
     persistent_vector(ptr<element> root, size_type count, size_type shift) : root(std::move(root)), count(count), shift(shift) { }
 
-    const value_type& get(const element& elem, size_type index, size_type shift) const
+    const value_type& get(const ptr<element>& elem, size_type index, size_type shift) const
     {
         if (shift == 0)
-            return static_cast<const leaf&>(elem).get(index & index_mask);
-        auto node_index = (index >> shift) & index_mask;
-        return get(*static_cast<const node&>(elem).elems[node_index], index, shift - log_num_branches);
+            return as_leaf(elem).get(local_index(index));
+        return get(as_node(elem).elems.at(local_index(index, shift)), index, shift - log_num_branches);
+    }
+
+    static ptr<element> create_element(const value_type& elem, size_type shift)
+    {
+        if (shift == 0)
+            return std::make_shared<leaf>(elem);
+        return std::make_shared<node>(create_element(elem, shift - log_num_branches));
+    }
+
+    static const leaf& as_leaf(const ptr<element>& e)
+    {
+        if (!e)
+            throw std::invalid_argument("leaf element is null");
+        return dynamic_cast<const leaf&>(*e);
+    }
+
+    static const node& as_node(const ptr<element>& e)
+    {
+        if (!e)
+            throw std::invalid_argument("node element is null");
+        return dynamic_cast<const node&>(*e);
+    }
+
+    ptr<element> push_back_leaf(const ptr<element> parent, const T& elem, size_type index, size_type shift) const
+    {
+        if (!parent)
+            return create_element(elem, shift);
+        if (shift == 0)
+            return as_leaf(parent).push_back_new(elem);
+        auto& parent_node = as_node(parent);
+        auto node_index = local_index(index, shift);
+        return parent_node.replace_new(node_index, push_back_leaf(parent_node.elems.at(node_index), elem, index, shift - log_num_branches));
+    }
+
+    static size_type local_index(size_type index, size_type shift = 0)
+    {
+        return (index >> shift) & index_mask;
     }
 };
 
