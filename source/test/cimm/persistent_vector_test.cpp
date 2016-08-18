@@ -112,4 +112,23 @@ TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_
     }
 }
 
+TEST_F(persistent_vector_test, should_provide_initializer_list_constructor)
+{
+    auto empty = string_vector{{}};
+    EXPECT_TRUE(empty.empty());
+
+    auto two = string_vector{s("one"), s("two")};
+    EXPECT_EQ(2u, two.size());
+    EXPECT_EQ("one", two.at(0).value);
+    EXPECT_EQ("two", two.at(1).value);
+}
+
+TEST_F(persistent_vector_test, should_provide_indexing_operator)
+{
+    auto two = string_vector{s("one"), s("two")};
+    EXPECT_EQ(2u, two.size());
+    EXPECT_EQ("one", two[0].value);
+    EXPECT_EQ("two", two[1].value);
+}
+
 }

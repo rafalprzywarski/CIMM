@@ -27,7 +27,13 @@ public:
     using iterator = const_iterator;
 
     persistent_vector() = default;
-    persistent_vector(const std::initializer_list<T>& elems);
+    persistent_vector(const std::initializer_list<T>& elems)
+    {
+        persistent_vector<T, log_num_branches> v;
+        for (auto& elem : elems)
+            v = v.push_back(elem);
+        *this = v;
+    }
 
     size_type size() const { return count; }
     bool empty() const { return size() == 0; }
@@ -35,9 +41,12 @@ public:
     {
         if (index >= count)
             throw std::out_of_range("persistent_vector: out of range");
+        return (*this)[index];
+    }
+    const_reference operator[](size_type index) const
+    {
         return get(root, index, shift);
     }
-    const_reference operator[](size_type index) const;
     const_reference front() const;
     const_reference back() const;
 
