@@ -137,4 +137,10 @@ TEST_F(persistent_vector_test, should_provide_front)
     EXPECT_EQ("one", (string_vector{s("one"), s("two")}.front().value));
 }
 
+TEST_F(persistent_vector_test, should_provide_back)
+{
+    EXPECT_EQ("one", (string_vector{s("one")}.back().value));
+    EXPECT_EQ("two", (string_vector{s("one"), s("two")}.back().value));
+}
+
 }

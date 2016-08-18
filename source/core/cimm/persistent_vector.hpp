@@ -43,15 +43,21 @@ public:
             throw std::out_of_range("persistent_vector: out of range");
         return (*this)[index];
     }
+
     const_reference operator[](size_type index) const
     {
         return get(root, index, shift);
     }
+
     const_reference front() const
     {
         return (*this)[0];
     }
-    const_reference back() const;
+
+    const_reference back() const
+    {
+        return (*this)[count - 1];
+    }
 
     const_iterator begin() const { return {}; }
     const_iterator end() const { return {}; }
