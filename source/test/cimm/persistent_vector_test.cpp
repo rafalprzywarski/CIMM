@@ -131,4 +131,10 @@ TEST_F(persistent_vector_test, should_provide_indexing_operator)
     EXPECT_EQ("two", two[1].value);
 }
 
+TEST_F(persistent_vector_test, should_provide_front)
+{
+    EXPECT_EQ("one", (string_vector{s("one")}.front().value));
+    EXPECT_EQ("one", (string_vector{s("one"), s("two")}.front().value));
+}
+
 }

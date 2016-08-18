@@ -47,7 +47,10 @@ public:
     {
         return get(root, index, shift);
     }
-    const_reference front() const;
+    const_reference front() const
+    {
+        return (*this)[0];
+    }
     const_reference back() const;
 
     const_iterator begin() const { return {}; }
