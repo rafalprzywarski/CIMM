@@ -79,7 +79,11 @@ public:
         return persistent_vector{push_back_leaf(root, elem, count, shift), count + 1, shift};
     }
 
-    persistent_vector pop_back() const;
+    persistent_vector pop_back() const
+    {
+        return persistent_vector{};
+    }
+
 private:
 
     static const size_type num_branches = size_type(1) << log_num_branches;

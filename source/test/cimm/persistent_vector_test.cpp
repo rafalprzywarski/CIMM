@@ -143,4 +143,10 @@ TEST_F(persistent_vector_test, should_provide_back)
     EXPECT_EQ("two", (string_vector{s("one"), s("two")}.back().value));
 }
 
+TEST_F(persistent_vector_test, pop_back_should_make_one_element_vector_empty)
+{
+    auto popped = string_vector{s("one")}.pop_back();
+    EXPECT_TRUE(popped.empty());
+}
+
 }
