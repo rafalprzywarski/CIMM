@@ -27,13 +27,17 @@ public:
     using iterator = const_iterator;
 
     persistent_vector() = default;
-    persistent_vector(const std::initializer_list<T>& elems)
+
+    template <typename InputIterator>
+    persistent_vector(InputIterator first, InputIterator last)
     {
         persistent_vector<T, log_num_branches> v;
-        for (auto& elem : elems)
-            v = v.push_back(elem);
-        *this = v;
+        for (; first != last; ++first)
+            v = v.push_back(*first);
+        *this = std::move(v);
     }
+
+    persistent_vector(const std::initializer_list<T>& elems) : persistent_vector(std::begin(elems), std::end(elems)) { }
 
     size_type size() const { return count; }
     bool empty() const { return size() == 0; }

@@ -123,6 +123,19 @@ TEST_F(persistent_vector_test, should_provide_initializer_list_constructor)
     EXPECT_EQ("two", two.at(1).value);
 }
 
+TEST_F(persistent_vector_test, should_provide_iterator_pair_constructor)
+{
+    std::vector<traced_string> emptyContainer;
+    auto empty = string_vector{begin(emptyContainer), end(emptyContainer)};
+    EXPECT_TRUE(empty.empty());
+
+    std::vector<traced_string> twoContainer{s("one"), s("two")};
+    auto two = string_vector{begin(twoContainer), end(twoContainer)};
+    EXPECT_EQ(2u, two.size());
+    EXPECT_EQ("one", two.at(0).value);
+    EXPECT_EQ("two", two.at(1).value);
+}
+
 TEST_F(persistent_vector_test, should_provide_indexing_operator)
 {
     auto two = string_vector{s("one"), s("two")};
