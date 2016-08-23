@@ -13,17 +13,40 @@ class persistent_vector
 {
 public:
 
-    class const_iterator
-    {
-    public:
-        friend bool operator==(const const_iterator& , const const_iterator& ) { return true; }
-    };
-
     using value_type = T;
     using size_type = std::size_t;
     using difference_type = std::ptrdiff_t;
     using const_reference = const T&;
     using reference = const_reference;
+    using pointer = const value_type *;
+
+    class const_iterator : public std::iterator<std::random_access_iterator_tag, const value_type, difference_type>
+    {
+    public:
+        const_iterator(const persistent_vector<T, log_num_branches>& container, size_type index)
+            : container(container), index(index) { }
+        friend bool operator==(const const_iterator& left, const const_iterator& right) { return left.index == right.index; }
+        friend bool operator!=(const const_iterator& left, const const_iterator& right) { return !(left == right); }
+        friend difference_type operator-(const const_iterator& left, const const_iterator& right)
+        {
+            return left.index - right.index;
+        }
+        friend const_iterator operator+(const const_iterator& left, difference_type right)
+        {
+            return {left.container, left.index + right};
+        }
+        friend const_iterator operator-(const const_iterator& left, difference_type right) { return left + -right; }
+        const_iterator& operator++() { ++index; return *this; }
+        const_iterator operator++(int) { auto prev = *this; ++*this; return prev; }
+        const_iterator& operator--() { --index; return *this; }
+        const_iterator operator--(int) { auto prev = *this; --*this; return prev; }
+        reference operator*() const { return container[index]; }
+        pointer operator->() const { return &**this; }
+    private:
+        const persistent_vector<T, log_num_branches>& container;
+        size_type index;
+    };
+
     using iterator = const_iterator;
 
     persistent_vector() = default;
@@ -63,8 +86,8 @@ public:
         return (*this)[count - 1];
     }
 
-    const_iterator begin() const { return {}; }
-    const_iterator end() const { return {}; }
+    const_iterator begin() const { return {*this, 0}; }
+    const_iterator end() const { return {*this, count}; }
 
     persistent_vector insert(const_iterator pos, const T& value) const;
     template <typename InputIterator>

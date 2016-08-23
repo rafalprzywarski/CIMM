@@ -24,11 +24,11 @@ struct persistent_vector_test : testing::Test
         return traced_string{trace_count, std::move(value)};
     }
 
-    std::vector<std::string> numbers(unsigned n)
+    std::vector<traced_string> numbers(unsigned n)
     {
-        std::vector<std::string> v;
+        std::vector<traced_string> v;
         for (unsigned i = 1; i <= n; ++i)
-            v.push_back(std::to_string(i));
+            v.push_back(s(std::to_string(i)));
         return v;
     }
 
@@ -83,25 +83,25 @@ TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_
 
 TEST_F(persistent_vector_test, push_back_should_create_a_vector_with_an_element_appended_at_the_end_of_a_given_vector)
 {
-    std::vector<std::string> elems = numbers(4 * 4 * 4 * 4 * 4);
+    auto elems = numbers(4 * 4 * 4 * 4 * 4);
     for (std::size_t n = 5; n <= elems.size(); ++n)
     {
         try
         {
             string_vector vec;
             for (std::size_t i = 0; i < (n - 1); ++i)
-                vec = vec.push_back(s(elems[i]));
+                vec = vec.push_back(elems[i]);
 
-            string_vector appended = vec.push_back(s(elems[n - 1]));
+            string_vector appended = vec.push_back(elems[n - 1]);
             EXPECT_EQ(n - 1, vec.size());
             for (std::size_t i = 0; i < (n - 1); ++i)
-                EXPECT_EQ(elems[i], vec.at(i).value) << "at: " << i << " size: " << n;
+                EXPECT_EQ(elems[i].value, vec.at(i).value) << "at: " << i << " size: " << n;
 
             EXPECT_THROW(vec.at(n - 1), std::out_of_range);
 
             EXPECT_EQ(n, appended.size());
             for (std::size_t i = 0; i < n; ++i)
-                EXPECT_EQ(elems[i], appended.at(i).value) << "at: " << i << " size: " << n;
+                EXPECT_EQ(elems[i].value, appended.at(i).value) << "at: " << i << " size: " << n;
 
             EXPECT_THROW(appended.at(n), std::out_of_range);
         }
@@ -154,6 +154,44 @@ TEST_F(persistent_vector_test, should_provide_back)
 {
     EXPECT_EQ("one", (string_vector{s("one")}.back().value));
     EXPECT_EQ("two", (string_vector{s("one"), s("two")}.back().value));
+}
+
+TEST_F(persistent_vector_test, should_provide_random_access_iterators)
+{
+    auto n = numbers(4 * 4 - 1);
+    string_vector v{begin(n), end(n)};
+    ASSERT_EQ(v.size(), v.end() - v.begin());
+    for (string_vector::size_type i = 0; i != v.size(); ++i)
+    {
+        ASSERT_EQ(v.at(i).value, (v.begin() + i)->value);
+        ASSERT_EQ(v.at(i).value, (*(v.begin() + i)).value);
+        ASSERT_EQ(v.at(i).value, (*(v.end() + (i - v.size()))).value);
+        ASSERT_EQ(v.at(i).value, (*(v.end() - (v.size() - i))).value);
+    }
+}
+TEST_F(persistent_vector_test, iterators_should_be_equality_comparable)
+{
+    auto n = numbers(4 * 4 - 1);
+    string_vector v{begin(n), end(n)};
+    ASSERT_TRUE(v.begin() + v.size() == v.end());
+    ASSERT_FALSE(v.begin() + v.size() != v.end());
+    ASSERT_FALSE(v.begin() == v.end());
+    ASSERT_TRUE(v.begin() != v.end());
+}
+
+TEST_F(persistent_vector_test, iterators_should_be_incrementable_and_decrementable)
+{
+    auto n = numbers(4 * 4 - 1);
+    string_vector v{begin(n), end(n)};
+    auto it = v.begin();
+    ASSERT_TRUE(it++ == v.begin());
+    ASSERT_TRUE(it == v.begin() + 1);
+    ASSERT_TRUE(++it == v.begin() + 2);
+    ASSERT_TRUE(it == v.begin() + 2);
+    ASSERT_TRUE(it-- == v.begin() + 2);
+    ASSERT_TRUE(it == v.begin() + 1);
+    ASSERT_TRUE(--it == v.begin());
+    ASSERT_TRUE(it == v.begin());
 }
 
 TEST_F(persistent_vector_test, pop_back_should_make_one_element_vector_empty)
