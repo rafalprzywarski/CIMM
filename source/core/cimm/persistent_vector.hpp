@@ -108,9 +108,9 @@ public:
 
     persistent_vector pop_back() const
     {
-        if (count == 1)
-            return persistent_vector{};
-        return persistent_vector{as_node(root).elems[0], count - 1, shift - log_num_branches};
+        if (count == (num_branches << shift) + 1)
+            return persistent_vector{as_node(root).elems[0], count - 1, shift - log_num_branches};
+        return persistent_vector{pop_back_leaf(root, count - 1, shift), count - 1, shift};
     }
 
 private:
@@ -147,6 +147,8 @@ private:
         {
             if (index >= elems.size())
                 throw std::invalid_argument("replace_new index too large");
+            if (index == 0 && !n)
+                return nullptr;
             auto p = std::make_shared<node>();
             auto& new_node = *p;
             for (size_type i = 0; i < index; ++i)
@@ -186,6 +188,17 @@ private:
             for (size_type i = 0; i < count; ++i)
                 new_leaf.push_back(get(i));
             new_leaf.push_back(elem);
+            return p;
+        }
+
+        ptr<leaf> pop_back_new() const
+        {
+            if (count == 0)
+                return nullptr;
+            auto p = std::make_shared<leaf>();
+            auto& new_leaf = *p;
+            for (size_type i = 0; i < (count - 1); ++i)
+                new_leaf.push_back(get(i));
             return p;
         }
 
@@ -242,6 +255,15 @@ private:
         auto& parent_node = as_node(parent);
         auto node_index = local_index(index, shift);
         return parent_node.replace_new(node_index, push_back_leaf(parent_node.elems.at(node_index), elem, index, shift - log_num_branches));
+    }
+
+    ptr<element> pop_back_leaf(const ptr<element> parent, size_type index, size_type shift) const
+    {
+        if (shift == 0)
+            return as_leaf(parent).pop_back_new();
+        auto& parent_node = as_node(parent);
+        auto node_index = local_index(index, shift);
+        return parent_node.replace_new(node_index, pop_back_leaf(parent_node.elems.at(node_index), index, shift - log_num_branches));
     }
 
     static size_type local_index(size_type index, size_type shift = 0)

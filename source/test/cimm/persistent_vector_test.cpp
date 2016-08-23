@@ -194,24 +194,21 @@ TEST_F(persistent_vector_test, iterators_should_be_incrementable_and_decrementab
     ASSERT_TRUE(it == v.begin());
 }
 
-TEST_F(persistent_vector_test, pop_back_should_make_one_element_vector_empty)
+TEST_F(persistent_vector_test, pop_back_should_remove_one_element_from_the_end)
 {
-    auto popped = string_vector{s("one")}.pop_back();
-    EXPECT_TRUE(popped.empty());
-}
-
-TEST_F(persistent_vector_test, pop_back_should_remove_one_level_when_last_value_requiring_it_is_popped)
-{
-    auto n5 = numbers(4 + 1);
-    auto n17 = numbers(4 * 4 + 1);
-    auto popped4 = string_vector{begin(n5), end(n5)}.pop_back();
-    auto popped16 = string_vector{begin(n17), end(n17)}.pop_back();
-    EXPECT_EQ(4, popped4.size());
-    for (std::size_t i = 0; i < popped4.size(); ++i)
-        EXPECT_EQ(n5.at(i).value, popped4.at(i).value) << "index " << i;
-    EXPECT_EQ(16, popped16.size());
-    for (std::size_t i = 0; i < popped16.size(); ++i)
-        EXPECT_EQ(n17.at(i).value, popped16.at(i).value) << "index " << i;
+    auto n = numbers(4 * 4 * 4 * 4 * 4);
+    auto v = string_vector{begin(n), end(n)};
+    for (auto i = v.size(); i > 0; --i)
+    {
+        auto old_trace_count = trace_count;
+        auto popped = v.pop_back();
+        ASSERT_EQ(i - 1, popped.size());
+        for (std::size_t k = 0; k < popped.size(); ++k)
+            EXPECT_EQ(n.at(k).value, popped.at(k).value) << "index " << k;
+        ASSERT_LT(trace_count - old_trace_count, 4);
+        v = popped;
+        EXPECT_EQ(old_trace_count - 1, trace_count) << "index " << i;
+    }
 }
 
 }
