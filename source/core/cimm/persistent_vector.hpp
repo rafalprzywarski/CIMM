@@ -108,7 +108,9 @@ public:
 
     persistent_vector pop_back() const
     {
-        return persistent_vector{};
+        if (count == 1)
+            return persistent_vector{};
+        return persistent_vector{as_node(root).elems[0], count - 1, shift - log_num_branches};
     }
 
 private:

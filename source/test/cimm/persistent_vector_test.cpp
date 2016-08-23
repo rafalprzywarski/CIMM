@@ -200,4 +200,18 @@ TEST_F(persistent_vector_test, pop_back_should_make_one_element_vector_empty)
     EXPECT_TRUE(popped.empty());
 }
 
+TEST_F(persistent_vector_test, pop_back_should_remove_one_level_when_last_value_requiring_it_is_popped)
+{
+    auto n5 = numbers(4 + 1);
+    auto n17 = numbers(4 * 4 + 1);
+    auto popped4 = string_vector{begin(n5), end(n5)}.pop_back();
+    auto popped16 = string_vector{begin(n17), end(n17)}.pop_back();
+    EXPECT_EQ(4, popped4.size());
+    for (std::size_t i = 0; i < popped4.size(); ++i)
+        EXPECT_EQ(n5.at(i).value, popped4.at(i).value) << "index " << i;
+    EXPECT_EQ(16, popped16.size());
+    for (std::size_t i = 0; i < popped16.size(); ++i)
+        EXPECT_EQ(n17.at(i).value, popped16.at(i).value) << "index " << i;
+}
+
 }
