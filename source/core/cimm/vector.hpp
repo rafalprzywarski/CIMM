@@ -2,7 +2,7 @@
 #include "expression.hpp"
 #include "list.hpp"
 #include "type_error.hpp"
-#include <vector>
+#include "persistent_vector.hpp"
 
 namespace cimm
 {
@@ -13,21 +13,21 @@ public:
     vector() = default;
     explicit vector(list l)
     {
-        value.reserve(count(l));
         for (; not is_empty(l); l = rest(l))
-            value.push_back(first(l));
+            value = value.push_back(first(l));
     }
     vector(const std::initializer_list<expression>& l) : value(l) { }
-    explicit vector(const std::vector<expression>& v) : value(std::move(v)) { }
+
+    vector(persistent_vector<expression> v) : value(std::move(v)) { }
 
     friend auto begin(const vector& v)
     {
-        return begin(v.value);
+        return v.value.begin();
     }
 
     friend auto end(const vector& v)
     {
-        return end(v.value);
+        return v.value.end();
     }
 
     friend auto count(const vector& v) -> integer
@@ -43,14 +43,19 @@ public:
     template <typename F>
     friend auto map(vector const& v, F&& f)
     {
-        std::vector<expression> r;
-        r.reserve(count(v));
+        persistent_vector<expression> r;
         for (auto& e : v)
-          r.push_back(f(e));
+          r = r.push_back(f(e));
         return vector(r);
     }
+
+    friend auto conj(const vector& v, expression e)
+    {
+        return vector(v.value.push_back(e));
+    }
+
 private:
-    std::vector<expression> value;
+    persistent_vector<expression> value;
 };
 
 inline auto is_empty(const vector& v)
@@ -66,15 +71,6 @@ inline auto first(const vector& v)
 inline auto rest(const vector& l)
 {
     return is_empty(l) ? vector{} : vector({std::next(begin(l)), end(l)});
-}
-
-inline auto conj(const vector& v, expression e)
-{
-    std::vector<expression> r;
-    r.reserve(count(v) + 1);
-    r.assign(begin(v), end(v));
-    r.push_back(std::move(e));
-    return vector(r);
 }
 
 template <typename expression_type>
