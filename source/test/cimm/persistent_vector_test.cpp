@@ -194,6 +194,17 @@ TEST_F(persistent_vector_test, iterators_should_be_incrementable_and_decrementab
     ASSERT_TRUE(it == v.begin());
 }
 
+TEST_F(persistent_vector_test, iterators_should_be_incrementable_and_decrementable_by_integers)
+{
+    auto n = numbers(4 * 4 - 1);
+    string_vector v{begin(n), end(n)};
+    auto it = v.begin();
+    ASSERT_TRUE((it += 3) == v.begin() + 3);
+    ASSERT_TRUE(it == v.begin() + 3);
+    ASSERT_TRUE((it -= -2) == v.begin() + 5);
+    ASSERT_TRUE(it == v.begin() + 5);
+}
+
 TEST_F(persistent_vector_test, pop_back_should_remove_one_element_from_the_end)
 {
     auto n = numbers(4 * 4 * 4 * 4 * 4);

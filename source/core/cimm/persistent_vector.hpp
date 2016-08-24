@@ -31,11 +31,10 @@ public:
         {
             return left.index - right.index;
         }
-        friend const_iterator operator+(const const_iterator& left, difference_type right)
-        {
-            return {left.container, left.index + right};
-        }
-        friend const_iterator operator-(const const_iterator& left, difference_type right) { return left + -right; }
+        const_iterator& operator+=(difference_type n) { index += n; return *this; }
+        friend const_iterator operator+(const_iterator left, difference_type right) { return left += right; }
+        const_iterator& operator-=(difference_type n) { index -= n; return *this; }
+        friend const_iterator operator-(const_iterator left, difference_type right) { return left -= right; }
         const_iterator& operator++() { ++index; return *this; }
         const_iterator operator++(int) { auto prev = *this; ++*this; return prev; }
         const_iterator& operator--() { --index; return *this; }
