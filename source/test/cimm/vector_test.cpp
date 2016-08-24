@@ -42,4 +42,11 @@ TEST_F(vector_test, conj_should_add_an_element_at_the_end_of_the_vector)
     EXPECT_EQ(parse("[5 7 9]"), evaluate_parsed("(conj [5 7] 9)"));
 }
 
+TEST_F(vector_test, nth_provide_the_value_at_a_given_index)
+{
+    EXPECT_EQ(parse("5"), evaluate_parsed("(nth [5 2 7] 0)"));
+    EXPECT_EQ(parse("2"), evaluate_parsed("(nth [5 2 7] 1)"));
+    EXPECT_EQ(parse("7"), evaluate_parsed("(nth [5 2 7] 2)"));
+}
+
 }

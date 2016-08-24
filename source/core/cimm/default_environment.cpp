@@ -175,6 +175,11 @@ auto conj_f(const list& args) -> expression
     return conj(first(args), first(rest(args)));
 }
 
+auto nth_f(const list& args) -> expression
+{
+    return *(begin(as_vector(first(args))) + as_integer(first(rest(args))));
+}
+
 auto vector_f(const list& args) -> expression
 {
     return vector(args);
@@ -243,6 +248,7 @@ auto create_default_environment() -> environment
     define_native_function(env, {"count", count_f});
     define_native_function(env, {"cons", cons_f});
     define_native_function(env, {"conj", conj_f});
+    define_native_function(env, {"nth", nth_f});
     define_native_function(env, {"vector", vector_f});
     define_native_function(env, {"vec", vec_f});
     define_native_function(env, {"throw", throw_f});
