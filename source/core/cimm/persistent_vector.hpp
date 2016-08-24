@@ -24,7 +24,7 @@ public:
     {
     public:
         const_iterator(const persistent_vector<T, log_num_branches>& container, size_type index)
-            : container(container), index(index) { }
+            : container(&container), index(index) { }
         friend bool operator==(const const_iterator& left, const const_iterator& right) { return left.index == right.index; }
         friend bool operator!=(const const_iterator& left, const const_iterator& right) { return !(left == right); }
         friend difference_type operator-(const const_iterator& left, const const_iterator& right)
@@ -39,10 +39,10 @@ public:
         const_iterator operator++(int) { auto prev = *this; ++*this; return prev; }
         const_iterator& operator--() { --index; return *this; }
         const_iterator operator--(int) { auto prev = *this; --*this; return prev; }
-        reference operator*() const { return container[index]; }
+        reference operator*() const { return (*container)[index]; }
         pointer operator->() const { return &**this; }
     private:
-        const persistent_vector<T, log_num_branches>& container;
+        const persistent_vector<T, log_num_branches> *container;
         size_type index;
     };
 
