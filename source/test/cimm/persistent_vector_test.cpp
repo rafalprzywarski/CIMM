@@ -14,6 +14,10 @@ struct persistent_vector_test : testing::Test
         traced_string(int& counter, std::string value) : counter(&counter), value(std::move(value)) { counter++; }
         traced_string(const traced_string& other) : counter(other.counter), value(other.value) { ++*counter; }
         ~traced_string() { --*counter; }
+        friend bool operator==(const traced_string& left, const traced_string& right)
+        {
+            return left.value == right.value;
+        }
     };
 
     using string_vector = persistent_vector<traced_string, 2>;
@@ -220,6 +224,21 @@ TEST_F(persistent_vector_test, pop_back_should_remove_one_element_from_the_end)
         v = popped;
         EXPECT_EQ(old_trace_count - 1, trace_count) << "index " << i;
     }
+}
+
+TEST_F(persistent_vector_test, should_be_equality_comparable)
+{
+    EXPECT_TRUE(string_vector{} == string_vector{});
+    EXPECT_TRUE(string_vector{s("1")} == string_vector{s("1")});
+    EXPECT_FALSE(string_vector{} == string_vector{s("1")});
+    EXPECT_FALSE(string_vector{s("1")} == string_vector{});
+    EXPECT_TRUE((string_vector{s("1"), s("2"), s("3")} == string_vector{s("1"), s("2"), s("3")}));
+    EXPECT_FALSE((string_vector{s("7"), s("2"), s("3")} == string_vector{s("1"), s("2"), s("3")}));
+    EXPECT_FALSE((string_vector{s("1"), s("7"), s("3")} == string_vector{s("1"), s("2"), s("3")}));
+    EXPECT_FALSE((string_vector{s("1"), s("2"), s("7")} == string_vector{s("1"), s("2"), s("3")}));
+
+    EXPECT_FALSE((string_vector{s("1"), s("2"), s("3")} != string_vector{s("1"), s("2"), s("3")}));
+    EXPECT_TRUE((string_vector{s("7"), s("2"), s("3")} != string_vector{s("1"), s("2"), s("3")}));
 }
 
 }

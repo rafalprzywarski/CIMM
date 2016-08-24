@@ -271,4 +271,16 @@ private:
     }
 };
 
+template <typename T, unsigned short log_num_branches>
+inline bool operator==(const persistent_vector<T, log_num_branches>& left, const persistent_vector<T, log_num_branches>& right)
+{
+    return left.size() == right.size() && std::equal(left.begin(), left.end(), right.begin());
+}
+
+template <typename T, unsigned short log_num_branches>
+inline bool operator!=(const persistent_vector<T, log_num_branches>& left, const persistent_vector<T, log_num_branches>& right)
+{
+    return !(left == right);
+}
+
 }
