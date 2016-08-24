@@ -61,11 +61,6 @@ TEST_F(list_test, count_should_return_0_for_nil)
     EXPECT_EQ(expression(integer(0)), evaluate(list{symbol("count"), nil}));
 }
 
-TEST_F(list_test, count_should_return_0_for_no_arguments)
-{
-    EXPECT_EQ(expression(integer(0)), evaluate(list{symbol("count"), nil}));
-}
-
 TEST_F(list_test, count_should_return_the_number_of_elements_in_a_list)
 {
     EXPECT_EQ(expression(integer(0)), evaluate(list{symbol("count"), list{special::quote, list{}}}));

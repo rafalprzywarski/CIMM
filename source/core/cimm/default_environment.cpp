@@ -149,14 +149,24 @@ auto rest_f(const expression& e) -> expression
     return rest(as_list(e));
 }
 
-auto count_f(const list& args) -> expression
+namespace
 {
-    if (is_empty(args))
-        return integer(0);
-    auto f = first(args);
-    if (f == nil)
-        return integer(0);
-    return count(as_list(f));
+
+struct count_visitor : expression::visitor<expression>
+{
+    auto operator()(const list& l) -> expression { return count(l); }
+    auto operator()(const vector& v) -> expression { return count(v); }
+    auto operator()(const nil_type&) -> expression { return integer(0); }
+
+    template <typename expression_type>
+    auto operator()(const expression_type& e) -> expression { throw type_error(e, "a sequence"); }
+};
+
+}
+
+auto count_f(const expression& c) -> expression
+{
+    return apply(count_visitor(), c);
 }
 
 auto cons_f(const list& args) -> expression

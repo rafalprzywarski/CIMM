@@ -49,4 +49,11 @@ TEST_F(vector_test, nth_provide_the_value_at_a_given_index)
     EXPECT_EQ(parse("7"), evaluate_parsed("(nth [5 2 7] 2)"));
 }
 
+TEST_F(vector_test, count_should_return_the_number_of_elements)
+{
+    EXPECT_EQ(parse("0"), evaluate_parsed("(count [])"));
+    EXPECT_EQ(parse("1"), evaluate_parsed("(count [5])"));
+    EXPECT_EQ(parse("3"), evaluate_parsed("(count [5 2 7])"));
+}
+
 }
