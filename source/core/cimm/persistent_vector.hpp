@@ -41,6 +41,7 @@ public:
         const_iterator operator--(int) { auto prev = *this; --*this; return prev; }
         reference operator*() const { return (*container)[index]; }
         pointer operator->() const { return &**this; }
+        reference operator[](difference_type index) const { return *(*this + index); }
     private:
         const persistent_vector<T, log_num_branches> *container;
         size_type index;
