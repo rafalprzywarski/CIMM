@@ -57,10 +57,8 @@ public:
     template <typename InputIterator>
     transient_vector(InputIterator first, InputIterator last)
     {
-        transient_vector<T, log_num_branches> v;
         for (; first != last; ++first)
-            v.push_back(*first);
-        *this = std::move(v);
+            push_back(*first);
     }
 
     transient_vector(const std::initializer_list<T>& elems) : transient_vector(std::begin(elems), std::end(elems)) { }
