@@ -1,9 +1,9 @@
 #pragma once
 #include <cstddef>
 #include <initializer_list>
-#include <memory>
 #include <stdexcept>
 #include <array>
+#include <atomic>
 
 namespace cimm
 {
@@ -28,10 +28,51 @@ protected:
     static const size_type index_mask = num_branches - 1;
 
     template <typename U>
-    using ptr = std::shared_ptr<U>;
+    class ptr
+    {
+    public:
+        ptr() = default;
+
+        ptr(std::nullptr_t) { }
+
+        ptr(const ptr<U>& other) : p(other.p) { if (p) ++p->refCount; }
+
+        ptr(ptr<U>&& other) { std::swap(p, other.p); }
+
+        template <typename X>
+        ptr(const ptr<X>& other) : p(&*other) { if (p) ++p->refCount; }
+
+        ptr<U>& operator=(ptr<U> other)
+        {
+            std::swap(p, other.p);
+            return *this;
+        }
+
+        ~ptr()
+        {
+            if (p && !--p->refCount)
+                delete p;
+        }
+
+        template <typename... Args>
+        static ptr<U> make(Args&&... args)
+        {
+            return ptr<U>{new U{std::forward<Args>(args)...}};
+        }
+
+        explicit operator bool() const { return p; }
+
+        U& operator*() const { return *p; }
+
+    private:
+        explicit ptr(U *p) : p(p) { }
+
+        U *p = nullptr;
+    };
 
     struct element
     {
+        std::atomic<size_type> refCount{1};
         virtual ~element() noexcept = default;
     };
 
@@ -58,7 +99,7 @@ protected:
                 throw std::invalid_argument("replace_new index too large");
             if (index == 0 && !n)
                 return nullptr;
-            auto p = std::make_shared<node>();
+            auto p = ptr<node>::make();
             auto& new_node = *p;
             for (size_type i = 0; i < index; ++i)
                 new_node.elems[i] = elems[i];
@@ -92,7 +133,7 @@ protected:
 
         ptr<leaf> push_back_new(const value_type& elem) const
         {
-            auto p = std::make_shared<leaf>();
+            auto p = ptr<leaf>::make();
             auto& new_leaf = *p;
             for (size_type i = 0; i < count; ++i)
                 new_leaf.push_back(get(i));
@@ -104,7 +145,7 @@ protected:
         {
             if (count == 0)
                 return nullptr;
-            auto p = std::make_shared<leaf>();
+            auto p = ptr<leaf>::make();
             auto& new_leaf = *p;
             for (size_type i = 0; i < (count - 1); ++i)
                 new_leaf.push_back(get(i));
@@ -170,8 +211,8 @@ protected:
     static ptr<element> create_element(const value_type& elem, size_type shift)
     {
         if (shift == 0)
-            return std::make_shared<leaf>(elem);
-        return std::make_shared<node>(create_element(elem, shift - log_num_branches));
+            return ptr<leaf>::make(elem);
+        return ptr<node>::make(create_element(elem, shift - log_num_branches));
     }
 };
 
@@ -270,7 +311,7 @@ public:
     {
         if (count == (num_branches << shift))
         {
-            return persistent_vector{std::make_shared<node>(root, base::create_element(elem, shift)), count + 1, shift + log_num_branches};
+            return persistent_vector{ptr<node>::make(root, base::create_element(elem, shift)), count + 1, shift + log_num_branches};
         }
 
         return persistent_vector{base::push_back_leaf(root, elem, count, shift), count + 1, shift};
@@ -411,7 +452,7 @@ public:
     {
         if (count == (num_branches << shift))
         {
-            *this = transient_vector{std::make_shared<node>(root, base::create_element(elem, shift)), count + 1, shift + log_num_branches};
+            *this = transient_vector{ptr<node>::make(root, base::create_element(elem, shift)), count + 1, shift + log_num_branches};
             return;
         }
 
