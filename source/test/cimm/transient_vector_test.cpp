@@ -1,0 +1,247 @@
+#include <cimm/transient_vector.hpp>
+#include <atomic>
+#include <gtest/gtest.h>
+
+namespace cimm
+{
+
+struct transient_vector_test : testing::Test
+{
+    struct traced_string
+    {
+        int *counter;
+        std::string value;
+        traced_string(int& counter, std::string value) : counter(&counter), value(std::move(value)) { counter++; }
+        traced_string(const traced_string& other) : counter(other.counter), value(other.value) { ++*counter; }
+        ~traced_string() { --*counter; }
+        friend bool operator==(const traced_string& left, const traced_string& right)
+        {
+            return left.value == right.value;
+        }
+    };
+
+    using string_vector = transient_vector<traced_string, 2>;
+    int trace_count = 0;
+
+    traced_string s(std::string value)
+    {
+        return traced_string{trace_count, std::move(value)};
+    }
+
+    std::vector<traced_string> numbers(unsigned n)
+    {
+        std::vector<traced_string> v;
+        for (unsigned i = 1; i <= n; ++i)
+            v.push_back(s(std::to_string(i)));
+        return v;
+    }
+
+    void TearDown() override
+    {
+        ASSERT_EQ(0, trace_count);
+    }
+};
+
+TEST_F(transient_vector_test, default_constructor_should_create_an_empty_vector)
+{
+    string_vector empty;
+    ASSERT_TRUE(empty.empty());
+    ASSERT_EQ(0u, empty.size());
+    ASSERT_THROW(empty.at(0), std::out_of_range);
+    ASSERT_THROW(empty.at(1), std::out_of_range);
+    ASSERT_TRUE(empty.begin() == empty.end());
+}
+
+TEST_F(transient_vector_test, push_back_should_create_a_one_element_vector_from_an_empty_vector)
+{
+    string_vector one;
+    one.push_back(s("one"));
+    ASSERT_FALSE(one.empty());
+    ASSERT_EQ(1u, one.size());
+    ASSERT_EQ("one", one.at(0).value);
+    ASSERT_THROW(one.at(1), std::out_of_range);
+}
+
+TEST_F(transient_vector_test, push_back_should_create_a_vector_with_an_element_appended_at_the_end_of_a_given_vector_within_one_leaf)
+{
+    string_vector two;
+    two.push_back(s("one"));
+    two.push_back(s("two"));
+    string_vector three;
+    three.push_back(s("one"));
+    three.push_back(s("two"));
+    three.push_back(s("three"));
+    string_vector four;
+    four.push_back(s("one"));
+    four.push_back(s("two"));
+    four.push_back(s("three"));
+    four.push_back(s("four"));
+
+    ASSERT_FALSE(two.empty());
+    ASSERT_EQ(2u, two.size());
+    ASSERT_EQ("one", two.at(0).value);
+    ASSERT_EQ("two", two.at(1).value);
+    ASSERT_THROW(two.at(2), std::out_of_range);
+
+    ASSERT_EQ(3u, three.size());
+    ASSERT_EQ("one", three.at(0).value);
+    ASSERT_EQ("two", three.at(1).value);
+    ASSERT_EQ("three", three.at(2).value);
+    ASSERT_THROW(three.at(3), std::out_of_range);
+
+    ASSERT_EQ(4u, four.size());
+    ASSERT_EQ("one", four.at(0).value);
+    ASSERT_EQ("four", four.at(3).value);
+    ASSERT_THROW(four.at(4), std::out_of_range);
+}
+
+TEST_F(transient_vector_test, push_back_should_create_a_vector_with_an_element_appended_at_the_end_of_a_given_vector)
+{
+    auto elems = numbers(4 * 4 * 4 * 4 * 4);
+    string_vector vec;
+    for (std::size_t n = 1; n <= elems.size(); ++n)
+    {
+        vec.push_back(elems[n - 1]);
+        EXPECT_EQ(n, vec.size());
+
+        for (std::size_t i = 0; i < n; ++i)
+            EXPECT_EQ(elems[i].value, vec.at(i).value) << "at: " << i << " size: " << n;
+
+        EXPECT_THROW(vec.at(n), std::out_of_range);
+    }
+}
+
+TEST_F(transient_vector_test, should_provide_initializer_list_constructor)
+{
+    auto empty = string_vector{{}};
+    EXPECT_TRUE(empty.empty());
+
+    auto two = string_vector{s("one"), s("two")};
+    EXPECT_EQ(2u, two.size());
+    EXPECT_EQ("one", two.at(0).value);
+    EXPECT_EQ("two", two.at(1).value);
+}
+
+TEST_F(transient_vector_test, should_provide_iterator_pair_constructor)
+{
+    std::vector<traced_string> emptyContainer;
+    auto empty = string_vector{begin(emptyContainer), end(emptyContainer)};
+    EXPECT_TRUE(empty.empty());
+
+    std::vector<traced_string> twoContainer{s("one"), s("two")};
+    auto two = string_vector{begin(twoContainer), end(twoContainer)};
+    EXPECT_EQ(2u, two.size());
+    EXPECT_EQ("one", two.at(0).value);
+    EXPECT_EQ("two", two.at(1).value);
+}
+
+TEST_F(transient_vector_test, should_provide_indexing_operator)
+{
+    auto two = string_vector{s("one"), s("two")};
+    EXPECT_EQ(2u, two.size());
+    EXPECT_EQ("one", two[0].value);
+    EXPECT_EQ("two", two[1].value);
+}
+
+TEST_F(transient_vector_test, should_provide_front)
+{
+    EXPECT_EQ("one", (string_vector{s("one")}.front().value));
+    EXPECT_EQ("one", (string_vector{s("one"), s("two")}.front().value));
+}
+
+TEST_F(transient_vector_test, should_provide_back)
+{
+    EXPECT_EQ("one", (string_vector{s("one")}.back().value));
+    EXPECT_EQ("two", (string_vector{s("one"), s("two")}.back().value));
+}
+
+TEST_F(transient_vector_test, should_provide_random_access_iterators)
+{
+    auto n = numbers(4 * 4 - 1);
+    string_vector v{begin(n), end(n)};
+    ASSERT_EQ(v.size(), v.end() - v.begin());
+    for (string_vector::size_type i = 0; i != v.size(); ++i)
+    {
+        ASSERT_EQ(v.at(i).value, (v.begin() + i)->value);
+        ASSERT_EQ(v.at(i).value, (*(v.begin() + i)).value);
+        ASSERT_EQ(v.at(i).value, (*(v.end() + (i - v.size()))).value);
+        ASSERT_EQ(v.at(i).value, (*(v.end() - (v.size() - i))).value);
+    }
+}
+TEST_F(transient_vector_test, iterators_should_be_equality_comparable)
+{
+    auto n = numbers(4 * 4 - 1);
+    string_vector v{begin(n), end(n)};
+    ASSERT_TRUE(v.begin() + v.size() == v.end());
+    ASSERT_FALSE(v.begin() + v.size() != v.end());
+    ASSERT_FALSE(v.begin() == v.end());
+    ASSERT_TRUE(v.begin() != v.end());
+}
+
+TEST_F(transient_vector_test, iterators_should_be_incrementable_and_decrementable)
+{
+    auto n = numbers(4 * 4 - 1);
+    string_vector v{begin(n), end(n)};
+    auto it = v.begin();
+    ASSERT_TRUE(it++ == v.begin());
+    ASSERT_TRUE(it == v.begin() + 1);
+    ASSERT_TRUE(++it == v.begin() + 2);
+    ASSERT_TRUE(it == v.begin() + 2);
+    ASSERT_TRUE(it-- == v.begin() + 2);
+    ASSERT_TRUE(it == v.begin() + 1);
+    ASSERT_TRUE(--it == v.begin());
+    ASSERT_TRUE(it == v.begin());
+}
+
+TEST_F(transient_vector_test, iterators_should_be_incrementable_and_decrementable_by_integers)
+{
+    auto n = numbers(4 * 4 - 1);
+    string_vector v{begin(n), end(n)};
+    auto it = v.begin();
+    ASSERT_TRUE((it += 3) == v.begin() + 3);
+    ASSERT_TRUE(it == v.begin() + 3);
+    ASSERT_TRUE((it -= -2) == v.begin() + 5);
+    ASSERT_TRUE(it == v.begin() + 5);
+}
+
+TEST_F(transient_vector_test, iterators_should_provide_indexing)
+{
+    auto n = numbers(4);
+    string_vector v{begin(n), end(n)};
+    auto it = v.begin() + 2;
+    ASSERT_EQ(v[2].value, it[0].value);
+    ASSERT_EQ(v[3].value, it[1].value);
+    ASSERT_EQ(v[1].value, it[-1].value);
+}
+
+TEST_F(transient_vector_test, pop_back_should_remove_one_element_from_the_end)
+{
+    auto n = numbers(4 * 4 * 4 * 4 * 4);
+    auto v = string_vector{begin(n), end(n)};
+    for (auto i = v.size(); i > 0; --i)
+    {
+        auto old_trace_count = trace_count;
+        v.pop_back();
+        EXPECT_EQ(old_trace_count - 1, trace_count) << "index " << i;
+        ASSERT_EQ(i - 1, v.size());
+        for (std::size_t k = 0; k < v.size(); ++k)
+            EXPECT_EQ(n.at(k).value, v.at(k).value) << "index " << k;
+    }
+}
+
+TEST_F(transient_vector_test, should_be_equality_comparable)
+{
+    EXPECT_TRUE(string_vector{} == string_vector{});
+    EXPECT_TRUE(string_vector{s("1")} == string_vector{s("1")});
+    EXPECT_FALSE(string_vector{} == string_vector{s("1")});
+    EXPECT_FALSE(string_vector{s("1")} == string_vector{});
+    EXPECT_TRUE((string_vector{s("1"), s("2"), s("3")} == string_vector{s("1"), s("2"), s("3")}));
+    EXPECT_FALSE((string_vector{s("7"), s("2"), s("3")} == string_vector{s("1"), s("2"), s("3")}));
+    EXPECT_FALSE((string_vector{s("1"), s("7"), s("3")} == string_vector{s("1"), s("2"), s("3")}));
+    EXPECT_FALSE((string_vector{s("1"), s("2"), s("7")} == string_vector{s("1"), s("2"), s("3")}));
+
+    EXPECT_FALSE((string_vector{s("1"), s("2"), s("3")} != string_vector{s("1"), s("2"), s("3")}));
+    EXPECT_TRUE((string_vector{s("7"), s("2"), s("3")} != string_vector{s("1"), s("2"), s("3")}));
+}
+
+}

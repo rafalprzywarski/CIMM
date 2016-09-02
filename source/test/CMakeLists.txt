@@ -17,6 +17,7 @@ add_executable(cimm_test
   cimm/slist_test.cpp
   cimm/str_test.cpp
   cimm/symbol_test.cpp
+  cimm/transient_vector_test.cpp
   cimm/vector_test.cpp
   main.cpp
 )
