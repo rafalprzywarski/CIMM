@@ -1,4 +1,4 @@
-#include <cimm/transient_vector.hpp>
+#include <cimm/persistent_vector.hpp>
 #include <atomic>
 #include <gtest/gtest.h>
 
