@@ -17,7 +17,7 @@ public:
             value = slist{e, value};
     }
 
-    list(const std::vector<expression>& v)
+    explicit list(const std::vector<expression>& v)
     {
         for (auto& e : boost::adaptors::reverse(v))
             value = slist{e, value};

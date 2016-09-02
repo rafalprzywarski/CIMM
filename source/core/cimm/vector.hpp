@@ -16,7 +16,13 @@ public:
         for (; not is_empty(l); l = rest(l))
             value = value.push_back(first(l));
     }
+
+    template <typename Iterator>
+    vector(Iterator first, Iterator last) : value(first, last) { }
+
     vector(const std::initializer_list<expression>& l) : value(l) { }
+
+    explicit vector(const std::vector<expression>& v) : vector(begin(v), end(v)) { }
 
     vector(persistent_vector<expression> v) : value(std::move(v)) { }
 
@@ -70,7 +76,7 @@ inline auto first(const vector& v)
 
 inline auto rest(const vector& l)
 {
-    return is_empty(l) ? vector{} : vector({std::next(begin(l)), end(l)});
+    return is_empty(l) ? vector{} : vector(std::next(begin(l)), end(l));
 }
 
 template <typename expression_type>
